@@ -47,7 +47,7 @@ export const NoticeMain = () => {
         searchParam.append("currentPage", currentPage.toString());
         searchParam.append("pageSize", "5");
 
-        axios.post("/management/noticeListJson.do", searchParam).then((res: AxiosResponse<INoticeResponse>) => {
+        axios.post("/management/noticeListBody.do", searchParam).then((res: AxiosResponse<INoticeResponse>) => {
             setNoticeList(res.data.noticeList);
             setListCount(res.data.noticeCnt);
         });

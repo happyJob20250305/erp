@@ -126,6 +126,28 @@ export const NoticeModal: FC<NoticeModalProps> = ({ id, postSuccess, setNoticeId
         }
     };
 
+    const downloadFile = () => {
+        const param = new URLSearchParams();
+        param.append("noticeId", id.toString());
+
+        axios
+            .post("/management/noticeDownload.do", param, { responseType: "blob" })
+            .then((res: AxiosResponse<Blob>) => {
+                const url = window.URL.createObjectURL(res.data);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", detail?.fileName as string);
+                document.body.appendChild(link);
+                link.click();
+
+                document.body.removeChild(link); // 다운로드 후 a태그 삭제
+
+                // createObjectURL로 만든 URL은 브라우저 메모리에 계속 남아있음
+                // 메모리를 해제해야함
+                window.URL.revokeObjectURL(url);
+            });
+    };
+
     return (
         <NoticeModalStyled>
             <div className='container'>
@@ -146,12 +168,12 @@ export const NoticeModal: FC<NoticeModalProps> = ({ id, postSuccess, setNoticeId
                     <label className='img-label' htmlFor='fileInput'>
                         파일 첨부하기
                     </label>
-                    <div>
+                    <div onClick={downloadFile}>
                         {imageUrl ? (
                             <div>
                                 <label>미리보기</label>
                                 <img src={imageUrl} />
-                                {fileData?.name}
+                                {fileData?.name || detail.fileName}
                             </div>
                         ) : (
                             <div>{fileData?.name}</div>
