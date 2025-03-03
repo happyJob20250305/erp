@@ -8,6 +8,8 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { NoticeMainStyled } from "./styled";
+import { searchApi } from "../../../../../api/NoticeApi/searchApi";
+import { Notice } from "../../../../../api/api";
 
 interface INotice {
     noticeId: number;
@@ -41,16 +43,21 @@ export const NoticeMain = () => {
         searchNoitceList();
     }, [search]);
 
-    const searchNoitceList = (currentPage?: number) => {
+    const searchNoitceList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
         const searchParam = new URLSearchParams(search);
         searchParam.append("currentPage", currentPage.toString());
         searchParam.append("pageSize", "5");
 
-        axios.post("/management/noticeListBody.do", searchParam).then((res: AxiosResponse<INoticeResponse>) => {
-            setNoticeList(res.data.noticeList);
-            setListCount(res.data.noticeCnt);
-        });
+        const result = await searchApi<INoticeResponse, URLSearchParams>(Notice.search, searchParam);
+        if (result) {
+            setNoticeList(result.noticeList);
+            setListCount(result.noticeCnt);
+        }
+        // axios.post("/management/noticeListBody.do", searchParam).then((res: AxiosResponse<INoticeResponse>) => {
+        //     setNoticeList(res.data.noticeList);
+        //     setListCount(res.data.noticeCnt);
+        // });
     };
 
     const handlerModal = (id: number) => {

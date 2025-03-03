@@ -5,6 +5,8 @@ import axios, { AxiosResponse } from "axios";
 import { modalState } from "../../../../../stores/modalState";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { searchApi } from "../../../../../api/NoticeApi/searchApi";
+import { Notice } from "../../../../../api/api";
 
 interface NoticeModalProps {
     id: number;
@@ -47,22 +49,36 @@ export const NoticeModal: FC<NoticeModalProps> = ({ id, postSuccess, setNoticeId
         setModal(!modal);
     };
 
-    const searchDetail = (id: number) => {
-        axios
-            .post("/management/noticeFileDetailBody.do", { noticeId: id })
-            .then((res: AxiosResponse<INoticeDetailResponse>) => {
-                // 파일은 noticeFileDetail
-                if (res.data.detailValue) {
-                    setDetail(res.data.detailValue);
-                    const { fileExt, logicalPath } = res.data.detailValue;
-                    if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
-                        console.log(fileExt);
-                        setImageUrl(logicalPath);
-                    } else {
-                        setImageUrl("");
-                    }
+    const searchDetail = async (id: number) => {
+        const result = await searchApi<INoticeDetailResponse, { noticeId: number }>(Notice.detail, { noticeId: id });
+        if (result) {
+            // 파일은 noticeFileDetail
+            if (result.detailValue) {
+                setDetail(result.detailValue);
+                const { fileExt, logicalPath } = result.detailValue;
+                if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
+                    console.log(fileExt);
+                    setImageUrl(logicalPath);
+                } else {
+                    setImageUrl("");
                 }
-            });
+            }
+        }
+        // axios
+        //     .post("/management/noticeFileDetailBody.do", { noticeId: id })
+        //     .then((res: AxiosResponse<INoticeDetailResponse>) => {
+        //         // 파일은 noticeFileDetail
+        //         if (res.data.detailValue) {
+        //             setDetail(res.data.detailValue);
+        //             const { fileExt, logicalPath } = res.data.detailValue;
+        //             if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
+        //                 console.log(fileExt);
+        //                 setImageUrl(logicalPath);
+        //             } else {
+        //                 setImageUrl("");
+        //             }
+        //         }
+        //     });
     };
 
     const saveNotice = (e: React.MouseEvent<HTMLButtonElement>) => {

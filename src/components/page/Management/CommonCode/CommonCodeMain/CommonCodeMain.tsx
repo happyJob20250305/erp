@@ -10,6 +10,8 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { searchApi } from "../../../../../api/CommonCodeApi/searchApi";
+import { CommonCode } from "../../../../../api/api";
 
 interface ICommonCode {
     author: string;
@@ -47,16 +49,24 @@ export const CommonCodeMain = () => {
         searchCommonCode();
     }, [searchKeyWord]);
 
-    const searchCommonCode = () => {
-        axios
-            .post("/management/commonCodeListJson.do", {
-                ...searchKeyWord,
-                currentPage: 1,
-                pageSize: 5,
-            })
-            .then((res: AxiosResponse<ICommonCodeResponse>) => {
-                setCommonCodeList(res.data.commonCode);
-            });
+    const searchCommonCode = async () => {
+        await searchApi<ICommonCodeResponse>(CommonCode.search, {
+            ...searchKeyWord,
+            currentPage: 1,
+            pageSize: 5,
+        }).then((res) => {
+            setCommonCodeList(res.commonCode);
+        });
+
+        // axios
+        //     .post("/management/commonCodeListBody.do", {
+        //         ...searchKeyWord,
+        //         currentPage: 1,
+        //         pageSize: 5,
+        //     })
+        //     .then((res: AxiosResponse<ICommonCodeResponse>) => {
+        //         setCommonCodeList(res.data.commonCode);
+        //     });
     };
 
     const handlerModal = (id: number) => {

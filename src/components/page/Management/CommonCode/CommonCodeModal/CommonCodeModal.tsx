@@ -3,6 +3,9 @@ import { CommonCodeModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
 import axios, { AxiosResponse } from "axios";
+import { CommonCode } from "../../../../../api/api";
+import { searchApi } from "../../../../../api/CommonCodeApi/searchApi";
+import { postApi } from "../../../../../api/CommonCodeApi/postApi";
 
 interface ICommonCodeModalProps {
     groupIdx: number;
@@ -32,6 +35,8 @@ const initialCommonCode: ICommonCode = {
 
 export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupIdx, setGroupIdx, postSuccess }) => {
     const [modal, setModal] = useRecoilState(modalState);
+
+    // useRef로 사용하지 않은 이유 -> api 결과값으로 화면을 다시 그려야하는데, ref는 리렌더링을 해주지 않기 때문
     const [commonCode, setCommonCode] = useState<ICommonCode>(initialCommonCode);
 
     useEffect(() => {
@@ -42,28 +47,37 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupIdx, setGroupI
         };
     }, []);
 
-    useEffect(() => {
-        console.log(commonCode);
-    }, [commonCode]);
+    const commonCodeDetail = async () => {
+        const result = await searchApi<{ detailValue: ICommonCode }>(CommonCode.detail, { groupIdx });
+        if (result) {
+            setCommonCode(result.detailValue);
+        }
 
-    const commonCodeDetail = () => {
-        axios
-            .post("/management/commonCodeDetailJson.do", { groupIdx })
-            .then((res: AxiosResponse<{ detailValue: ICommonCode }>) => {
-                setCommonCode(res.data.detailValue);
-            });
+        // axios
+        //     .post("/management/commonCodeDetailJson.do", { groupIdx })
+        //     .then((res: AxiosResponse<{ detailValue: ICommonCode }>) => {
+        //         setCommonCode(res.data.detailValue);
+        //     });
     };
 
-    const saveCommonCode = () => {
-        console.log(commonCode);
-        axios.post("/management/commonCodeSaveBody.do", commonCode).then((res: AxiosResponse<{ result: string }>) => {
-            if (res.data.result === "success") {
-                postSuccess();
-            } else if (res.data.result.includes("Duplicate")) {
-                alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
-                return;
-            }
-        });
+    const saveCommonCode = async () => {
+        // axios.post("/management/commonCodeSaveBody.do", commonCode).then((res: AxiosResponse<{ result: string }>) => {
+        //     if (res.data.result === "success") {
+        //         postSuccess();
+        //     } else if (res.data.result.includes("Duplicate")) {
+        //         alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
+        //         return;
+        //     }
+        // });
+
+        const result = await postApi(CommonCode.save, commonCode);
+        if (result.result === "success") {
+            postSuccess();
+        } else if (result.result.startsWith("Duplicate")) {
+            console.log(result.result);
+            alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
+            return;
+        }
     };
 
     const deleteCommonCode = () => {
@@ -76,15 +90,23 @@ export const CommonCodeModal: FC<ICommonCodeModalProps> = ({ groupIdx, setGroupI
             });
     };
 
-    const updateCommonCode = () => {
-        axios.post("/management/commonCodeUpdateBody.do", commonCode).then((res: AxiosResponse<{ result: string }>) => {
-            if (res.data.result === "success") {
-                postSuccess();
-            } else if (res.data.result.includes("Duplicate")) {
-                alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
-                return;
-            }
-        });
+    const updateCommonCode = async () => {
+        const result = await postApi(CommonCode.update, commonCode);
+        if (result.result === "success") {
+            postSuccess();
+        } else if (result.result.startsWith("Duplicate")) {
+            console.log(result.result);
+            alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
+            return;
+        }
+        // axios.post("/management/commonCodeUpdateBody.do", commonCode).then((res: AxiosResponse<{ result: string }>) => {
+        //     if (res.data.result === "success") {
+        //         postSuccess();
+        //     } else if (res.data.result.includes("Duplicate")) {
+        //         alert(`입력하신 그룹코드(${commonCode.groupCode})는 중복됩니다.`);
+        //         return;
+        //     }
+        // });
     };
 
     return (
