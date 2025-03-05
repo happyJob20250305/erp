@@ -1,24 +1,70 @@
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { useEffect, useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { useLocation } from "react-router-dom";
+
+
+interface INotice {
+    notiSeq: number,
+    notiTitle: string,
+    loginId: string,
+    notiContent: string,
+    notiDate: string,
+}
+
+interface INoticeListBodyResponse {
+    noticeList: INotice[],
+    noticeCnt: number
+}
 
 export const NoticeMain = () => {
+    const [noticeList, setNoticeList] = useState<INotice[]>();
+    const [noticeCnt, setNoticeCnt] = useState<number>();
+    const [cPage, setCPage] = useState<number>(0);
+    const { search } = useLocation();
+
+
+    const columns = [
+        { key: "notiSeq", title: "번호" },
+        { key: "notiTitle", title: "제목" },
+        { key: "loginId", title: "작성자" },
+        { key: "notiDate", title: "작성일" },
+    ] as Column<INotice>[];
+
+    useEffect(() => {
+        searchNoticeList();
+    }, [search])
+
+    const searchNoticeList = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
+        const searchParam = new URLSearchParams(search);
+        searchParam.append("currentPage", currentPage.toString());
+        searchParam.append("pageSize", "5");
+
+        axios.post("/system/noticeList.do", searchParam).then((res: AxiosResponse<INoticeListBodyResponse>) => {
+            setNoticeList(res.data.noticeList);
+            setNoticeCnt(res.data.noticeCnt);
+            setCPage(currentPage);
+        })
+    };
+
     return (
         <>
-            총 갯수 : 현재 페이지 : 0
-            <StyledTable>
-                <thead>
-                    <tr>
-                        <StyledTh size={5}>번호</StyledTh>
-                        <StyledTh size={50}>제목</StyledTh>
-                        <StyledTh size={10}>작성자</StyledTh>
-                        <StyledTh size={20}>등록일</StyledTh>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
-                    </tr>
-                </tbody>
-            </StyledTable>
+            총 갯수 {noticeCnt} : 현재 페이지 : {cPage}
+            <StyledTable
+                columns={columns}
+                data={noticeList}
+                fullWidth={true}
+            />
+            <PageNavigate
+                totalItemsCount={noticeCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchNoticeList}
+            />
+
         </>
     );
 };
