@@ -3,6 +3,10 @@ import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useLocation } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { NoticeModal } from "../NoticeModal/NoticeModal";
 
 
 interface INotice {
@@ -19,11 +23,12 @@ interface INoticeListBodyResponse {
 }
 
 export const NoticeMain = () => {
-    const [noticeList, setNoticeList] = useState<INotice[]>();
-    const [noticeCnt, setNoticeCnt] = useState<number>();
+    const [noticeList, setNoticeList] = useState<INotice[]>([]);
+    const [noticeCnt, setNoticeCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const { search } = useLocation();
-
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [notiSeq, setNotiSeq] = useState<number>(0);
 
     const columns = [
         { key: "notiSeq", title: "번호" },
@@ -50,13 +55,22 @@ export const NoticeMain = () => {
         })
     };
 
+    const handlerModal = (id: number) => {
+        setModal(!modal);
+        setNotiSeq(id);
+    }
+
     return (
         <>
             총 갯수 {noticeCnt} : 현재 페이지 : {cPage}
             <StyledTable
                 columns={columns}
                 data={noticeList}
+                hoverable={true}
                 fullWidth={true}
+                onCellClick={(row, column) => {
+                    handlerModal(row.notiSeq);
+                }}
             />
             <PageNavigate
                 totalItemsCount={noticeCnt}
@@ -64,7 +78,13 @@ export const NoticeMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchNoticeList}
             />
-
+            {
+                modal && (
+                    <Portal>
+                        <NoticeModal notiSeq={notiSeq} setNotiSeq={setNotiSeq} />
+                    </Portal>
+                )
+            }
         </>
     );
 };
