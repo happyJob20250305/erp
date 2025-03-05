@@ -1,11 +1,8 @@
 import { RouteObject, createBrowserRouter } from "react-router-dom";
-
-import { CommonCode } from "../../src/pages/management/CommonCode";
 import { Login } from "../../src/pages/Login";
-import { Notice } from "../../src/pages/management/Notice";
 import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
-import { DetailCode } from "../pages/management/DetailCode";
+import { Notice } from "../pages/system/Notice";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -15,11 +12,9 @@ const routers: RouteObject[] = [
         element: <DashBoard />,
         children: [
             {
-                path: "management",
+                path: "system",
                 children: [
                     { path: "notice", element: <Notice /> },
-                    { path: "common-code", element: <CommonCode /> },
-                    { path: "common-code/:groupIdx", element: <DetailCode /> },
                 ],
             },
         ],
