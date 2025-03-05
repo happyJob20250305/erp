@@ -1,6 +1,6 @@
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
-import { CommonCodeMain } from "../../components/page/Management/CommonCode/CommonCodeMain/CommonCodeMain";
-import { CommonCodeSearch } from "../../components/page/Management/CommonCode/CommonCodeSearch/CommonCodeSearch";
+import { CommonCodeMain } from "../../components/page/System/CommonCode/CommonCodeMain/CommonCodeMain";
+import { CommonCodeSearch } from "../../components/page/System/CommonCode/CommonCodeSearch/CommonCodeSearch";
 
 export const CommonCode = () => {
     return (
