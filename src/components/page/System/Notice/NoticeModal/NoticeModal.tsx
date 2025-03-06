@@ -49,14 +49,14 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
 
                 const { fileExt, logicalPath } = res.data.detail;
 
-                const fileExtLowerCase = fileExt.toLowerCase();
-
-                if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
-                    setImageUrl(logicalPath);
-                } else {
-                    setImageUrl("");
+                if (fileExt) {
+                    const fileExtLowerCase = fileExt.toLowerCase();
+                    if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
+                        setImageUrl(logicalPath);
+                    } else {
+                        setImageUrl("");
+                    }
                 }
-
             });
     }
 
