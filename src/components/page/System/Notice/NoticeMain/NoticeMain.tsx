@@ -9,7 +9,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { NoticeModal } from "../NoticeModal/NoticeModal";
 
 
-interface INotice {
+export interface INotice {
     notiSeq: number,
     notiTitle: string,
     loginId: string,
@@ -60,6 +60,11 @@ export const NoticeMain = () => {
         setNotiSeq(id);
     }
 
+    const postSuccess = () => {
+        setModal(!modal);
+        searchNoticeList();
+    }
+
     return (
         <>
             총 갯수 {noticeCnt} : 현재 페이지 : {cPage}
@@ -81,7 +86,7 @@ export const NoticeMain = () => {
             {
                 modal && (
                     <Portal>
-                        <NoticeModal notiSeq={notiSeq} setNotiSeq={setNotiSeq} />
+                        <NoticeModal notiSeq={notiSeq} setNotiSeq={setNotiSeq} postSuccess={postSuccess} />
                     </Portal>
                 )
             }
