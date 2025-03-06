@@ -5,9 +5,13 @@ import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable"
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
 
 
-interface IGroupCode {
+export interface IGroupCode {
     groupCode: string,
     groupName: string,
     note: string,
@@ -24,6 +28,8 @@ export const CommonCodeMain = () => {
     const [groupCnt, setGroupCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(CommonCodeContext);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [groupCode, setGroupCode] = useState<string>("");
 
     const columns = [
         { key: "groupCode", title: "공통코드" },
@@ -51,6 +57,11 @@ export const CommonCodeMain = () => {
             })
     }
 
+    const handlerModal = (id: string) => {
+        setModal(!modal);
+        setGroupCode(id);
+    }
+
     return (
         <CommonCodeMainStyled>
             <StyledTable
@@ -58,9 +69,10 @@ export const CommonCodeMain = () => {
                 data={groupCodeList}
                 hoverable={true}
                 fullWidth={true}
-                renderAction={(row) => <StyledButton size="small">
-                    수정
-                </StyledButton>}
+                renderAction={(row) =>
+                    <StyledButton size="small" onClick={() => { handlerModal(row.groupCode) }}>
+                        수정
+                    </StyledButton>}
             />
             <PageNavigate
                 totalItemsCount={groupCnt}
@@ -68,6 +80,13 @@ export const CommonCodeMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchCommonList}
             />
+            {
+                modal && (
+                    <Portal>
+                        <CommonCodeModal groupCode={groupCode} setGroupCode={setGroupCode} />
+                    </Portal>
+                )
+            }
         </CommonCodeMainStyled>
     );
 };
