@@ -8,6 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 
 export interface IAccount {
     group_name: string;
@@ -32,8 +33,9 @@ interface IAccountBodyResponse {
 
 export const ManageMain = () => {
     const { searchKeyword } = useContext(AccountManageContext);
-    const [account, setAccountList] = useState<IAccount[]>([]);
+    const [accountList, setAccountList] = useState<IAccount[]>([]);
     const [accountCnt, setAccountCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const navigate = useNavigate();
 
@@ -53,7 +55,6 @@ export const ManageMain = () => {
 
     const searchAccountList = (currentPage?: number) => {
         currentPage = currentPage || 1;
-
         axios
             .post("/account/accountListBody.do", {
                 ...searchKeyword,
@@ -61,9 +62,9 @@ export const ManageMain = () => {
                 currentPage,
             })
             .then((res: AxiosResponse<IAccountBodyResponse>) => {
-                console.log(res);
                 setAccountList(res.data.account);
                 setAccountCnt(res.data.accountCnt);
+                setCPage(currentPage);
             });
     };
 
@@ -73,9 +74,9 @@ export const ManageMain = () => {
 
     return (
         <ManageMainStyled>
-            총 갯수 : {accountCnt} 현재 페이지 :
+            총 갯수 : {accountCnt} 현재 페이지 : {cPage}
             <StyledTable
-                data={account}
+                data={accountList}
                 columns={columns}
                 renderAction={(row) => (
                     <StyledButton size='small' onClick={() => handlerModal(row.detail_code)}>
@@ -87,6 +88,12 @@ export const ManageMain = () => {
                         navigate(`${row.detail_code}`, { state: { groupCode: row.detail_code } });
                     }
                 }}
+            />
+            <PageNavigate
+                totalItemsCount={accountCnt}
+                onChange={searchAccountList}
+                itemsCountPerPage={5}
+                activePage={cPage}
             />
         </ManageMainStyled>
     );
