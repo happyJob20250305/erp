@@ -2,7 +2,7 @@ import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { NoticeModalStyled } from "./styled";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 
@@ -31,6 +31,8 @@ interface INoticeDetailResponse {
 export const NoticeModal = ({ notiSeq, setNotiSeq }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [detail, setDetail] = useState<INoticeDetailFile>();
+    const [imageUrl, setImageUrl] = useState<string>("");
+    const [fileName, setFileName] = useState<string>(null);
 
     useEffect(() => {
         notiSeq && searchDetail();
@@ -46,6 +48,15 @@ export const NoticeModal = ({ notiSeq, setNotiSeq }) => {
         axios.post("/system/noticeFileDetailBody.do", { noticeSeq: notiSeq })
             .then((res: AxiosResponse<INoticeDetailResponse>) => {
                 setDetail(res.data.detail);
+
+                const { fileExt, logicalPath } = res.data.detail;
+
+                if (fileExt === 'jpg' || fileExt === 'png' || fileExt === 'gif') {
+                    setImageUrl(logicalPath);
+                } else {
+                    setImageUrl("");
+                }
+
             });
     }
 
@@ -63,7 +74,21 @@ export const NoticeModal = ({ notiSeq, setNotiSeq }) => {
                     <label className='img-label' htmlFor='fileInput'>
                         파일 첨부하기
                     </label>
-                    <div></div>
+                    <div>
+                        {
+                            imageUrl ?
+                                (
+                                    <div>
+                                        <label>미리보기</label>
+                                        <img src={imageUrl} />
+                                    </div>
+                                )
+                                :
+                                (
+                                    <></>
+                                )
+                        }
+                    </div>
                     <div className={"button-container"}>
                         <StyledButton type='button'>저장</StyledButton>
                         <StyledButton type='button' onClick={() => { setModal(!modal) }}>나가기</StyledButton>
