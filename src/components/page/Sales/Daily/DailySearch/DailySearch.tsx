@@ -41,9 +41,10 @@ export const DailySearch = () => {
     return (
         <DailySearchStyled>
             <div className='input-box'>
-                거래처명
+                <label>거래처명</label>
                 <StyledSelectBox options={clientOptions} value={selectedClient} onChange={setSelectedClient} />
-                기간 <StyledInput type='date' onChange={(e) => setSearchDate(e.target.value)}></StyledInput>
+                <label>기간</label>
+                <StyledInput type='date' onChange={(e) => setSearchDate(e.target.value)}></StyledInput>
                 <i className='bi bi-arrow-left-circle-fill'></i>
                 <StyledButton> 오늘</StyledButton>
                 <i className='bi bi-arrow-right-circle-fill'></i>
