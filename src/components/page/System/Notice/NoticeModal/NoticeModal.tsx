@@ -49,7 +49,9 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
 
                 const { fileExt, logicalPath } = res.data.detail;
 
-                if (fileExt === 'jpg' || fileExt === 'png' || fileExt === 'gif') {
+                const fileExtLowerCase = fileExt.toLowerCase();
+
+                if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
                     setImageUrl(logicalPath);
                 } else {
                     setImageUrl("");
@@ -63,6 +65,18 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
                     alert("저장되었습니다.");
+                    postSuccess();
+                }
+            })
+    }
+
+    const updateNotice = () => {
+        const formData = new FormData(formRef.current);
+        formData.append("noticeSeq", notiSeq.toString());
+        axios.post("/system/noticeFileUpdate.do", formData)
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("수정되었습니다.");
                     postSuccess();
                 }
             })
@@ -98,6 +112,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
     }
 
     const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
+
         const fileInfo = e.target.files;
         if (fileInfo?.length > 0) {
             const fileSplit = fileInfo[0].name.split(".");
@@ -147,10 +162,12 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                             notiSeq ?
                                 (
                                     <>
+                                        <StyledButton type='button' onClick={updateNotice}>수정</StyledButton>
                                         <StyledButton type='button' onClick={deleteNotice}>삭제</StyledButton>
                                     </>
                                 )
-                                : (
+                                :
+                                (
                                     <>
                                         <StyledButton type='button' onClick={saveNotice}>저장</StyledButton>
                                     </>
