@@ -68,6 +68,16 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             })
     }
 
+    const deleteNotice = () => {
+        axios.post("/system/noticeDeleteBody.do", { noticeSeq: notiSeq })
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("삭제되었습니다.");
+                    postSuccess();
+                }
+            })
+    }
+
     const fileDownload = () => {
         const param = new URLSearchParams();
         param.append("noticeSeq", notiSeq.toString());
@@ -133,7 +143,19 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                         }
                     </div>
                     <div className={"button-container"}>
-                        <StyledButton type='button' onClick={saveNotice}>저장</StyledButton>
+                        {
+                            notiSeq ?
+                                (
+                                    <>
+                                        <StyledButton type='button' onClick={deleteNotice}>삭제</StyledButton>
+                                    </>
+                                )
+                                : (
+                                    <>
+                                        <StyledButton type='button' onClick={saveNotice}>저장</StyledButton>
+                                    </>
+                                )
+                        }
                         <StyledButton type='button' onClick={() => { setModal(!modal) }}>나가기</StyledButton>
                     </div>
                 </form>
