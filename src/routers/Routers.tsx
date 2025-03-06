@@ -19,13 +19,13 @@ const routers: RouteObject[] = [
                 children: [{ path: "notice", element: <Notice /> }],
             },
             {
-
                 path: "business",
                 children: [
                     { path: "sales-plan", element: <Sales /> },
                     { path: "client-list", element: <Client /> },
                 ],
-
+            },
+            {
                 path: "account",
                 children: [{ path: "manage", element: <Manage /> }],
             },
