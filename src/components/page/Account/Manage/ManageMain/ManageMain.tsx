@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { useNavigate } from "react-router-dom";
 import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { Portal } from "../../../../common/potal/Portal";
+import { ManageModal } from "../ManageModal/ManageModal";
 
 export interface IAccount {
     group_name: string;
@@ -37,12 +37,11 @@ export const ManageMain = () => {
     const [accountCnt, setAccountCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const navigate = useNavigate();
-
+    const [detailCode, setDetailCode] = useState<IAccount>();
     const columns = [
-        { key: "group_code", title: "계정대분류코드", clickable: true },
+        { key: "group_code", title: "계정대분류코드" },
         { key: "group_name", title: "계정대분류명" },
-        { key: "detail_code", title: "계정세부코드" },
+        { key: "detail_code", title: "계정세부코드", clickable: true },
         { key: "detail_name", title: "계정세부명" },
         { key: "code_type", title: "구분" },
         { key: "content", title: "상세내용" },
@@ -68,8 +67,14 @@ export const ManageMain = () => {
             });
     };
 
-    const handlerModal = (detail_code: string) => {
+    const handlerModal = (row) => {
         setModal(!modal);
+        setDetailCode(row);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchAccountList();
     };
 
     return (
@@ -78,15 +83,8 @@ export const ManageMain = () => {
             <StyledTable
                 data={accountList}
                 columns={columns}
-                renderAction={(row) => (
-                    <StyledButton size='small' onClick={() => handlerModal(row.detail_code)}>
-                        수정
-                    </StyledButton>
-                )}
-                onCellClick={(row, column) => {
-                    if (column === "detail_code") {
-                        navigate(`${row.detail_code}`, { state: { groupCode: row.detail_code } });
-                    }
+                onCellClick={(row) => {
+                    handlerModal(row);
                 }}
             />
             <PageNavigate
@@ -95,6 +93,11 @@ export const ManageMain = () => {
                 itemsCountPerPage={5}
                 activePage={cPage}
             />
+            {modal && (
+                <Portal>
+                    <ManageModal detailCode={detailCode} postSuccess={postSuccess} setDetailCode={setDetailCode} />
+                </Portal>
+            )}
         </ManageMainStyled>
     );
 };
