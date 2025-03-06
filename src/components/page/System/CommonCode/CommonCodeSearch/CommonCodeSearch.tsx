@@ -1,21 +1,19 @@
+import { useRef } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
+import { StyledInput } from "../../../../common/StyledInput/StyledInput";
+import { CommonCodeSearchStyled } from "./styled";
 
 export const CommonCodeSearch = () => {
+    const title = useRef<HTMLInputElement>();
+
     return (
-        <div>
-            <div>
-                <div className='flex space-x-4'>
-                    <div>
-                        <select>
-                            <option value={"groupName"}>그룹코드명</option>
-                            <option value={"groupCode"}>그룹코드</option>
-                        </select>
-                        <input />
-                        <StyledButton>검색</StyledButton>
-                        <StyledButton>등록</StyledButton>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <CommonCodeSearchStyled>
+            {/* <StyledSelectBox>
+            </StyledSelectBox> */}
+            <StyledInput ref={title} />
+            <StyledButton>검색</StyledButton>
+            <StyledButton>등록</StyledButton>
+        </CommonCodeSearchStyled>
     );
 };
