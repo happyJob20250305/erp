@@ -5,6 +5,7 @@ import { NoticeModalStyled } from "./styled";
 import { ChangeEvent, useEffect, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
+import { blob } from "stream/consumers";
 
 
 interface INoticeDetail {
@@ -60,6 +61,25 @@ export const NoticeModal = ({ notiSeq, setNotiSeq }) => {
             });
     }
 
+    const fileDownload = () => {
+        const param = new URLSearchParams();
+        param.append("noticeSeq", notiSeq.toString());
+        axios.post("/system/noticeDownload.do", param, { responseType: "blob" })
+            .then((res: AxiosResponse<Blob>) => {
+                const url = window.URL.createObjectURL(res.data);
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", detail.fileName as string);
+                document.body.appendChild(link);
+                link.click();
+
+                //브라우저에서 a태그 삭제
+                document.body.removeChild(link);
+                //삭제
+                window.URL.revokeObjectURL(url);
+            })
+    }
+
     return (
         <NoticeModalStyled>
             <div className='container'>
@@ -78,7 +98,7 @@ export const NoticeModal = ({ notiSeq, setNotiSeq }) => {
                         {
                             imageUrl ?
                                 (
-                                    <div>
+                                    <div onClick={fileDownload}>
                                         <label>미리보기</label>
                                         <img src={imageUrl} />
                                     </div>
