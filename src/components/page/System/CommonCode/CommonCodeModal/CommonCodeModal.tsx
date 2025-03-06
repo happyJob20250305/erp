@@ -10,17 +10,22 @@ import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 interface IGroupCodeProps {
     groupCode: string,
     setGroupCode: React.Dispatch<React.SetStateAction<string>>;
+    postSuccess: () => void;
 }
 
 interface IGroupCodeListResponse {
     detail: IGroupCode
 }
 
-export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode }) => {
+interface IPostResponse {
+    result: string
+    message?: string
+}
+
+export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, postSuccess }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupCodeDetail, setGroupCodeDetail] = useState<IGroupCode>();
     const formRef = useRef<HTMLFormElement>(null);
-
 
     useEffect(() => {
         groupCode && searchDetail();
@@ -31,10 +36,21 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode }
     }, [])
 
     const searchDetail = () => {
-        console.log(groupCode);
         axios.post("/system/groupDetailBody", { groupCode })
             .then((res: AxiosResponse<IGroupCodeListResponse>) => {
                 setGroupCodeDetail(res.data.detail);
+            })
+    }
+
+    const saveGroupCode = () => {
+        axios.post("/system/groupSave", formRef.current)
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("저장되었습니다.");
+                    postSuccess();
+                } else {
+                    alert(res.data.message);
+                }
             })
     }
 
@@ -44,15 +60,15 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode }
                 <form ref={formRef}>
                     <label>
                         공통코드*
-                        <StyledInput type='text' defaultValue={groupCodeDetail?.groupCode}></StyledInput>
+                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode}></StyledInput>
                     </label>
                     <label>
                         공통코드명*
-                        <StyledInput type='text' defaultValue={groupCodeDetail?.groupName}></StyledInput>
+                        <StyledInput type='text' name="groupName" defaultValue={groupCodeDetail?.groupName}></StyledInput>
                     </label>
                     <label>
                         비고*
-                        <StyledInput type='text' defaultValue={groupCodeDetail?.note}></StyledInput>
+                        <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note}></StyledInput>
                     </label>
                     {
                         groupCode?.length > 0 ?
@@ -72,7 +88,7 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode }
                             : (<> </>)
                     }
                     <div className={"button-container"}>
-                        <button type='button'>저장</button>
+                        <button type='button' onClick={saveGroupCode}>저장</button>
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
                 </form>

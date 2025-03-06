@@ -62,6 +62,11 @@ export const CommonCodeMain = () => {
         setGroupCode(id);
     }
 
+    const postSuccess = () => {
+        setModal(!modal);
+        searchCommonList();
+    }
+
     return (
         <CommonCodeMainStyled>
             <StyledTable
@@ -83,7 +88,7 @@ export const CommonCodeMain = () => {
             {
                 modal && (
                     <Portal>
-                        <CommonCodeModal groupCode={groupCode} setGroupCode={setGroupCode} />
+                        <CommonCodeModal groupCode={groupCode} setGroupCode={setGroupCode} postSuccess={postSuccess} />
                     </Portal>
                 )
             }
