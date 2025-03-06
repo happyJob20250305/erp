@@ -3,6 +3,8 @@ import { Login } from "../../src/pages/Login";
 import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
 import { Notice } from "../pages/system/Notice";
+import { Sales } from "../pages/business/Sales";
+import { Client } from "../pages/business/Client";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -13,8 +15,13 @@ const routers: RouteObject[] = [
         children: [
             {
                 path: "system",
+                children: [{ path: "notice", element: <Notice /> }],
+            },
+            {
+                path: "business",
                 children: [
-                    { path: "notice", element: <Notice /> },
+                    { path: "sales-plan", element: <Sales /> },
+                    { path: "client-list", element: <Client /> },
                 ],
             },
         ],
