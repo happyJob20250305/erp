@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CommonCodeMainStyled } from "./styled";
 import axios, { Axios, AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
 
 
 interface IGroupCode {
@@ -21,6 +23,7 @@ export const CommonCodeMain = () => {
     const [groupCodeList, setGroupCodeList] = useState<IGroupCode[]>([]);
     const [groupCnt, setGroupCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const { searchKeyword } = useContext(CommonCodeContext);
 
     const columns = [
         { key: "groupCode", title: "공통코드" },
@@ -31,15 +34,16 @@ export const CommonCodeMain = () => {
 
     useEffect(() => {
         searchCommonList();
-    }, [])
+    }, [searchKeyword])
 
     const searchCommonList = (currentPage?: number) => {
         currentPage = currentPage || 1;
-        const searchParam = new URLSearchParams();
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
 
-        axios.post("/system/groupListBody", searchParam)
+        axios.post("/system/groupListBody", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        })
             .then((res: AxiosResponse<IGroupCodeListResponse>) => {
                 setGroupCodeList(res.data.groupList);
                 setGroupCnt(res.data.groupCnt);
@@ -57,6 +61,12 @@ export const CommonCodeMain = () => {
                 renderAction={(row) => <StyledButton size="small">
                     수정
                 </StyledButton>}
+            />
+            <PageNavigate
+                totalItemsCount={groupCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchCommonList}
             />
         </CommonCodeMainStyled>
     );
