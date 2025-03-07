@@ -20,15 +20,9 @@ export interface IAccount {
     code_type: string;
 }
 
-export interface IAccountGroupList {
-    group_name: string;
-    group_code: string;
-}
-
 interface IAccountBodyResponse {
     account: IAccount[];
     accountCnt: number;
-    accountGroupList: IAccountGroupList[];
 }
 
 export const ManageMain = () => {

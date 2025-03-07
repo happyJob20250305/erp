@@ -16,6 +16,7 @@ export const ManageModal = ({ detailCode, postSuccess, setDetailCode }) => {
 
     const [accountGroupList, setAccountGroupList] = useState<{ label: string; value: string }[]>([]);
     const codeType = [
+        { label: "전체", value: "" },
         { label: "수입", value: "수입" },
         { label: "지출", value: "지출" },
     ];
@@ -26,11 +27,10 @@ export const ManageModal = ({ detailCode, postSuccess, setDetailCode }) => {
 
     useEffect(() => {
         searchAccountGroupList();
-        setDetailCode;
         return () => {
             setDetailCode();
         };
-    }, []);
+    }, [detailCode]);
 
     const searchAccountGroupList = () => {
         axios.post("/account/accountGroupList.do", {}).then((res) => {

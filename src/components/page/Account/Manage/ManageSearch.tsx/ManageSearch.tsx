@@ -5,7 +5,20 @@ import { ManageSearchStyled } from "./styled";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+
+export interface IAccountGroup {
+    group_name: string;
+    group_code: string;
+}
+export interface IAccountGroupListBody {
+    accountGroupList: IAccountGroup[];
+}
+
+export interface IAccountGroupOption {
+    label: string;
+    value: string;
+}
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -14,8 +27,8 @@ export const ManageSearch = () => {
     const [selectCodeType, setSelectedCodeType] = useState<string>("");
     const { setSearchKeyword } = useContext(AccountManageContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const [accountGroupList, setAccountGroupList] = useState<{ label: string; value: string }[]>([]);
-    const [accountDetailList, setAccountDetailList] = useState<{ label: string; value: string }[]>([]);
+    const [accountGroupList, setAccountGroupList] = useState<IAccountGroupOption[]>([]);
+    const [accountDetailList, setAccountDetailList] = useState<IAccountGroupOption[]>([]);
     const useYn = [
         { label: "전체", value: "" },
         { label: "Y", value: "Y" },
@@ -38,14 +51,18 @@ export const ManageSearch = () => {
         }
     }, [selectedGroup]);
 
+    const convertToSelectOptions = (data: IAccountGroup[]): IAccountGroupOption[] => {
+        return data.map((account) => ({
+            label: account.group_name,
+            value: account.group_code,
+        }));
+    };
+
     const searchAccountGroupList = () => {
-        axios.post("/account/accountGroupList.do", {}).then((res) => {
-            const selectGroupList = [
+        axios.post("/account/accountGroupList.do", {}).then((res: AxiosResponse<IAccountGroupListBody>) => {
+            const selectGroupList: IAccountGroupOption[] = [
                 { label: "전체", value: "" },
-                ...res.data.accountGroupList.map((account) => ({
-                    label: account.group_name,
-                    value: account.group_code,
-                })),
+                ...convertToSelectOptions(res.data.accountGroupList),
             ];
             setAccountGroupList(selectGroupList);
         });
