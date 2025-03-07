@@ -15,7 +15,7 @@ export interface IGroupCode {
     groupCode: string,
     groupName: string,
     note: string,
-    useYn: null,
+    useYn: "Y" | "N",
 }
 
 interface IGroupCodeListResponse {
