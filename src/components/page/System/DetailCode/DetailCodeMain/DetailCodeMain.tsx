@@ -3,7 +3,7 @@ import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { DetailCodeMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { DetailModal } from "../DetailModal/DetailModal";
 import { Portal } from "../../../../common/potal/Portal";
@@ -25,11 +25,13 @@ interface IDetailCodeListResponse {
 
 export const DetailCodeMain = () => {
     const { state } = useLocation();
+    const navigate = useNavigate();
     const [detailList, setDetailList] = useState<IDetailCode[]>([]);
     const [detailCnt, setDetailCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [detailCode, setDetailCode] = useState<string>("");
+
 
     const columns = [
         { key: "groupCode", title: "공통코드" },
@@ -92,7 +94,7 @@ export const DetailCodeMain = () => {
                     </Portal>
                 )
             }
-            <StyledButton>뒤로가기</StyledButton>
+            <StyledButton onClick={() => { navigate(-1) }}>뒤로가기</StyledButton>
         </DetailCodeMainStyled>
     );
 };
