@@ -28,7 +28,6 @@ export const StyledSelectBox: FC<SelectBoxProps> = ({
             defaultValue={defaultValue}
             onChange={(e) => onChange?.(e.target.value)}
             variant={variant}
-            defaultValue={defaultValue}
             fullwidth={fullwidth || undefined}
         >
             {options.map((option) => (
