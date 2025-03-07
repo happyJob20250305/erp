@@ -12,13 +12,13 @@ interface SelectBoxProps {
 }
 
 export const StyledSelectBox: FC<SelectBoxProps> = ({
+    name,
     options,
     value,
     onChange,
     variant = "default",
     fullwidth = false,
     defaultValue,
-    name,
 }) => {
     return (
         <SelectBox
@@ -28,6 +28,7 @@ export const StyledSelectBox: FC<SelectBoxProps> = ({
             defaultValue={defaultValue}
             onChange={(e) => onChange?.(e.target.value)}
             variant={variant}
+            defaultValue={defaultValue}
             fullwidth={fullwidth || undefined}
         >
             {options.map((option) => (

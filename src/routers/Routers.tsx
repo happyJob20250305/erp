@@ -2,6 +2,7 @@ import { RouteObject, createBrowserRouter } from "react-router-dom";
 import { Login } from "../../src/pages/Login";
 import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
+import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
 import { CommonCode } from "../pages/system/CommonCode";
 import { DetailCode } from "../pages/system/DetailCode";
@@ -20,6 +21,10 @@ const routers: RouteObject[] = [
                     { path: "code", element: <CommonCode /> },
                     { path: "code/:groupCode", element: <DetailCode /> },
                 ],
+            },
+            {
+                path: "account",
+                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },
