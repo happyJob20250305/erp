@@ -70,13 +70,28 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
             })
     }
 
+    const updateDetailCode = () => {
+        const formData = new FormData(formRef.current);
+        formData.append("oldDetailCode", detailCode);
+        formData.append("newDetailCode", formData.get("detailCode"));
+        axios.post("/system/detailUpdate", formData)
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("수정되었습니다.");
+                    postSuccess();
+                } else {
+                    alert(res.data.message);
+                }
+            })
+    }
+
     return (
         <DetailModalStyled>
             <div className='container'>
                 <form ref={formRef}>
                     <label>
                         상세코드
-                        <StyledInput type='text' name="detailCode" defaultValue={detailCodeDetail?.detailCode} readOnly={!!detailCode}></StyledInput>
+                        <StyledInput type='text' name="detailCode" defaultValue={detailCodeDetail?.detailCode}></StyledInput>
                     </label>
                     <label>
                         상세코드명*
@@ -93,7 +108,7 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
                                     사용여부
                                     <StyledSelectBox
                                         options={options}
-                                        name="useYn"
+                                        name="detailUseYn"
                                         defaultValue={detailCodeDetail?.useYn}
                                     />
                                 </label>
@@ -105,7 +120,9 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
                         <StyledInput type='text' name="detailNote" defaultValue={detailCodeDetail?.note}></StyledInput>
                     </label>
                     <div className={"button-container"}>
-                        <StyledButton type='button' onClick={saveDetailCode}>저장</StyledButton>
+                        <StyledButton type='button' onClick={detailCode ? updateDetailCode : saveDetailCode}>
+                            {detailCode ? "수정" : "저장"}
+                        </StyledButton>
                         <StyledButton type='button' onClick={() => { setModal(!modal) }}>나가기</StyledButton>
                     </div>
                 </form>
