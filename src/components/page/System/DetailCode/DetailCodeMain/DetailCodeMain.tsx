@@ -64,6 +64,7 @@ export const DetailCodeMain = () => {
 
     const postSuccess = () => {
         setModal(!modal)
+        searchDetailCodeList();
     }
 
     return (
