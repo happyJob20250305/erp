@@ -5,6 +5,7 @@ import { NotFound } from "../components/common/NotFound/NotFound";
 import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
 import { Daily } from "../pages/sales/Daily";
+import { Monthly } from "../pages/sales/Monthly";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -20,7 +21,10 @@ const routers: RouteObject[] = [
 
             {
                 path: "sales",
-                children: [{ path: "daily", element: <Daily /> }],
+                children: [
+                    { path: "daily", element: <Daily /> },
+                    { path: "monthly", element: <Monthly /> },
+                ],
             },
             {
                 path: "account",

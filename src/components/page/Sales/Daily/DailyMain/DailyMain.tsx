@@ -14,6 +14,7 @@ export const DailyMain = () => {
     const { search } = useLocation();
     const [dailyList, setDailyList] = useState<IDaily[]>([]);
     const [dailyCount, setDailyCount] = useState<number>(0);
+    const [dailyStatistics, setDailyStatistics] = useState<IDaily>(null);
     const [cPage, setCpage] = useState<number>(0);
 
     useEffect(() => {
@@ -31,6 +32,7 @@ export const DailyMain = () => {
         if (result) {
             setDailyList(result.dailyList);
             setDailyCount(result.dailyListCnt);
+            setDailyStatistics(result.dailyStatistics);
             setCpage(currentPage);
         }
     };
@@ -39,7 +41,7 @@ export const DailyMain = () => {
         <>
             {/* 별도의 Chart 컴포넌트 사용 */}
             <DailyChart dailyListChart={dailyList} />
-            <DailyStatistics dailyStatistics={dailyList}></DailyStatistics>
+            <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>
             {/* 기존 테이블 유지 */}
             <StyledTable>
                 <thead>
@@ -66,9 +68,9 @@ export const DailyMain = () => {
                                     <StyledTd>{daily.clientName}</StyledTd>
                                     <StyledTd>{daily.crebitCode}</StyledTd>
                                     <StyledTd>{daily.debitCode}</StyledTd>
-                                    <StyledTd>{daily.totalSupplyPrice}</StyledTd>
-                                    <StyledTd>{daily.totalExpenseAmount}</StyledTd>
-                                    <StyledTd>{daily.totalReceivableAmount}</StyledTd>
+                                    <StyledTd>{daily.totalSupplyPrice.toString()}</StyledTd>
+                                    <StyledTd>{daily.totalExpenseAmount.toString()}</StyledTd>
+                                    <StyledTd>{daily.totalReceivableAmount.toString()}</StyledTd>
                                 </tr>
                             );
                         })

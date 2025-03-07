@@ -5,13 +5,14 @@ export interface IDaily {
     clientName: string;
     crebitCode: string;
     debitCode: string;
-    totalSupplyPrice: number;
-    totalExpenseAmount: number;
-    totalReceivableAmount: number;
-    totalRevenueAmount: number;
+    totalSupplyPrice: bigint;
+    totalExpenseAmount: bigint;
+    totalReceivableAmount: bigint;
+    totalRevenueAmount: bigint;
 }
 
 export interface IDailyListBodyResponse {
     dailyList: IDaily[];
     dailyListCnt: number;
+    dailyStatistics: IDaily;
 }

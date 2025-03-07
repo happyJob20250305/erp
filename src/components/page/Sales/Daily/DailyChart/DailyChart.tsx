@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { searchApi } from "../../../../../api/DailyApi/searchApi";
 import { IDaily } from "../../../../../models/interface/store/IDaily";
 import { Bar } from "react-chartjs-2";
 
@@ -14,17 +13,17 @@ export const DailyChart = ({ dailyListChart }: DailyChartProps) => {
         datasets: [
             {
                 label: "매출",
-                data: dailyListChart.map((daily) => daily.totalSupplyPrice),
+                data: dailyListChart.map((daily) => daily.totalSupplyPrice.toString()),
                 backgroundColor: "rgba(255, 99, 132, 1)",
             },
             {
                 label: "지출",
-                data: dailyListChart.map((daily) => daily.totalExpenseAmount),
+                data: dailyListChart.map((daily) => daily.totalExpenseAmount.toString()),
                 backgroundColor: "rgba(153, 102, 255, 1)",
             },
             {
                 label: "미수금",
-                data: dailyListChart.map((daily) => daily.totalReceivableAmount),
+                data: dailyListChart.map((daily) => daily.totalReceivableAmount.toString()),
                 backgroundColor: "rgba(54, 162, 235, 1)",
             },
         ],

@@ -5,3 +5,7 @@ export const Login = {
 export const Daily = {
     search: "/sales/dailyList.do",
 };
+
+export const Monthly = {
+    search: "/sales/monthlyList.do",
+};
