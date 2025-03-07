@@ -4,6 +4,7 @@ import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
 import { Notice } from "../pages/system/Notice";
 import { CommonCode } from "../pages/system/CommonCode";
+import { DetailCode } from "../pages/system/DetailCode";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -17,6 +18,7 @@ const routers: RouteObject[] = [
                 children: [
                     { path: "notice", element: <Notice /> },
                     { path: "code", element: <CommonCode /> },
+                    { path: "code/:groupCode", element: <DetailCode /> },
                 ],
             },
         ],

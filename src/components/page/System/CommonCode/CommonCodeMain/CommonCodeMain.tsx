@@ -9,6 +9,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
+import { useNavigate } from "react-router-dom";
 
 
 export interface IGroupCode {
@@ -30,6 +31,7 @@ export const CommonCodeMain = () => {
     const { searchKeyword } = useContext(CommonCodeContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupCode, setGroupCode] = useState<string>("");
+    const navigate = useNavigate();
 
     const columns = [
         { key: "groupCode", title: "공통코드" },
@@ -57,7 +59,8 @@ export const CommonCodeMain = () => {
             })
     }
 
-    const handlerModal = (id: string) => {
+    const handlerModal = (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
         setModal(!modal);
         setGroupCode(id);
     }
@@ -75,9 +78,12 @@ export const CommonCodeMain = () => {
                 hoverable={true}
                 fullWidth={true}
                 renderAction={(row) =>
-                    <StyledButton size="small" onClick={() => { handlerModal(row.groupCode) }}>
+                    <StyledButton size="small" onClick={(e) => { handlerModal(row.groupCode, e) }}>
                         수정
                     </StyledButton>}
+                onCellClick={(row, column) => {
+                    navigate(`${row.groupCode}`, { state: { groupCode: row.groupCode } })
+                }}
             />
             <PageNavigate
                 totalItemsCount={groupCnt}
