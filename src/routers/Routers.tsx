@@ -2,6 +2,7 @@ import { RouteObject, createBrowserRouter } from "react-router-dom";
 import { Login } from "../../src/pages/Login";
 import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
+import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
 import { Daily } from "../pages/sales/Daily";
 
@@ -20,6 +21,10 @@ const routers: RouteObject[] = [
             {
                 path: "sales",
                 children: [{ path: "daily", element: <Daily /> }],
+            },
+            {
+                path: "account",
+                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },
