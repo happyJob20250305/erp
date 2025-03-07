@@ -8,6 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import { IDetailCode } from "../DetailCodeMain/DetailCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useLocation } from "react-router-dom";
+import { nullCheck } from "../../../../../common/nullCheck";
 
 
 interface IDetailCodeProps {
@@ -17,7 +18,7 @@ interface IDetailCodeProps {
 }
 
 interface IDetailCodeDetail extends IDetailCode {
-    useYn: string,
+    useYn: "Y" | "N",
     higherCode: string
 }
 interface IDetailCodeDetailResponse {
@@ -59,30 +60,42 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
     const saveDetailCode = () => {
         const formData = new FormData(formRef.current);
         formData.append("groupCode", state.groupCode);
-        axios.post("/system/detailSave", formData)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("저장되었습니다.");
-                    postSuccess();
-                } else {
-                    alert(res.data.message);
-                }
-            })
+
+        if (nullCheck([
+            { inval: formData.get("detailCode").toString(), msg: "상세코드를 입력해주세요." },
+            { inval: formData.get("detailName").toString(), msg: "상세코드명을 입력해주세요." }
+        ]))
+
+            axios.post("/system/detailSave", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("저장되었습니다.");
+                        postSuccess();
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
     }
 
     const updateDetailCode = () => {
         const formData = new FormData(formRef.current);
         formData.append("oldDetailCode", detailCode);
         formData.append("newDetailCode", formData.get("detailCode"));
-        axios.post("/system/detailUpdate", formData)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("수정되었습니다.");
-                    postSuccess();
-                } else {
-                    alert(res.data.message);
-                }
-            })
+
+        if (nullCheck([
+            { inval: formData.get("detailCode").toString(), msg: "상세코드를 입력해주세요." },
+            { inval: formData.get("detailName").toString(), msg: "상세코드명을 입력해주세요." }
+        ]))
+
+            axios.post("/system/detailUpdate", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("수정되었습니다.");
+                        postSuccess();
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
     }
 
     return (
@@ -90,7 +103,7 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
             <div className='container'>
                 <form ref={formRef}>
                     <label>
-                        상세코드
+                        상세코드*
                         <StyledInput type='text' name="detailCode" defaultValue={detailCodeDetail?.detailCode}></StyledInput>
                     </label>
                     <label>

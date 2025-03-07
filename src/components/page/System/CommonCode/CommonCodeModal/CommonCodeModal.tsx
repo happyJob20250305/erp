@@ -6,6 +6,7 @@ import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
+import { nullCheck, TypeNullCheck } from "../../../../../common/nullCheck";
 
 
 interface IGroupCodeProps {
@@ -14,7 +15,7 @@ interface IGroupCodeProps {
     postSuccess: () => void;
 }
 
-interface IGroupCodeListResponse {
+interface IGroupCodeDetailResponse {
     detail: IGroupCode
 }
 
@@ -32,6 +33,10 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
         { label: "N", value: "N" },
     ]
 
+    const checklist = [
+
+    ]
+
     useEffect(() => {
         groupCode && searchDetail();
 
@@ -42,21 +47,30 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
 
     const searchDetail = () => {
         axios.post("/system/groupDetailBody", { groupCode })
-            .then((res: AxiosResponse<IGroupCodeListResponse>) => {
+            .then((res: AxiosResponse<IGroupCodeDetailResponse>) => {
                 setGroupCodeDetail(res.data.detail);
             })
     }
 
     const saveGroupCode = () => {
-        axios.post("/system/groupSave", formRef.current)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("저장되었습니다.");
-                    postSuccess();
-                } else {
-                    alert(res.data.message);
-                }
-            })
+        const formData = new FormData(formRef.current);
+        console.log(formData.get("groupCode"));
+
+
+        if (nullCheck([
+            { inval: formData.get("groupCode").toString(), msg: "공통코드를 입력해주세요." },
+            { inval: formData.get("groupName").toString(), msg: "공통코드명을 입력해주세요." }
+        ]))
+
+            axios.post("/system/groupSave", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("저장되었습니다.");
+                        postSuccess();
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
     }
 
     const updateGroupCode = () => {
@@ -64,14 +78,19 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
         formData.append("oldGroupCode", groupCode);
         formData.append("newGroupCode", groupCode);
 
-        axios.post("/system/groupUpdate", formData).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("수정되었습니다.");
-                postSuccess();
-            } else {
-                alert(res.data.message);
-            }
-        })
+        if (nullCheck([
+            { inval: formData.get("groupCode").toString(), msg: "공통코드를 입력해주세요." },
+            { inval: formData.get("groupName").toString(), msg: "공통코드명을 입력해주세요." }
+        ]))
+
+            axios.post("/system/groupUpdate", formData).then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("수정되었습니다.");
+                    postSuccess();
+                } else {
+                    alert(res.data.message);
+                }
+            })
     }
 
     return (
@@ -80,14 +99,14 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                 <form ref={formRef}>
                     <label>
                         공통코드*
-                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode}></StyledInput>
+                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode} readOnly={!!groupCode}></StyledInput>
                     </label>
                     <label>
                         공통코드명*
                         <StyledInput type='text' name="groupName" defaultValue={groupCodeDetail?.groupName}></StyledInput>
                     </label>
                     <label>
-                        비고*
+                        비고
                         <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note}></StyledInput>
                     </label>
                     {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { CommonCodeMainStyled } from "./styled";
-import axios, { Axios, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -41,22 +41,21 @@ export const CommonCodeMain = () => {
     ] as Column<IGroupCode>[];
 
     useEffect(() => {
-        searchCommonList();
+        searchGroupCodeList();
     }, [searchKeyword])
 
-    const searchCommonList = (currentPage?: number) => {
+    const searchGroupCodeList = (currentPage?: number) => {
         currentPage = currentPage || 1;
 
         axios.post("/system/groupListBody", {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
+        }).then((res: AxiosResponse<IGroupCodeListResponse>) => {
+            setGroupCodeList(res.data.groupList);
+            setGroupCnt(res.data.groupCnt);
+            setCPage(currentPage);
         })
-            .then((res: AxiosResponse<IGroupCodeListResponse>) => {
-                setGroupCodeList(res.data.groupList);
-                setGroupCnt(res.data.groupCnt);
-                setCPage(currentPage);
-            })
     }
 
     const handlerModal = (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,7 +66,7 @@ export const CommonCodeMain = () => {
 
     const postSuccess = () => {
         setModal(!modal);
-        searchCommonList();
+        searchGroupCodeList();
     }
 
     return (
@@ -89,7 +88,7 @@ export const CommonCodeMain = () => {
                 totalItemsCount={groupCnt}
                 activePage={cPage}
                 itemsCountPerPage={5}
-                onChange={searchCommonList}
+                onChange={searchGroupCodeList}
             />
             {
                 modal && (
