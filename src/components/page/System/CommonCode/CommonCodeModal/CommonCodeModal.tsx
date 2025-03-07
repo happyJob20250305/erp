@@ -27,7 +27,6 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupCodeDetail, setGroupCodeDetail] = useState<IGroupCode>();
     const formRef = useRef<HTMLFormElement>(null);
-    const [selectValue, setSelectValue] = useState<string>("");
     const options = [
         { label: "Y", value: "Y" },
         { label: "N", value: "N" },
@@ -45,7 +44,6 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
         axios.post("/system/groupDetailBody", { groupCode })
             .then((res: AxiosResponse<IGroupCodeListResponse>) => {
                 setGroupCodeDetail(res.data.detail);
-                // setSelectValue(res.data.detail.useYn);
             })
     }
 
