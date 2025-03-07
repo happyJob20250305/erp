@@ -5,11 +5,16 @@ import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { useLocation } from "react-router-dom";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { DetailModal } from "../DetailModal/DetailModal";
+import { Portal } from "../../../../common/potal/Portal";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
 
 
-interface IDetailCode {
+export interface IDetailCode {
     groupCode: string,
-    groupName: string,
+    detailCode: string,
+    detailName: string,
     note: string,
 }
 
@@ -23,6 +28,8 @@ export const DetailCodeMain = () => {
     const [detailList, setDetailList] = useState<IDetailCode[]>([]);
     const [detailCnt, setDetailCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [detailCode, setDetailCode] = useState<string>("");
 
     const columns = [
         { key: "groupCode", title: "공통코드" },
@@ -50,6 +57,15 @@ export const DetailCodeMain = () => {
         })
     }
 
+    const handlerModal = (id: string) => {
+        setDetailCode(id);
+        setModal(!modal)
+    }
+
+    const postSuccess = () => {
+        setModal(!modal)
+    }
+
     return (
         <DetailCodeMainStyled>
             <StyledTable
@@ -58,7 +74,7 @@ export const DetailCodeMain = () => {
                 hoverable={true}
                 fullWidth={true}
                 renderAction={(row) =>
-                    <StyledButton size="small" onClick={(e) => { }}>
+                    <StyledButton size="small" onClick={() => { handlerModal(row.detailCode) }}>
                         수정
                     </StyledButton>}
             />
@@ -68,6 +84,13 @@ export const DetailCodeMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchDetailCodeList}
             />
+            {
+                modal && (
+                    <Portal>
+                        <DetailModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
+                    </Portal>
+                )
+            }
             <StyledButton>뒤로가기</StyledButton>
         </DetailCodeMainStyled>
     );
