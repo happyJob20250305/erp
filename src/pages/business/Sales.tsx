@@ -1,3 +1,4 @@
+import { SalesPlanProvider } from "../../api/Provider/SalesPlanProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { SalesPlanMain } from "../../components/page/Business/Sales/SalesMain/SalesPlanMain";
 import { SalesPlanSearch } from "../../components/page/Business/Sales/SalesSearch/SalesPlanSearch";
@@ -5,11 +6,13 @@ import { SalesPlanSearch } from "../../components/page/Business/Sales/SalesSearc
 export const Sales = () => {
     return (
         <>
-            <ContentBox variant='primary' fontSize='large'>
-                영업 계획
-            </ContentBox>
-            <SalesPlanSearch />
-            <SalesPlanMain />
+            <SalesPlanProvider>
+                <ContentBox variant='primary' fontSize='large'>
+                    영업 계획
+                </ContentBox>
+                <SalesPlanSearch />
+                <SalesPlanMain />
+            </SalesPlanProvider>
         </>
     );
 };

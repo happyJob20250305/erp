@@ -29,29 +29,30 @@ interface ISalesPlanResponse {
 }
 
 export const SalesPlanMain = () => {
-    const { search } = useLocation();
     const { searchKeyword } = useContext(SalesPlanContext);
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
 
     useEffect(() => {
-        console.log(searchKeyword);
+        // console.log("searchKeyword:" + searchKeyword);
+        // // +>searchKeyword 객체의 key값 확인
+        // console.log("Object.keys(searchKeyword):" + Object.keys(searchKeyword));
+        // // +>searchKeyword 객체의 값 확인
+        // console.log("key, searchKeyword[key]:");
+        // for (let key in searchKeyword) {
+        //     console.log("searchKeyword[key]:" + searchKeyword[key]);
+        // }
         searchSalesPlanList();
     }, [searchKeyword]);
 
     const searchSalesPlanList = () => {
-        // const searchParam = new URLSearchParams(search);
         axios
             .post("/business/sales-plan/searchPlanListBody.do", {
                 ...searchKeyword,
-                // group_code: "MF001",
-                // product_code: "MF00102",
-                // target_date: "2025-02-20",
-                // product_name: "뽀로로 병원놀이",
-                // enterence: "yes",
             })
-            // .then((res: AxiosResponse) => {
             .then((res: AxiosResponse<ISalesPlanResponse>) => {
-                // console.log(res.data.searchPlanList);
+                // console.log("res:" + res);
+                // console.log("res.data:" + res.data);
+                // console.log("res.data.searchPlanList:" + res.data.searchPlanList);
                 setSalesPlanList(res.data.searchPlanList);
             });
     };
