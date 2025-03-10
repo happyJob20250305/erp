@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AttendanceRequestMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../../stores/userInfo";
+import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
 
 
 interface IAttendance {
@@ -16,15 +14,10 @@ interface IAttendance {
     empId: number,
     number: number,
     reqType: string,
-    // reqdate: string | null,
-    // candate: string | null,
     reqSt: string,
     reqEd: string,
-    // reqDay: null,
-    // reqReason: null,
     reqStatus: string,
     name: string,
-    // deptName: null,
     appType: string | null,
     appReason: string | null,
 }
@@ -51,6 +44,7 @@ export const AttendanceRequestMain = () => {
     const [cPage, setCPage] = useState<number>(0);
     const userInfo = sessionStorage.getItem("userInfo");
     const loginEmpId = JSON.parse(userInfo).empId;
+    const { searchKeyword } = useContext(AttendanceContext);
 
     const columns = [
         { key: "id", title: "번호" },
@@ -72,12 +66,19 @@ export const AttendanceRequestMain = () => {
 
     useEffect(() => {
         searchAttendanceList();
-    }, [])
+    }, [searchKeyword])
 
     const searchAttendanceList = (currentPage?: number) => {
         currentPage = currentPage || 1;
 
+        axios.post("/personnel/attendanceCntBody.do", {
+            userIdx: loginEmpId
+        }).then((res: AxiosResponse<IAttendanceCntResponse>) => {
+            setAttendanceCnt(res.data.attendanceCnt);
+        })
+
         axios.post("/personnel/attendanceListBody.do", {
+            ...searchKeyword,
             userIdx: loginEmpId,
             pageSize: 5,
             currentPage,
@@ -85,12 +86,6 @@ export const AttendanceRequestMain = () => {
             setAttendanceList(res.data.attendanceList);
             setAttendanceRequestCnt(res.data.attendanceRequestCnt);
             setCPage(currentPage);
-        })
-
-        axios.post("/personnel/attendanceCntBody.do", {
-            userIdx: loginEmpId
-        }).then((res: AxiosResponse<IAttendanceCntResponse>) => {
-            setAttendanceCnt(res.data.attendanceCnt);
         })
     }
 
