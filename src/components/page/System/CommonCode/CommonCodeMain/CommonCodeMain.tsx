@@ -4,12 +4,12 @@ import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
 import { useNavigate } from "react-router-dom";
+import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 
 
 export interface IGroupCode {
@@ -28,7 +28,7 @@ export const CommonCodeMain = () => {
     const [groupCodeList, setGroupCodeList] = useState<IGroupCode[]>([]);
     const [groupCnt, setGroupCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
-    const { searchKeyword } = useContext(CommonCodeContext);
+    const { searchKeyword } = useContext(SystemContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupCode, setGroupCode] = useState<string>("");
     const navigate = useNavigate();

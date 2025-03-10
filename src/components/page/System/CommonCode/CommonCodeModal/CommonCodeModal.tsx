@@ -6,7 +6,7 @@ import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { nullCheck, TypeNullCheck } from "../../../../../common/nullCheck";
+import { nullCheck } from "../../../../../common/nullCheck";
 
 
 interface IGroupCodeProps {
@@ -28,13 +28,10 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [groupCodeDetail, setGroupCodeDetail] = useState<IGroupCode>();
     const formRef = useRef<HTMLFormElement>(null);
+
     const options = [
         { label: "Y", value: "Y" },
         { label: "N", value: "N" },
-    ]
-
-    const checklist = [
-
     ]
 
     useEffect(() => {
@@ -54,8 +51,6 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
 
     const saveGroupCode = () => {
         const formData = new FormData(formRef.current);
-        console.log(formData.get("groupCode"));
-
 
         if (nullCheck([
             { inval: formData.get("groupCode").toString(), msg: "공통코드를 입력해주세요." },
@@ -83,14 +78,15 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
             { inval: formData.get("groupName").toString(), msg: "공통코드명을 입력해주세요." }
         ]))
 
-            axios.post("/system/groupUpdate", formData).then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("수정되었습니다.");
-                    postSuccess();
-                } else {
-                    alert(res.data.message);
-                }
-            })
+            axios.post("/system/groupUpdate", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("수정되었습니다.");
+                        postSuccess();
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
     }
 
     return (
@@ -99,15 +95,15 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                 <form ref={formRef}>
                     <label>
                         공통코드*
-                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode} readOnly={!!groupCode}></StyledInput>
+                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode} readOnly={!!groupCode} />
                     </label>
                     <label>
                         공통코드명*
-                        <StyledInput type='text' name="groupName" defaultValue={groupCodeDetail?.groupName}></StyledInput>
+                        <StyledInput type='text' name="groupName" defaultValue={groupCodeDetail?.groupName} />
                     </label>
                     <label>
                         비고
-                        <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note}></StyledInput>
+                        <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note} />
                     </label>
                     {
                         groupCode?.length > 0 ?
@@ -127,7 +123,6 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                         <button type='button' onClick={groupCode ? updateGroupCode : saveGroupCode}>
                             {groupCode ? "수정" : "저장"}
                         </button>
-
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
                 </form>

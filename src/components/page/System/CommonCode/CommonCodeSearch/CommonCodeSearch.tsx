@@ -1,15 +1,15 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { CommonCodeSearchStyled } from "./styled";
-import { CommonCodeContext } from "../../../../../api/Provider/CommonCodeProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
+import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 
 export const CommonCodeSearch = () => {
     const title = useRef<HTMLInputElement>();
     const note = useRef<HTMLInputElement>();
-    const { setSearchKeyword } = useContext(CommonCodeContext);
+    const { setSearchKeyword } = useContext(SystemContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
 
     const handlerSearch = () => {
