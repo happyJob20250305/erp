@@ -8,11 +8,8 @@ import {
     SararyMainProps,
 } from "../../../../../models/interface/personnel/salary/IsalaryMain";
 
-// 내 급여조회 페이지
 export const SalaryMain = ({ data }: SararyMainProps) => {
-    const [salaryListDetail, setSalaryDetailList] = useState<ISalaryListDetail>();
-
-    console.log(data);
+    const [salaryListDetail, setSalaryDetailList] = useState<ISalaryListDetail | null>(null);
 
     useEffect(() => {
         if (data) {
@@ -25,10 +22,15 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
             searchPaymentMonth: data,
         });
 
-        if (result) {
+        if (result?.salaryListDetail) {
             setSalaryDetailList(result.salaryListDetail);
+        } else {
+            setSalaryDetailList(null);
         }
     };
+
+    // 안전한 숫자 포맷팅 헬퍼함수
+    const formatNumber = (num?: number | null) => (num ? num.toLocaleString() : "0");
 
     return (
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -45,19 +47,19 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                         <>
                             <tr>
                                 <StyledTd>국민연금</StyledTd>
-                                <StyledTd>{salaryListDetail.nationalPension.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.nationalPension)}</StyledTd>
                             </tr>
                             <tr>
                                 <StyledTd>건강보험료</StyledTd>
-                                <StyledTd>{salaryListDetail.healthInsurance.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.healthInsurance)}</StyledTd>
                             </tr>
                             <tr>
                                 <StyledTd>고용보험</StyledTd>
-                                <StyledTd>{salaryListDetail.employmentInsurance.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.employmentInsurance)}</StyledTd>
                             </tr>
                             <tr>
                                 <StyledTd>산재보험</StyledTd>
-                                <StyledTd>{salaryListDetail.industrialAccident.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.industrialAccident)}</StyledTd>
                             </tr>
                         </>
                     ) : (
@@ -81,7 +83,7 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                         <>
                             <tr>
                                 <StyledTd>기본급</StyledTd>
-                                <StyledTd>{salaryListDetail.baseSalary.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.baseSalary)}</StyledTd>
                             </tr>
                             <tr>
                                 <StyledTd>비고금액</StyledTd>
@@ -93,11 +95,11 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                             </tr>
                             <tr>
                                 <StyledTd>실급여</StyledTd>
-                                <StyledTd>{salaryListDetail.totalSalary.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.totalSalary)}</StyledTd>
                             </tr>
                             <tr>
                                 <StyledTd>연봉</StyledTd>
-                                <StyledTd>{salaryListDetail.salary.toLocaleString()}</StyledTd>
+                                <StyledTd>{formatNumber(salaryListDetail.salary)}</StyledTd>
                             </tr>
                         </>
                     ) : (
