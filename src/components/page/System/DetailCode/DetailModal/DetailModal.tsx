@@ -10,7 +10,6 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useLocation } from "react-router-dom";
 import { nullCheck } from "../../../../../common/nullCheck";
 
-
 interface IDetailCodeProps {
     detailCode: string,
     setDetailCode: React.Dispatch<React.SetStateAction<string>>,
@@ -29,7 +28,6 @@ interface IPostResponse {
     result: string
     message?: string
 }
-
 
 export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, postSuccess }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
@@ -104,15 +102,15 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
                 <form ref={formRef}>
                     <label>
                         상세코드*
-                        <StyledInput type='text' name="detailCode" defaultValue={detailCodeDetail?.detailCode}></StyledInput>
+                        <StyledInput type='text' name="detailCode" defaultValue={detailCodeDetail?.detailCode} />
                     </label>
                     <label>
                         상세코드명*
-                        <StyledInput type='text' name="detailName" defaultValue={detailCodeDetail?.detailName}></StyledInput>
+                        <StyledInput type='text' name="detailName" defaultValue={detailCodeDetail?.detailName} />
                     </label>
                     <label>
                         상위코드
-                        <StyledInput type='text' name="higher_code" defaultValue={detailCodeDetail?.higherCode}></StyledInput>
+                        <StyledInput type='text' name="higher_code" defaultValue={detailCodeDetail?.higherCode} />
                     </label>
                     {
                         detailCode ?
@@ -130,7 +128,7 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
                     }
                     <label>
                         비고
-                        <StyledInput type='text' name="detailNote" defaultValue={detailCodeDetail?.note}></StyledInput>
+                        <StyledInput type='text' name="detailNote" defaultValue={detailCodeDetail?.note} />
                     </label>
                     <div className={"button-container"}>
                         <StyledButton type='button' onClick={detailCode ? updateDetailCode : saveDetailCode}>
