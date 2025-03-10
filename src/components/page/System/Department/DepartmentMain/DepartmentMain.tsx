@@ -52,8 +52,13 @@ export const DepartmentMain = () => {
     }
 
     const handlerModal = (id: string) => {
-        setModal(!modal)
+        setModal(!modal);
         setDetailCode(id);
+    }
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchDepartmentList();
     }
 
     return (
@@ -76,7 +81,7 @@ export const DepartmentMain = () => {
             {
                 modal && (
                     <Portal>
-                        <DepartmentModal detailCode={detailCode} setDetailCode={setDetailCode} />
+                        <DepartmentModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
                     </Portal>
                 )
             }
