@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useLocation } from "react-router-dom";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
@@ -6,38 +6,102 @@ import { ISalaryListDetail } from "../../../../../models/interface/personnel/sal
 import { ISalaryListDetailResponse } from "../../../../../models/interface/personnel/salary/ISalaryManager";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { SalaryManager } from "../../../../../api/api";
+import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
+import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 
 interface SalaryManagerDetailProps {
     Pdata: (data: number) => void;
 }
-
-// 급여 관리 페이지
 export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
     const { search } = useLocation();
-    const [salaryList, setSalaryList] = useState<ISalaryListDetail[]>();
-    const [salaryCnt, setSalaryCnt] = useState<number>();
-    const [cPage, setCPage] = useState<number>(1); // 현재 페이지를 초기화
+
+    const [salaryList, setSalaryList] = useState<ISalaryListDetail[]>([]);
+    const [salaryCnt, setSalaryCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(1);
+
+    const {
+        searchEmployeeName,
+        department,
+        jobGrade,
+        searchPaymentStatus,
+        searchPaymentMonth,
+        paymentData,
+        paymentStatus,
+    } = useContext(SalaryManagerContext);
 
     useEffect(() => {
-        salaryManagerList(cPage); // 첫 로딩 시 페이지 1로 데이터 로드
-    }, [cPage]);
+        if (paymentData) salarySave(paymentData);
+    }, [paymentData]);
 
-    const handlerSearch = (employeeNumber: number) => {
-        Pdata(employeeNumber);
-    };
+    useEffect(() => {
+        if (paymentStatus) allPaymentStatus(paymentStatus);
+    }, [paymentStatus]);
 
-    const salaryManagerList = async (currentPage: number = 1) => {
+    useEffect(() => {
+        loadSalaryList(cPage);
+    }, [cPage, searchEmployeeName, department, jobGrade, searchPaymentStatus, searchPaymentMonth]);
+
+    const loadSalaryList = async (currentPage: number) => {
         const searchParam = new URLSearchParams(search);
         searchParam.append("currentPage", currentPage.toString());
         searchParam.append("pageSize", "5");
+
+        if (searchEmployeeName) searchParam.append("searchEmployeeName", searchEmployeeName);
+        if (department) searchParam.append("department", department);
+        if (jobGrade) searchParam.append("jobGrade", jobGrade);
+        if (searchPaymentStatus !== null) searchParam.append("searchPaymentStatus", searchPaymentStatus.toString());
+        if (searchPaymentMonth) searchParam.append("searchPaymentMonth", searchPaymentMonth);
 
         const result = await searchApi<ISalaryListDetailResponse>(SalaryManager.salaryList, searchParam);
 
         if (result) {
             setSalaryList(result.salaryList);
             setSalaryCnt(result.salaryCnt);
-            setCPage(currentPage);
+        } else {
+            setSalaryList([]);
+            setSalaryCnt(0);
         }
+
+        setCPage(currentPage);
+    };
+
+    const salarySave = async (paymentData: string) => {
+        const searchParam = new URLSearchParams(search);
+        searchParam.append("paymentDate", paymentData);
+
+        const result = await postApi<string>(SalaryManager.salarySave, searchParam);
+        alert(`명세서 생성 결과: ${result}`);
+    };
+
+    const allPaymentStatus = async (paymentStatus: string) => {
+        const searchParam = new URLSearchParams(search);
+        searchParam.append("paymentStatus", paymentStatus);
+
+        const result = await postApi<string>(SalaryManager.allPaymentStatusUpdate, searchParam);
+        alert(`지급 처리 결과: ${result}`);
+    };
+
+    const handlePayment = async (salaryId: number, baseSalary: number) => {
+        if (window.confirm("지급하시겠습니까?")) {
+            try {
+                const searchParam = new URLSearchParams(search);
+                searchParam.append("salaryId", salaryId.toString());
+                searchParam.append("baseSalary", baseSalary.toString());
+
+                await postApi<string>(SalaryManager.paymentStatusUpdate, searchParam);
+                alert("지급완료 되었습니다.");
+                loadSalaryList(cPage);
+            } catch (error) {
+                alert("지급 처리 중 오류가 발생했습니다.");
+            }
+        } else {
+            alert("지급이 취소되었습니다.");
+        }
+    };
+
+    const handlerSearch = (employeeNumber: number) => {
+        Pdata(employeeNumber);
     };
 
     return (
@@ -58,44 +122,48 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                         <StyledTh>산재보험</StyledTh>
                         <StyledTh>고용보험</StyledTh>
                         <StyledTh>비고금액</StyledTh>
+                        <StyledTh>지급</StyledTh>
                     </tr>
                 </thead>
                 <tbody>
-                    {salaryList && salaryList.length > 0 ? (
+                    {salaryList.length ? (
                         salaryList.map((salary) => (
-                            //  이곳을 클릭 했을 때 employeeNumber를 넘기는 것
-                            // 클릭 했을 때 Pdata가 실행 되도록 함
                             <tr key={salary.salaryId} onClick={() => handlerSearch(salary.employeeNumber)}>
-                                <StyledTd>{salary.salaryId}</StyledTd>
+                                <StyledTd>{salary.employeeId}</StyledTd>
                                 <StyledTd>{salary.employeeName}</StyledTd>
                                 <StyledTd>{salary.jobGradeDetailName}</StyledTd>
                                 <StyledTd>{salary.departmentDetailName || "없음"}</StyledTd>
                                 <StyledTd>{salary.employeeNumber}</StyledTd>
-                                <StyledTd>{salary.salary.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.baseSalary.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.nationalPension.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.healthInsurance.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.industrialAccident.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.employmentInsurance.toLocaleString()}</StyledTd>
+                                <StyledTd>{salary.salary?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.baseSalary?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.nationalPension?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.healthInsurance?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.industrialAccident?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.employmentInsurance?.toLocaleString() || "0"}</StyledTd>
+                                <StyledTd>{salary.additionalAmount?.toLocaleString() || "없음"}</StyledTd>
                                 <StyledTd>
-                                    {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
+                                    <StyledButton
+                                        size='small'
+                                        disabled={salary.paymentStatus === 1}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handlePayment(salary.salaryId, salary.baseSalary);
+                                        }}
+                                    >
+                                        {salary.paymentStatus === 0 ? "지급미완료" : "지급완료"}
+                                    </StyledButton>
                                 </StyledTd>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <StyledTd colSpan={12}>데이터가 없습니다.</StyledTd>
+                            <StyledTd colSpan={13}>데이터가 없습니다.</StyledTd>
                         </tr>
                     )}
                 </tbody>
             </StyledTable>
 
-            <PageNavigate
-                totalItemsCount={salaryCnt}
-                onChange={salaryManagerList}
-                activePage={cPage}
-                itemsCountPerPage={5}
-            />
+            <PageNavigate totalItemsCount={salaryCnt} onChange={setCPage} activePage={cPage} itemsCountPerPage={5} />
         </>
     );
 };

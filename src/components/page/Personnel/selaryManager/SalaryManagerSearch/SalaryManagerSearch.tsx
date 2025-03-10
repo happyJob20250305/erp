@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SalalyListSearchStyled } from "../../salaryList/SalaryListSearch/styled";
 
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
@@ -11,23 +11,11 @@ import {
     IGroupListResponse,
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
-import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { SalaryOptionList } from "../../../../../api/api";
+import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
+import { SalaryManager, SalaryOptionList } from "../../../../../api/api";
+import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
 
 export const SalaryManagerSearch = () => {
-    // 상위 컴포넌트에서 받아올 Props 타입 정의
-
-    //사원명
-    const [searchEmployeeName, setSearchEmployeeName] = useState<string>("");
-    // 부서
-    const [department, setDepartment] = useState<string>("");
-    //지급 여부
-    const [searchPaymentStatus, setSearchPaymentStatus] = useState<number>();
-    //급여 연월
-    const [searchPaymentMonth, setSearchPaymentMonth] = useState<string>("");
-    //직급
-    const [jobGrade, setJobGrade] = useState<string>("");
-
     //DepartmentGroupItem
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
 
@@ -39,10 +27,6 @@ export const SalaryManagerSearch = () => {
         getOptionList();
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchEmployeeName(e.target.value); // 입력값을 state로 반영
-    };
-
     const getOptionList = async () => {
         const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
 
@@ -52,17 +36,6 @@ export const SalaryManagerSearch = () => {
             console.log(result);
         }
     };
-
-    // "검색" 버튼 클릭 시, 부모에서 내려준 onSearch에 현재 검색값을 전달
-    // const handleSearchClick = () => {
-    //     onSearch({
-    //         searchEmployeeName,
-    //         searchPaymentMonth,
-    //         department,
-    //         jobGrade,
-    //         searchPaymentStatus,
-    //     });
-    // };
 
     // 2) SelectBox에서 사용할 옵션 배열 생성
     //    (label, value) 형태를 StyledSelectBox에 맞춰 변환
@@ -83,43 +56,91 @@ export const SalaryManagerSearch = () => {
         { label: "미지급", value: "0" },
     ];
 
+    // context 상태 및 업데이트 함수 가져오기
+    const {
+        searchEmployeeName,
+        setSearchEmployeeName,
+        department,
+        setDepartment,
+        jobGrade,
+        setJobGrade,
+        searchPaymentStatus,
+        setSearchPaymentStatus,
+        searchPaymentMonth,
+        setSearchPaymentMonth,
+        paymentData,
+        setPaymentData,
+        paymentStatus,
+        setPaymentStatus,
+    } = useContext(SalaryManagerContext);
+    // 검색 클릭 시 context에 저장
+
+    const handleSearch = () => {
+        setSearchEmployeeName(employeeNameInput);
+        setDepartment(selectedDepartment);
+        setJobGrade(selectedJobGrade);
+        setSearchPaymentStatus(selectedPaymentStatus);
+        setSearchPaymentMonth(selectedMonth);
+    };
+
+    //급여 계산
+    const salarySave = (selectedPaymentDate: string) => {
+        setPaymentData(selectedPaymentDate);
+        console.log(selectedPaymentDate);
+    };
+
+    //일괄 지급
+    const allPaymentStatusUpdate = () => {
+        setPaymentStatus("1");
+    };
+
+    // Input 관리 (ref 대신 state 추천)
+    const [employeeNameInput, setEmployeeNameInput] = useState("");
+    // 셀렉트 박스 선택 값 (별도 상태로 관리)
+    const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [selectedJobGrade, setSelectedJobGrade] = useState("");
+    const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<number | null>(null);
+    const [selectedMonth, setSelectedMonth] = useState("");
+
+    //급여 계산
+    const [selectedPaymentDate, setSelectedPaymentDate] = useState("");
+
     return (
         <SalalyManagerSearchStyled>
             {/* 급여 계산  */}
-            {/* <div className='top-right'>
+            <div className='top-right'>
                 <StyledInput
                     type='month'
-                    value={searchPaymentMonth}
-                    onChange={(e) => setSearchPaymentMonth(e.target.value)}
+                    value={selectedPaymentDate}
+                    onChange={(e) => setSelectedPaymentDate(e.target.value)}
                 />
-                <StyledButton>급여 계산</StyledButton>
-            </div> */}
+                <StyledButton onClick={(e) => salarySave(selectedPaymentDate)}>급여 계산</StyledButton>
+            </div>
             {/* 사원명 : searchEmployeeName */}
             <div className='row'>
-                사원명 <StyledInput value={searchEmployeeName} onChange={handleChange} />
+                사원명
+                <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                 {/* 급여년월 searchPaymentMonth */}
                 급여년월
-                <StyledInput
-                    type='month'
-                    value={searchPaymentMonth}
-                    onChange={(e) => setSearchPaymentMonth(e.target.value)}
-                />
+                <StyledInput type='month' value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
             </div>
             {/* 부서 : department */}
-            부서 <StyledSelectBox options={departmentOptions} value={department} onChange={setDepartment} />
+            부서
+            <StyledSelectBox options={departmentOptions} value={selectedDepartment} onChange={setSelectedDepartment} />
             {/* 직급 : jobGrade */}
-            직급 <StyledSelectBox options={jobGradeOptions} value={jobGrade} onChange={setJobGrade} />
+            직급
+            <StyledSelectBox options={jobGradeOptions} value={selectedJobGrade} onChange={setSelectedJobGrade} />
             {/* 지급 여부 : searchPamentStatus */}
             지급여부
             <StyledSelectBox
                 options={paymentStatusOptions}
-                value={searchPaymentStatus}
-                onChange={setSearchPaymentStatus}
+                value={selectedPaymentStatus?.toString()}
+                onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
             />
             {/* 검색  */}
-            <StyledButton>검색</StyledButton>
+            <StyledButton onClick={handleSearch}>검색</StyledButton>
             {/* 일괄 지급 */}
-            <StyledButton>일괄 지급</StyledButton>
+            <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
         </SalalyManagerSearchStyled>
     );
 };

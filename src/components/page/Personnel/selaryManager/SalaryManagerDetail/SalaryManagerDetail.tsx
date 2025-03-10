@@ -46,11 +46,11 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
         <div>
             <h2>급여 상세</h2>
 
-            {salaryDetail && salaryDetail.length > 0 ? (
+            {salaryDetail.length > 0 ? (
                 <StyledTable>
                     <thead>
                         <tr>
-                            <StyledTh>사번</StyledTh>
+                            <StyledTh>번호</StyledTh>
                             <StyledTh>사원명</StyledTh>
                             <StyledTh>연봉</StyledTh>
                             <StyledTh>기본급</StyledTh>
@@ -66,25 +66,25 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
                     <tbody>
                         {salaryDetail.map((salary) => (
                             <tr key={salary.salaryId}>
-                                <StyledTd>{salary.employeeNumber}</StyledTd>
+                                <StyledTd>{salary.salaryId}</StyledTd>
                                 <StyledTd>{salary.employeeName}</StyledTd>
-                                <StyledTd>{salary.salary.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.baseSalary.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.nationalPension.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.healthInsurance.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.industrialAccident.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.employmentInsurance.toLocaleString()}</StyledTd>
+                                <StyledTd>{salary.salary?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.baseSalary?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.nationalPension?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.healthInsurance?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.industrialAccident?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.employmentInsurance?.toLocaleString() ?? "0"}</StyledTd>
                                 <StyledTd>
                                     {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
                                 </StyledTd>
-                                <StyledTd>{salary.totalSalary.toLocaleString()}</StyledTd>
-                                <StyledTd>{salary.paymentDate}</StyledTd>
+                                <StyledTd>{salary.paymentDate?.toLocaleString() ?? "0"}</StyledTd>
+                                <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
                             </tr>
                         ))}
                     </tbody>
                 </StyledTable>
             ) : (
-                <p>조회된 급여 정보가 없습니다.</p>
+                <div>데이터가 없습니다.</div>
             )}
         </div>
     );

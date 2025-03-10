@@ -5,6 +5,9 @@ export const Login = {
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
+    salarySave: "/personnel/salarySave.do",
+    allPaymentStatusUpdate: "/personnel/allPaymentStatusUpdate.do",
+    paymentStatusUpdate: "/personnel/paymentStatusUpdate.do",
 };
 
 export const MySalaryDetail = {
