@@ -16,6 +16,10 @@ const routers: RouteObject[] = [
         element: <DashBoard />,
         children: [
             {
+                path: "account",
+                children: [{ path: "manage", element: <Manage /> }],
+            },
+            {
                 path: "system",
                 children: [
                     { path: "notice", element: <Notice /> },
@@ -23,10 +27,6 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
-            },
-            {
-                path: "account",
-                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },
