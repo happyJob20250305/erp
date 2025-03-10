@@ -50,7 +50,28 @@ export const DepartmentModal: FC<IDepartmentProps> = ({ detailCode, setDetailCod
             { inval: formData.get("detailName").toString(), msg: "부서명을 입력해주세요." }
         ]))
 
-            axios.post("/system/departmentSave", formRef.current)
+            axios.post("/system/departmentSave", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("저장되었습니다.");
+                        postSuccess();
+                    } else {
+                        alert(res.data.message);
+                    }
+                })
+    }
+
+    const updateDepartment = () => {
+        const formData = new FormData(formRef.current);
+        formData.append("oldDetailCode", detailCode);
+        formData.append("newDetailCode", formData.get("detailCode"));
+
+        if (nullCheck([ //유효성검사
+            { inval: formData.get("newDetailCode").toString(), msg: "부서코드를 입력해주세요." },
+            { inval: formData.get("detailName").toString(), msg: "부서명을 입력해주세요." }
+        ]))
+
+            axios.post("/system/departmentUpdate", formData)
                 .then((res: AxiosResponse<IPostResponse>) => {
                     if (res.data.result === "success") {
                         alert("저장되었습니다.");
@@ -74,7 +95,8 @@ export const DepartmentModal: FC<IDepartmentProps> = ({ detailCode, setDetailCod
                         <StyledInput type="text" name="detailName" defaultValue={detail?.detailName} />
                     </label>
                     <div className={"button-container"}>
-                        <button type='button' onClick={saveDepartment}>저장</button>
+                        <button type='button' onClick={detailCode ? updateDepartment : saveDepartment}>
+                            {detailCode ? "수정" : "저장"}</button>
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
                 </form>
