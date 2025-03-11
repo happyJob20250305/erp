@@ -11,8 +11,8 @@ import {
     IGroupListResponse,
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
-import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { SalaryManager, SalaryOptionList } from "../../../../../api/api";
+import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
+import { SalaryOptionList } from "../../../../../api/api";
 import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
 
 export const SalaryManagerSearch = () => {
@@ -108,16 +108,18 @@ export const SalaryManagerSearch = () => {
     return (
         <SalalyManagerSearchStyled>
             {/* 급여 계산  */}
-            <div className='top-right'>
-                <StyledInput
-                    type='month'
-                    value={selectedPaymentDate}
-                    onChange={(e) => setSelectedPaymentDate(e.target.value)}
-                />
+            <div className='top-right' style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ marginRight: "10px" }}>
+                    <StyledInput
+                        type='month'
+                        value={selectedPaymentDate}
+                        onChange={(e) => setSelectedPaymentDate(e.target.value)}
+                    />
+                </div>
                 <StyledButton onClick={(e) => salarySave(selectedPaymentDate)}>급여 계산</StyledButton>
             </div>
             {/* 사원명 : searchEmployeeName */}
-            <div className='row'>
+            <div className='row' style={{ marginLeft: "20px", marginBottom: "20px" }}>
                 사원명
                 <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                 {/* 급여년월 searchPaymentMonth */}
@@ -125,22 +127,28 @@ export const SalaryManagerSearch = () => {
                 <StyledInput type='month' value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
             </div>
             {/* 부서 : department */}
-            부서
-            <StyledSelectBox options={departmentOptions} value={selectedDepartment} onChange={setSelectedDepartment} />
-            {/* 직급 : jobGrade */}
-            직급
-            <StyledSelectBox options={jobGradeOptions} value={selectedJobGrade} onChange={setSelectedJobGrade} />
-            {/* 지급 여부 : searchPamentStatus */}
-            지급여부
-            <StyledSelectBox
-                options={paymentStatusOptions}
-                value={selectedPaymentStatus?.toString()}
-                onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
-            />
-            {/* 검색  */}
-            <StyledButton onClick={handleSearch}>검색</StyledButton>
-            {/* 일괄 지급 */}
-            <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
+            <div style={{ marginLeft: "20px" }}>
+                부서
+                <StyledSelectBox
+                    options={departmentOptions}
+                    value={selectedDepartment}
+                    onChange={setSelectedDepartment}
+                />
+                {/* 직급 : jobGrade */}
+                직급
+                <StyledSelectBox options={jobGradeOptions} value={selectedJobGrade} onChange={setSelectedJobGrade} />
+                {/* 지급 여부 : searchPamentStatus */}
+                지급여부
+                <StyledSelectBox
+                    options={paymentStatusOptions}
+                    value={selectedPaymentStatus?.toString()}
+                    onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
+                />
+                {/* 검색  */}
+                <StyledButton onClick={handleSearch}>검색</StyledButton>
+                {/* 일괄 지급 */}
+                <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
+            </div>
         </SalalyManagerSearchStyled>
     );
 };

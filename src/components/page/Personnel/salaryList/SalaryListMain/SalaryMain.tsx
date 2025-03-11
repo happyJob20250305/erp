@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CiCircleQuestion } from "react-icons/ci";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { MySalaryDetail } from "../../../../../api/api";
@@ -7,10 +8,16 @@ import {
     ISalaryListDetailBodyResponse,
     SararyMainProps,
 } from "../../../../../models/interface/personnel/salary/IsalaryMain";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { SalaryModal } from "../SalaryModal/SalaryModal";
+
+// const QuestionIcon = CiCircleQuestion as unknown as React.FC;
 
 export const SalaryMain = ({ data }: SararyMainProps) => {
     const [salaryListDetail, setSalaryDetailList] = useState<ISalaryListDetail | null>(null);
-
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
     useEffect(() => {
         if (data) {
             searchSalaryDetailList();
@@ -27,6 +34,10 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
         } else {
             setSalaryDetailList(null);
         }
+    };
+
+    const handleModal = () => {
+        setModal(!modal);
     };
 
     // 안전한 숫자 포맷팅 헬퍼함수
@@ -70,6 +81,9 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                 </tbody>
             </StyledTable>
 
+            <>
+                <img src='/help_question_icon.png' style={{ width: "30px", height: "30px" }} onClick={handleModal} />
+            </>
             {/* 지급 항목 테이블 */}
             <StyledTable style={{ flex: 1 }}>
                 <thead>
@@ -109,6 +123,12 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                     )}
                 </tbody>
             </StyledTable>
+
+            {modal && (
+                <Portal>
+                    <SalaryModal></SalaryModal>
+                </Portal>
+            )}
         </div>
     );
 };
