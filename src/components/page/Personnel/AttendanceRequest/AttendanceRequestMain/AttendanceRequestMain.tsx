@@ -26,7 +26,7 @@ export interface IAttendance {
     appReason: string | null,
 }
 
-interface IAttendanceCnt {
+export interface IAttendanceCnt {
     useAttCnt: number,
     attCnt: number,
     leftAttCnt: number
@@ -152,7 +152,9 @@ export const AttendanceRequestMain = () => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceRequestModal id={id} setId={setId} loginInfo={loginInfo} attId={attId} postSuccess={postSuccess} />
+                        <AttendanceRequestModal id={id} setId={setId} loginInfo={loginInfo} attId={attId}
+                            attendanceCnt={attendanceCnt}
+                            postSuccess={postSuccess} />
                     </Portal>
                 )
             }
