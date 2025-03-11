@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { CiCircleQuestion } from "react-icons/ci";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { MySalaryDetail } from "../../../../../api/api";
