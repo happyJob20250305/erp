@@ -90,6 +90,18 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
         })
     }
 
+    const updateAttendanceRequest = () => {
+        const formData = new FormData(formRef.current);
+        formData.append("reqId", id.toString());
+        axios.post("/personnel//attendanceUpdate.do", formData)
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("수정되었습니다.");
+                    postSuccess();
+                }
+            })
+    }
+
     const cancleAttendanceRequest = () => {
         axios.post("/personnel/attendanceCancleBody.do", { reqId: id })
             .then((res: AxiosResponse<IPostResponse>) => {
@@ -106,22 +118,22 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                 <form ref={formRef}>
                     <label>
                         근무부서
-                        <StyledInput type='text' name="deptName" defaultValue={id ? attendanceRequestDetail?.deptName : loginInfo?.detail_name} />
+                        <StyledInput type='text' name="deptName" defaultValue={id ? attendanceRequestDetail?.deptName : loginInfo?.detail_name} readOnly />
                     </label>
                     <label>
                         성명
-                        <StyledInput type='text' name="name" defaultValue={id ? attendanceRequestDetail?.name : loginInfo?.usr_nm} />
+                        <StyledInput type='text' name="name" defaultValue={id ? attendanceRequestDetail?.name : loginInfo?.usr_nm} readOnly />
                     </label>
                     <label>
                         사번
-                        <StyledInput type='text' name="number" defaultValue={id ? attendanceRequestDetail?.number : loginInfo?.usr_idx} />
+                        <StyledInput type='text' name="number" defaultValue={id ? attendanceRequestDetail?.number : loginInfo?.usr_idx} readOnly />
                     </label>
                     <label>
                         연/반차*
                         {
                             id ?
                                 (<>
-                                    <StyledInput type='text' defaultValue={attendanceRequestDetail?.reqType} />
+                                    <StyledInput type='text' defaultValue={attendanceRequestDetail?.reqType} readOnly />
                                 </>)
                                 :
                                 (<>
@@ -152,20 +164,20 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                     </label>
                     <label>
                         신청일
-                        <StyledInput type='text' name="reqdate" defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} />
+                        <StyledInput type='text' name="reqdate" defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} readOnly />
                     </label>
                     <div className={"button-container"}>
                         {
                             id ?
                                 (<>
                                     {
-                                        attendanceRequestDetail?.reqStatus === "검토대기"
-                                        && <button type='button'>수정</button>
+                                        attendanceRequestDetail?.reqStatus === "검토 대기"
+                                        && (<button type='button' onClick={updateAttendanceRequest}>수정</button>)
                                     }
                                     {
                                         (attendanceRequestDetail?.reqStatus === "반려"
                                             || attendanceRequestDetail?.reqStatus === "취소")
-                                        || <button type='button' onClick={cancleAttendanceRequest}>신청취소</button>
+                                        || (<button type='button' onClick={cancleAttendanceRequest}>신청취소</button>)
                                     }
                                 </>)
                                 :
