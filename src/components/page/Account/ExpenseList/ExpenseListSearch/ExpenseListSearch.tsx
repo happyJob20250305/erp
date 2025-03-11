@@ -6,8 +6,21 @@ import { ExpenseListSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
-import { IDetailGroup, IDetailGroupListBody, ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
 import axios, { AxiosResponse } from "axios";
+
+export interface IExpenseDetailGroup {
+    detail_name: string;
+    detail_code: string;
+}
+
+export interface IExpenseDetailGroupListBody {
+    searchAccount: IExpenseDetailGroup[];
+}
+
+export interface ISetListOption {
+    label: string;
+    value: string | number;
+}
 
 export const ExpenseListSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -42,10 +55,10 @@ export const ExpenseListSearch = () => {
     const searchAccountDetailList = (selectedGroup: string) => {
         axios
             .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
-            .then((res: AxiosResponse<IDetailGroupListBody>) => {
+            .then((res: AxiosResponse<IExpenseDetailGroupListBody>) => {
                 const selectDetailList: ISetListOption[] = [
                     { label: "전체", value: "" },
-                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
+                    ...res.data.searchAccount.map((detail: IExpenseDetailGroup) => ({
                         label: detail.detail_name,
                         value: detail.detail_code,
                     })),

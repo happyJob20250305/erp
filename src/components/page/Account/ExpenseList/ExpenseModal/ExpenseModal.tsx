@@ -5,12 +5,16 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ExpenseListModalStyle } from "./styled";
 import { FC, useEffect, useRef, useState } from "react";
-import { IDetailGroup, IDetailGroupListBody, ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
 import axios, { AxiosResponse } from "axios";
 import moment from "moment";
 import { loginInfoState } from "../../../../../stores/userInfo";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { IExpense } from "../ExpenseListMain/ExpenseListMain";
+import {
+    IExpenseDetailGroup,
+    IExpenseDetailGroupListBody,
+    ISetListOption,
+} from "../ExpenseListSearch/ExpenseListSearch";
 
 interface ILoginUserInfo {
     usr_idx: number;
@@ -30,7 +34,7 @@ interface IManageModalProps {
 export interface ILoginInfoBody {
     lgnInfo: ILoginUserInfo;
 }
-export interface IClientListBody extends IDetailGroupListBody {
+export interface IClientListBody extends IExpenseDetailGroupListBody {
     clientList: IClient[];
 }
 export interface IClient {
@@ -69,7 +73,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
             .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
             .then((res: AxiosResponse<IClientListBody>) => {
                 const selectDetailList: ISetListOption[] = [
-                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
+                    ...res.data.searchAccount.map((detail: IExpenseDetailGroup) => ({
                         label: detail.detail_name,
                         value: detail.detail_code,
                     })),
