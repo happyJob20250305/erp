@@ -9,6 +9,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { AttendanceRequestModal } from "../AttendanceRequestModal/AttendanceRequestModal";
+import { AttendanceRequestRejectModal } from "../AttendanceRequestRejectModal/AttendanceRequestRejectModal";
 
 
 export interface IAttendance {
@@ -60,6 +61,8 @@ export const AttendanceRequestMain = () => {
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [modalType, setModalType] = useState<string>();
+
     const [id, setId] = useState<number>(0);
     const [attId, setAttId] = useState<number>(0);
 
@@ -108,9 +111,17 @@ export const AttendanceRequestMain = () => {
         })
     }
 
-    const handlerModal = (id: number) => {
+    const handlerDetailModal = (id: number) => {
         setId(id);
         setModal(!modal);
+        setModalType("detail");
+    }
+
+    const handlerrejectReasonModal = (id: number, e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        setId(id);
+        setModal(!modal);
+        setModalType("rejectReason");
     }
 
     const postSuccess = () => {
@@ -133,14 +144,14 @@ export const AttendanceRequestMain = () => {
                 renderAction={(row) =>
                     row.reqStatus === "반려" ?
                         (
-                            <StyledButton size="small">
+                            <StyledButton size="small" onClick={(e) => { handlerrejectReasonModal(row.id, e) }}>
                                 반려사유
                             </StyledButton>
                         )
                         : (<>-</>)
                 }
                 onCellClick={(row, columns) => {
-                    handlerModal(row.id);
+                    handlerDetailModal(row.id);
                 }}
             />
             <PageNavigate
@@ -152,9 +163,18 @@ export const AttendanceRequestMain = () => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceRequestModal id={id} setId={setId} loginInfo={loginInfo} attId={attId}
-                            attendanceCnt={attendanceCnt}
-                            postSuccess={postSuccess} />
+                        {
+                            modalType === "detail" ?
+                                (
+                                    <AttendanceRequestModal id={id} setId={setId} loginInfo={loginInfo} attId={attId}
+                                        attendanceCnt={attendanceCnt}
+                                        postSuccess={postSuccess} />
+                                ) :
+                                (
+                                    <AttendanceRequestRejectModal id={id} setId={setId} />
+                                )
+                        }
+
                     </Portal>
                 )
             }
