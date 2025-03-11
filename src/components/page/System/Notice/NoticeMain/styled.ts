@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
-export const DetailCodeMainStyled = styled.div`
+export const NoticeMainStyled = styled.div`
     margin-top: 5px;
 `;
