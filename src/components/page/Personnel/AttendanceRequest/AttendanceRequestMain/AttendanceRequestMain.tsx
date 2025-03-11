@@ -5,9 +5,13 @@ import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable"
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { AttendanceRequestModal } from "../AttendanceRequestModal/AttendanceRequestModal";
 
 
-interface IAttendance {
+export interface IAttendance {
     id: number,
     attId: number,
     attAppId: number,
@@ -38,13 +42,16 @@ interface IAttendanceCntResponse {
 }
 
 export const AttendanceRequestMain = () => {
+    const userInfo = sessionStorage.getItem("userInfo");
+    const loginEmpId = JSON.parse(userInfo).empId;
+
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [attendanceCnt, setAttendanceCnt] = useState<IAttendanceCnt[]>([]);
     const [cPage, setCPage] = useState<number>(0);
-    const userInfo = sessionStorage.getItem("userInfo");
-    const loginEmpId = JSON.parse(userInfo).empId;
     const { searchKeyword } = useContext(AttendanceContext);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [id, setId] = useState<number>(0);
 
     const columns = [
         { key: "id", title: "번호" },
@@ -89,6 +96,11 @@ export const AttendanceRequestMain = () => {
         })
     }
 
+    const handlerModal = (id: number) => {
+        setId(id);
+        setModal(!modal);
+    }
+
     return (
         <AttendanceRequestMainStyled>
             <StyledTable
@@ -110,6 +122,9 @@ export const AttendanceRequestMain = () => {
                         )
                         : (<>-</>)
                 }
+                onCellClick={(row, columns) => {
+                    handlerModal(row.id);
+                }}
             />
             <PageNavigate
                 totalItemsCount={attendanceRequestCnt}
@@ -117,6 +132,13 @@ export const AttendanceRequestMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchAttendanceList}
             />
+            {
+                modal && (
+                    <Portal>
+                        <AttendanceRequestModal id={id} setId={setId} />
+                    </Portal>
+                )
+            }
         </AttendanceRequestMainStyled>
     )
 }
