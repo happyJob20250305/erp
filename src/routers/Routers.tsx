@@ -6,7 +6,6 @@ import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
 import { Sales } from "../pages/business/Sales";
 import { Client } from "../pages/business/Client";
-
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
     { path: "/", element: <Login /> },
@@ -15,8 +14,20 @@ const routers: RouteObject[] = [
         element: <DashBoard />,
         children: [
             {
+                path: "account",
+                children: [
+                    { path: "manage", element: <Manage /> },
+                    { path: "expense-list", element: <ExpenseList /> },
+                ],
+            },
+            {
                 path: "system",
-                children: [{ path: "notice", element: <Notice /> }],
+                children: [
+                    { path: "notice", element: <Notice /> },
+                    { path: "code", element: <CommonCode /> },
+                    { path: "code/:groupCode", element: <DetailCode /> },
+                    { path: "department", element: <Department /> },
+                ],
             },
             {
                 path: "business",
@@ -24,10 +35,6 @@ const routers: RouteObject[] = [
                     { path: "sales-plan", element: <Sales /> },
                     { path: "client-list", element: <Client /> },
                 ],
-            },
-            {
-                path: "account",
-                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },

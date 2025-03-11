@@ -6,6 +6,7 @@ import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { INotice } from "../NoticeMain/NoticeMain";
+import { nullCheck } from "../../../../../common/nullCheck";
 
 interface INoticeModalProps {
     notiSeq: number;
@@ -61,25 +62,38 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
     }
 
     const saveNotice = () => {
-        axios.post("/system/noticeFileSave.do", formRef.current)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("저장되었습니다.");
-                    postSuccess();
-                }
-            })
+        const formData = new FormData(formRef.current);
+
+        if (nullCheck([
+            { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
+            { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
+        ]))
+
+            axios.post("/system/noticeFileSave.do", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("저장되었습니다.");
+                        postSuccess();
+                    }
+                })
     }
 
     const updateNotice = () => {
         const formData = new FormData(formRef.current);
         formData.append("noticeSeq", notiSeq.toString());
-        axios.post("/system/noticeFileUpdate.do", formData)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("수정되었습니다.");
-                    postSuccess();
-                }
-            })
+
+        if (nullCheck([
+            { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
+            { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
+        ]))
+
+            axios.post("/system/noticeFileUpdate.do", formData)
+                .then((res: AxiosResponse<IPostResponse>) => {
+                    if (res.data.result === "success") {
+                        alert("수정되었습니다.");
+                        postSuccess();
+                    }
+                })
     }
 
     const deleteNotice = () => {
@@ -112,7 +126,6 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
     }
 
     const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
-
         const fileInfo = e.target.files;
         if (fileInfo?.length > 0) {
             const fileSplit = fileInfo[0].name.split(".");
@@ -130,12 +143,12 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             <div className='container'>
                 <form ref={formRef}>
                     <label>
-                        제목 :<StyledInput type='text' name='fileTitle' defaultValue={detail?.notiTitle}></StyledInput>
+                        제목 :<StyledInput type='text' name='fileTitle' defaultValue={detail?.notiTitle} />
                     </label>
                     <label>
-                        내용 : <StyledInput type='text' name='fileContent' defaultValue={detail?.notiContent}></StyledInput>
+                        내용 : <StyledInput type='text' name='fileContent' defaultValue={detail?.notiContent} />
                     </label>
-                    파일 :<StyledInput type='file' id='fileInput' name='file' style={{ display: "none" }} onChange={handlerFile}></StyledInput>
+                    파일 :<StyledInput type='file' id='fileInput' name='file' style={{ display: "none" }} onChange={handlerFile} />
                     <label className='img-label' htmlFor='fileInput'>
                         파일 첨부하기
                     </label>
@@ -150,11 +163,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                                     </div>
                                 )
                                 :
-                                (
-                                    <>
-                                        {fileName}
-                                    </>
-                                )
+                                (<>{fileName}</>)
                         }
                     </div>
                     <div className={"button-container"}>

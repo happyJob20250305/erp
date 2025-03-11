@@ -3,30 +3,31 @@ import { SelectBox } from "./styled";
 
 interface SelectBoxProps {
     options: { label: string; value: string | number }[];
-    value: string | number;
-    onChange: React.Dispatch<React.SetStateAction<string | number>>;
+    value?: string | number;
+    onChange?: React.Dispatch<React.SetStateAction<string | number>>;
     variant?: "default" | "primary" | "danger";
     fullwidth?: boolean;
     name?: string;
-    defaultValue?: string;
+    defaultValue?: string | number;
 }
 
 export const StyledSelectBox: FC<SelectBoxProps> = ({
-    name,
     options,
     value,
     onChange,
     variant = "default",
     fullwidth = false,
     defaultValue,
+    name,
 }) => {
     return (
         <SelectBox
+            key={defaultValue}
             name={name}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
-            variant={variant}
             defaultValue={defaultValue}
+            onChange={(e) => onChange?.(e.target.value)}
+            variant={variant}
             fullwidth={fullwidth || undefined}
         >
             {options.map((option) => (

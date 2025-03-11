@@ -5,7 +5,29 @@ import { ManageSearchStyled } from "./styled";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+
+export interface IAccountGroup {
+    group_name: string;
+    group_code: string;
+}
+export interface IAccountGroupListBody {
+    accountGroupList: IAccountGroup[];
+}
+
+export interface IDetailGroup {
+    detail_name: string;
+    detail_code: string;
+}
+
+export interface IDetailGroupListBody {
+    searchAccount: IDetailGroup[];
+}
+
+export interface ISetListOption {
+    label: string;
+    value: string | number;
+}
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -14,14 +36,14 @@ export const ManageSearch = () => {
     const [selectCodeType, setSelectedCodeType] = useState<string>("");
     const { setSearchKeyword } = useContext(AccountManageContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const [accountGroupList, setAccountGroupList] = useState<{ label: string; value: string }[]>([]);
-    const [accountDetailList, setAccountDetailList] = useState<{ label: string; value: string }[]>([]);
-    const useYn = [
+    const [accountGroupList, setAccountGroupList] = useState<ISetListOption[]>([]);
+    const [accountDetailList, setAccountDetailList] = useState<ISetListOption[]>([]);
+    const useYn: ISetListOption[] = [
         { label: "전체", value: "" },
         { label: "Y", value: "Y" },
         { label: "N", value: "N" },
     ];
-    const codeType = [
+    const codeType: ISetListOption[] = [
         { label: "전체", value: "" },
         { label: "수입", value: "수입" },
         { label: "지출", value: "지출" },
@@ -38,27 +60,33 @@ export const ManageSearch = () => {
         }
     }, [selectedGroup]);
 
+    const convertToSelectOptions = (data: IAccountGroup[]): ISetListOption[] => {
+        return data.map((account) => ({
+            label: account.group_name,
+            value: account.group_code,
+        }));
+    };
+
     const searchAccountGroupList = () => {
-        axios.post("/account/accountGroupList.do", {}).then((res) => {
-            const selectGroupList = [
+        axios.post("/account/accountGroupList.do", {}).then((res: AxiosResponse<IAccountGroupListBody>) => {
+            const selectGroupList: ISetListOption[] = [
                 { label: "전체", value: "" },
-                ...res.data.accountGroupList.map((account) => ({
-                    label: account.group_name,
-                    value: account.group_code,
-                })),
+                ...convertToSelectOptions(res.data.accountGroupList),
             ];
             setAccountGroupList(selectGroupList);
         });
     };
 
     const searchAccountDetailList = (selectedGroup: string) => {
-        axios.post("/account/accountSearchDetailBody.do", { group_code: selectedGroup }).then((res) => {
-            const selectDetailList = res.data.searchAccount.map((detail) => ({
-                label: detail.detail_name,
-                value: detail.detail_code,
-            }));
-            setAccountDetailList(selectDetailList);
-        });
+        axios
+            .post("/account/accountSearchDetailBody.do", { group_code: selectedGroup })
+            .then((res: AxiosResponse<IDetailGroupListBody>) => {
+                const selectDetailList: ISetListOption[] = res.data.searchAccount.map((detail: IDetailGroup) => ({
+                    label: detail.detail_name,
+                    value: detail.detail_code,
+                }));
+                setAccountDetailList(selectDetailList);
+            });
     };
 
     const handlerSearch = () => {
