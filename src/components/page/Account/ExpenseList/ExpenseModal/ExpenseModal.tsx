@@ -10,11 +10,8 @@ import moment from "moment";
 import { loginInfoState } from "../../../../../stores/userInfo";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { IExpense } from "../ExpenseListMain/ExpenseListMain";
-import {
-    IExpenseDetailGroup,
-    IExpenseDetailGroupListBody,
-    ISetListOption,
-} from "../ExpenseListSearch/ExpenseListSearch";
+import { IExpenseDetailGroup, IExpenseDetailGroupListBody } from "../ExpenseListSearch/ExpenseListSearch";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
 interface ILoginUserInfo {
     usr_idx: number;
@@ -112,6 +109,10 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
     };
 
     const expenseDelete = () => {
+        if (expenseDetail?.is_approval !== "W") {
+            alert("검토 대기 상태에서만 삭제할 수 있습니다.");
+            return;
+        }
         axios
             .post("/account/expenseDelete.do", new URLSearchParams({ exp_id: expenseDetail?.id }))
             .then((res: AxiosResponse<IPostResponse>) => {
@@ -159,7 +160,6 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
             <div className='container'>
                 <form ref={formRef}>
                     <table className='row'>
-                        <caption>caption</caption>
                         <tbody>
                             <tr>
                                 <th scope='row'>결의번호</th>
@@ -322,7 +322,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 저장
                             </StyledButton>
                         )}
-                        {expenseDetail && (
+                        {expenseDetail && expenseDetail.is_approval == "W" && (
                             <StyledButton type='button' onClick={expenseDelete}>
                                 삭제
                             </StyledButton>

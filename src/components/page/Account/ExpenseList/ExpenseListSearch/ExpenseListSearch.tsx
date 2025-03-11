@@ -7,6 +7,7 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import axios, { AxiosResponse } from "axios";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
 export interface IExpenseDetailGroup {
     detail_name: string;
@@ -15,11 +16,6 @@ export interface IExpenseDetailGroup {
 
 export interface IExpenseDetailGroupListBody {
     searchAccount: IExpenseDetailGroup[];
-}
-
-export interface ISetListOption {
-    label: string;
-    value: string | number;
 }
 
 export const ExpenseListSearch = () => {
