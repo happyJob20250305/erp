@@ -1,6 +1,7 @@
 export interface ILoginInfo {
     loginId?: string;
     userNm?: string;
+    empId?: number;
     usrMnuAtrt?: IMenuState[];
     userType?: string;
     serverName?: string;

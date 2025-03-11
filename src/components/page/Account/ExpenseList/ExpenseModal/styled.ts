@@ -25,7 +25,7 @@ export const ExpenseListModalStyle = styled.div`
         border: 1px solid #ccc;
     }
     textarea {
-        width: 200px;
+        width: 800px;
         height: 50px;
     }
 

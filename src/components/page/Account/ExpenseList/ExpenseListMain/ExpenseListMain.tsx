@@ -7,17 +7,26 @@ import axios, { AxiosResponse } from "axios";
 import { ExpenseListMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
-import { ExpenseDetailModal } from "../ExpenseModal/ExpenseDetailModal";
+import { ExpenseModal } from "../ExpenseModal/ExpenseModal";
 
 export interface IExpense {
     id: string;
     req_date: string;
     use_date: string;
     group_name: string;
+    group_code: string;
     detail_name: string;
+    debit_code: string;
     use_department: string;
     expense_payment: string;
     is_approval: string;
+    content: string;
+    expense_content: string;
+    file_name: string;
+    emp_no: number;
+    name: string;
+    client_id: number;
+    approval_date: string;
 }
 
 export interface IExpenseResponseBody {
@@ -61,7 +70,7 @@ export const ExpenseListMain = () => {
             });
     };
 
-    const approvalCode = (value) => {
+    const approvalCode = (value: string) => {
         switch (value) {
             case "W":
                 return "검토 대기";
@@ -74,7 +83,7 @@ export const ExpenseListMain = () => {
         }
     };
 
-    const handlerModal = (row) => {
+    const handlerModal = (row: IExpense) => {
         setModal(!modal);
         setExpenseDetail(row);
     };
@@ -102,7 +111,7 @@ export const ExpenseListMain = () => {
             />
             {modal && (
                 <Portal>
-                    <ExpenseDetailModal
+                    <ExpenseModal
                         expenseDetail={expenseDetail}
                         postSuccess={postSuccess}
                         setExpenseDetail={setExpenseDetail}

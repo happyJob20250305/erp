@@ -6,8 +6,8 @@ import { ExpenseListSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
-import { IAccountGroupOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
-import axios from "axios";
+import { IDetailGroup, IDetailGroupListBody, ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
+import axios, { AxiosResponse } from "axios";
 
 export const ExpenseListSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -17,15 +17,15 @@ export const ExpenseListSearch = () => {
     const [selectedDetail, setSelectedDetail] = useState<string>("");
     const [selectedApprove, setSelectedApprove] = useState<string>("");
     const { setSearchKeyword } = useContext(ExpenseListContext);
-    const [accountDetailList, setAccountDetailList] = useState<IAccountGroupOption[]>([]);
-    const approveStateList = [
+    const [accountDetailList, setAccountDetailList] = useState<ISetListOption[]>([]);
+    const approveStateList: ISetListOption[] = [
         { label: "전체", value: "" },
         { label: "검토 대기", value: "W" },
         { label: "승인 대기", value: "F" },
         { label: "승인", value: "S" },
         { label: "반려", value: "N" },
     ];
-    const accountGroupList = [
+    const accountGroupList: ISetListOption[] = [
         { label: "전체", value: "" },
         { label: "온라인지출", value: "AC03" },
         { label: "영업지출", value: "AC04" },
@@ -40,16 +40,18 @@ export const ExpenseListSearch = () => {
     }, [selectedGroup]);
 
     const searchAccountDetailList = (selectedGroup: string) => {
-        axios.post("/account/accountSearchDetailBody.do", { group_code: selectedGroup }).then((res) => {
-            const selectDetailList = [
-                { label: "전체", value: "" },
-                ...res.data.searchAccount.map((detail) => ({
-                    label: detail.detail_name,
-                    value: detail.detail_code,
-                })),
-            ];
-            setAccountDetailList(selectDetailList);
-        });
+        axios
+            .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
+            .then((res: AxiosResponse<IDetailGroupListBody>) => {
+                const selectDetailList: ISetListOption[] = [
+                    { label: "전체", value: "" },
+                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
+                        label: detail.detail_name,
+                        value: detail.detail_code,
+                    })),
+                ];
+                setAccountDetailList(selectDetailList);
+            });
     };
 
     const handlerSearch = () => {

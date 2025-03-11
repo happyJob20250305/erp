@@ -1,27 +1,58 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ExpenseListModalStyle } from "./styled";
-import { useEffect, useState } from "react";
-import { IAccountGroupOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
-import axios from "axios";
+import { FC, useEffect, useRef, useState } from "react";
+import { IDetailGroup, IDetailGroupListBody, ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
+import axios, { AxiosResponse } from "axios";
+import moment from "moment";
+import { loginInfoState } from "../../../../../stores/userInfo";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import { IExpense } from "../ExpenseListMain/ExpenseListMain";
 
-export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
+interface ILoginUserInfo {
+    usr_idx: number;
+    detail_name: string;
+    usr_nm: string;
+}
+
+interface IPostResponse {
+    result: string;
+}
+
+interface IManageModalProps {
+    expenseDetail?: IExpense;
+    postSuccess: () => void;
+    setExpenseDetail: (expenseDetail?: IExpense) => void;
+}
+export interface ILoginInfoBody {
+    lgnInfo: ILoginUserInfo;
+}
+export interface IClientListBody extends IDetailGroupListBody {
+    clientList: IClient[];
+}
+export interface IClient {
+    id: number;
+    clientName: string;
+}
+export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [selectedGroup, setSelectedGroup] = useState<string>(expenseDetail?.group_code || "AC03");
-    const [selectedDetail, setSelectedDetail] = useState<string>(expenseDetail?.detail_name || "");
-    const [selectedClient, setSelectedClient] = useState<string>(expenseDetail?.client_name || "");
-    const [accountDetailList, setAccountDetailList] = useState<IAccountGroupOption[]>([]);
-    const [clientList, setClientList] = useState([]);
+    const [accountDetailList, setAccountDetailList] = useState<ISetListOption[]>([]);
+    const [clientList, setClientList] = useState<ISetListOption[]>([]);
     const [flag, setFlag] = useState<boolean>(false);
+    const loginInfo = useRecoilValue<ILoginInfo>(loginInfoState);
+    const [loginUserInfo, setLoginUserInfo] = useState<ILoginUserInfo>();
+    const formRef = useRef<HTMLFormElement>(null);
     const accountGroupList = [
         { label: "온라인지출", value: "AC03" },
         { label: "영업지출", value: "AC04" },
     ];
 
     useEffect(() => {
+        getLoginInfo();
         if (selectedGroup) {
             searchAccountDetailList(selectedGroup);
         }
@@ -32,28 +63,77 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
             setExpenseDetail();
         };
     }, [expenseDetail]);
-
+    const formatDate = moment().format("YYYY-MM-DD");
     const searchAccountDetailList = (selectedGroup: string) => {
-        axios.post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup }).then((res) => {
-            const selectDetailList = [
-                ...res.data.searchAccount.map((detail) => ({
-                    label: detail.detail_name,
-                    value: detail.detail_code,
-                })),
-            ];
-            const getClientList = [
-                { label: "전체", value: "" },
-                ...res.data.clientList.map((detail) => ({
-                    label: detail.clientName,
-                    value: detail.id,
-                })),
-            ];
-            setAccountDetailList(selectDetailList);
-            setClientList(getClientList);
+        axios
+            .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
+            .then((res: AxiosResponse<IClientListBody>) => {
+                const selectDetailList: ISetListOption[] = [
+                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
+                        label: detail.detail_name,
+                        value: detail.detail_code,
+                    })),
+                ];
+                const getClientList: ISetListOption[] = [
+                    { label: "", value: "" },
+                    ...res.data.clientList.map((detail: IClient) => ({
+                        label: detail.clientName,
+                        value: detail.id,
+                    })),
+                ];
+                setAccountDetailList(selectDetailList);
+                setClientList(getClientList);
 
-            if (res.data) {
-                setFlag(true);
+                if (res.data) {
+                    setFlag(true);
+                }
+            });
+    };
+
+    const getLoginInfo = () => {
+        axios
+            .post("/account/expenseLoginInfoBody.do", { loginId: loginInfo.loginId })
+            .then((res: AxiosResponse<ILoginInfoBody>) => {
+                setLoginUserInfo(res.data.lgnInfo);
+            });
+    };
+
+    const expenseSave = () => {
+        axios.post("/account/expenseFileSave.do", formRef.current).then((res: AxiosResponse<IPostResponse>) => {
+            if (res.data.result === "success") {
+                alert("저장되었습니다.");
+                postSuccess();
             }
+        });
+    };
+
+    const expenseDelete = () => {
+        axios
+            .post("/account/expenseDelete.do", new URLSearchParams({ exp_id: expenseDetail?.id }))
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("삭제되었습니다.");
+                    postSuccess();
+                }
+            });
+    };
+
+    const expensefileDownload = () => {
+        const param = new URLSearchParams();
+        param.append("expenseSeq", expenseDetail?.id.toString());
+        axios.post("/account/expenseDownload.do", param, { responseType: "blob" }).then((res: AxiosResponse<Blob>) => {
+            const url = window.URL.createObjectURL(res.data);
+            const link = document.createElement("a");
+            link.href = url;
+            console.log(expenseDetail);
+            link.setAttribute("download", expenseDetail.file_name as string);
+            document.body.appendChild(link);
+            link.click();
+
+            //브라우저에서 a태그 삭제
+            document.body.removeChild(link);
+            //삭제
+            window.URL.revokeObjectURL(url);
         });
     };
 
@@ -73,7 +153,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
     return (
         <ExpenseListModalStyle>
             <div className='container'>
-                <form>
+                <form ref={formRef}>
                     <table className='row'>
                         <caption>caption</caption>
                         <tbody>
@@ -92,7 +172,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                     <StyledInput
                                         type='date'
                                         name='request_date'
-                                        defaultValue={expenseDetail?.req_date}
+                                        defaultValue={expenseDetail ? expenseDetail.req_date : formatDate}
                                         disabled
                                     ></StyledInput>
                                 </td>
@@ -113,7 +193,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                     <StyledInput
                                         type='text'
                                         name='emp_no'
-                                        defaultValue={expenseDetail?.emp_no}
+                                        defaultValue={expenseDetail ? expenseDetail.emp_no : loginUserInfo?.usr_idx}
                                     ></StyledInput>
                                 </td>
                                 <th scope='row'>사원명</th>
@@ -121,7 +201,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                     <StyledInput
                                         type='text'
                                         name='emp_name'
-                                        defaultValue={expenseDetail?.name}
+                                        defaultValue={expenseDetail ? expenseDetail.name : loginUserInfo?.usr_nm}
                                     ></StyledInput>
                                 </td>
                                 <th scope='row'>사용부서</th>
@@ -129,7 +209,9 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                     <StyledInput
                                         type='text'
                                         name='use_dept'
-                                        defaultValue={expenseDetail?.use_department}
+                                        defaultValue={
+                                            expenseDetail ? expenseDetail.use_department : loginUserInfo?.detail_name
+                                        }
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -141,7 +223,8 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                     <StyledSelectBox
                                         name='accountGroup'
                                         options={accountGroupList}
-                                        defaultValue={expenseDetail?.group_code}
+                                        value={selectedGroup}
+                                        onChange={setSelectedGroup}
                                     />
                                 </td>
                                 {flag && (
@@ -163,7 +246,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                             <StyledSelectBox
                                                 name='clientId'
                                                 options={clientList}
-                                                defaultValue={expenseDetail?.client_id}
+                                                defaultValue={expenseDetail?.client_id || ""}
                                             />
                                         </td>
                                     </>
@@ -186,6 +269,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                         type='text'
                                         name='isApproval'
                                         defaultValue={approvalCode(expenseDetail?.is_approval)}
+                                        disabled
                                     ></StyledInput>
                                 </td>
                                 <th scope='row'>승인일자</th>
@@ -194,6 +278,7 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                         type='text'
                                         name='approval_date'
                                         defaultValue={expenseDetail?.approval_date}
+                                        disabled
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -201,13 +286,22 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                                 <th scope='row'>
                                     첨부파일<span className='font_red'>*</span>
                                 </th>
-                                <td>
-                                    <input type='file' className='inputTxt p100' name='fileInput' id='fileInput' />
-                                </td>
+
+                                {!expenseDetail ? (
+                                    <td>
+                                        <input type='file' className='inputTxt p100' name='fileInput' id='fileInput' />
+                                    </td>
+                                ) : (
+                                    <td>
+                                        <div onClick={expensefileDownload}>
+                                            <label>다운로드</label>
+                                        </div>
+                                    </td>
+                                )}
                             </tr>
                             <tr>
                                 <th scope='row'>비고</th>
-                                <td>
+                                <td colSpan={10}>
                                     <textarea
                                         name='expenseContent'
                                         id='content'
@@ -219,8 +313,16 @@ export const ExpenseDetailModal = ({ expenseDetail, postSuccess, setExpenseDetai
                     </table>
 
                     <div className={"button-container"}>
-                        <StyledButton type='button'>수정</StyledButton>
-                        <StyledButton type='button'>삭제</StyledButton>
+                        {!expenseDetail && (
+                            <StyledButton type='button' onClick={expenseSave}>
+                                저장
+                            </StyledButton>
+                        )}
+                        {expenseDetail && (
+                            <StyledButton type='button' onClick={expenseDelete}>
+                                삭제
+                            </StyledButton>
+                        )}
                         <StyledButton type='button' onClick={() => setModal(!modal)}>
                             나가기
                         </StyledButton>
