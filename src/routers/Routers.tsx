@@ -4,6 +4,10 @@ import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
 import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
+import { CommonCode } from "../pages/system/CommonCode";
+import { DetailCode } from "../pages/system/DetailCode";
+import { Department } from "../pages/system/Department";
+import { ExpenseList } from "../pages/account/ExpenseList";
 import { Sales } from "../pages/business/Sales";
 import { Client } from "../pages/business/Client";
 const routers: RouteObject[] = [
