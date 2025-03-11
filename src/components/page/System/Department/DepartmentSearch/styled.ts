@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CommonCodeSearchStyled = styled.div`
+export const DepartmentSearchStyled = styled.div`
     display: flex;
     gap: 5px;
     align-items: center;
