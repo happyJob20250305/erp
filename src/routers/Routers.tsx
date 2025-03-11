@@ -12,6 +12,7 @@ import { CommonCode } from "../pages/system/CommonCode";
 import { DetailCode } from "../pages/system/DetailCode";
 import { Department } from "../pages/system/Department";
 import { ExpenseList } from "../pages/account/ExpenseList";
+import { ExpenseReview } from "../pages/account/ExpenseReview";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -25,6 +26,8 @@ const routers: RouteObject[] = [
                 children: [
                     { path: "manage", element: <Manage /> },
                     { path: "expense-list", element: <ExpenseList /> },
+                    { path: "expense-review", element: <ExpenseReview /> },
+                    { path: "expense-approval", element: <ExpenseReview /> },
                 ],
             },
             {
