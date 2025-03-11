@@ -90,6 +90,16 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
         })
     }
 
+    const cancleAttendanceRequest = () => {
+        axios.post("/personnel/attendanceCancleBody.do", { reqId: id })
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    alert("취소되었습니다.");
+                    postSuccess();
+                }
+            })
+    }
+
     return (
         <AttendanceRequestModalStyle>
             <div className='container'>
@@ -145,7 +155,24 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                         <StyledInput type='text' name="reqdate" defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} />
                     </label>
                     <div className={"button-container"}>
-                        <button type='button' onClick={saveAttendanceRequest}>저장</button>
+                        {
+                            id ?
+                                (<>
+                                    {
+                                        attendanceRequestDetail?.reqStatus === "검토대기"
+                                        && <button type='button'>수정</button>
+                                    }
+                                    {
+                                        (attendanceRequestDetail?.reqStatus === "반려"
+                                            || attendanceRequestDetail?.reqStatus === "취소")
+                                        || <button type='button' onClick={cancleAttendanceRequest}>신청취소</button>
+                                    }
+                                </>)
+                                :
+                                (<>
+                                    <button type='button' onClick={saveAttendanceRequest}>저장</button>
+                                </>)
+                        }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
                 </form>
