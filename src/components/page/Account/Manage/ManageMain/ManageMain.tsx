@@ -5,7 +5,6 @@ import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { ManageModal } from "../ManageModal/ManageModal";
@@ -61,7 +60,7 @@ export const ManageMain = () => {
             });
     };
 
-    const handlerModal = (row) => {
+    const handlerModal = (row: IAccount) => {
         setModal(!modal);
         setDetailCode(row);
     };
