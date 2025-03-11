@@ -61,7 +61,7 @@ export const AttendanceRequestMain = () => {
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
-    const [modalType, setModalType] = useState<string>();
+    const [modalType, setModalType] = useState<string>("detail");
 
     const [id, setId] = useState<number>(0);
     const [attId, setAttId] = useState<number>(0);
@@ -171,7 +171,7 @@ export const AttendanceRequestMain = () => {
                                         postSuccess={postSuccess} />
                                 ) :
                                 (
-                                    <AttendanceRequestRejectModal id={id} setId={setId} />
+                                    <AttendanceRequestRejectModal id={id} setId={setId} setModalType={setModalType} />
                                 )
                         }
 

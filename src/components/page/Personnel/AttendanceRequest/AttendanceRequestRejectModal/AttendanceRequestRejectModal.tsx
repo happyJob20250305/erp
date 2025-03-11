@@ -9,13 +9,14 @@ import { IAttendance } from "../AttendanceRequestMain/AttendanceRequestMain";
 interface AttendanceRequestProps {
     id: number,
     setId: React.Dispatch<React.SetStateAction<number>>
+    setModalType: React.Dispatch<React.SetStateAction<string>>
 }
 
 interface AttendanceRequestRejectResponse {
     detail: IAttendance
 }
 
-export const AttendanceRequestRejectModal: FC<AttendanceRequestProps> = ({ id, setId }) => {
+export const AttendanceRequestRejectModal: FC<AttendanceRequestProps> = ({ id, setId, setModalType }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [attendanceRequestDetail, setAttendanceRequestDetail] = useState<IAttendance>();
 
@@ -24,6 +25,7 @@ export const AttendanceRequestRejectModal: FC<AttendanceRequestProps> = ({ id, s
 
         return () => {
             setId(0);
+            setModalType("detail");
         }
     }, [])
 

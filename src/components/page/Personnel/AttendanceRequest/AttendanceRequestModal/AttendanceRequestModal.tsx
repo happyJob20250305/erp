@@ -158,7 +158,6 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
 
         if (reqSt > reqEd) {
             alert("시작일이 종료일보다 나중일 수 없습니다.");
-            console.log(reqDay);
             return false;
         }
         if (reqDay > attendanceCnt[0].leftAttCnt) {
@@ -251,7 +250,7 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                                 </>)
                                 :
                                 (<>
-                                    <button type='button' onClick={saveAttendanceRequest}>저장</button>
+                                    <button type='button' onClick={saveAttendanceRequest}>신청</button>
                                 </>)
                         }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
