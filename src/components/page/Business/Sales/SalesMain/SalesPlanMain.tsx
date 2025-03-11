@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import { SalesPlanMainStyled } from "./styled";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { SalesPlanMainStyled } from "./styled";
 import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
 
 interface ISalesPlan {
@@ -33,14 +32,6 @@ export const SalesPlanMain = () => {
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
 
     useEffect(() => {
-        // console.log("searchKeyword:" + searchKeyword);
-        // // +>searchKeyword 객체의 key값 확인
-        // console.log("Object.keys(searchKeyword):" + Object.keys(searchKeyword));
-        // // +>searchKeyword 객체의 값 확인
-        // console.log("key, searchKeyword[key]:");
-        // for (let key in searchKeyword) {
-        //     console.log("searchKeyword[key]:" + searchKeyword[key]);
-        // }
         searchSalesPlanList();
     }, [searchKeyword]);
 
@@ -50,9 +41,6 @@ export const SalesPlanMain = () => {
                 ...searchKeyword,
             })
             .then((res: AxiosResponse<ISalesPlanResponse>) => {
-                // console.log("res:" + res);
-                // console.log("res.data:" + res.data);
-                // console.log("res.data.searchPlanList:" + res.data.searchPlanList);
                 setSalesPlanList(res.data.searchPlanList);
             });
     };

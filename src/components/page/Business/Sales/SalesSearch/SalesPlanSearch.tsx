@@ -5,8 +5,6 @@ import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { SalesPlanSearchStyled } from "./styled";
 import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
-import { Navigate, useNavigate } from "react-router-dom";
-import { DefaultValue } from "recoil";
 
 interface IManufacturer {
     industryCode?: string;
@@ -20,35 +18,56 @@ interface IManufacturerResponse {
     manufacturerCnt: number;
 }
 
+interface IMaincategory {
+    group_code: string;
+    group_name: string;
+}
+
+interface IMaincategoryResponse {
+    mainCategory: IMaincategory[];
+    mainCategoryCnt: number;
+}
+
+interface ISubcategory {
+    detail_code: string;
+    detail_name: string;
+}
+
+interface ISubcategoryResponse {
+    subCategory: ISubcategory[];
+    subcategoryCnt: number;
+}
+
+interface IProduct {
+    industry_code: string;
+    name: string;
+    product_code: string;
+}
+
+interface IProductResponse {
+    productList: IProduct[];
+    productCnt: number;
+}
+
 export const SalesPlanSearch = () => {
-    // const manuFacturer = useRef<HTMLInputElement>();
-    // const mainCategory = useRef<HTMLInputElement>();
-    // const subCategory = useRef<HTMLInputElement>();
-    // const product = useRef<HTMLInputElement>();
-    const targetDate = useRef<HTMLInputElement>();
     const { setSearchKeyword } = useContext(SalesPlanContext);
 
-    const [initGroupCode, setInitGroupCode] = useState<string>();
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
-    const [mainCategoryList, setMainCategoryList] = useState([]);
-    const [subCategoryList, setSubCategoryList] = useState([]);
-    const [productList, setProductList] = useState([]);
+    const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
+    const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
+    const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [groupCode, setGroupCode] = useState<string>();
-    // const [selectManuFacturer, setSelectManuFacturer] = useState<string>();
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>("");
     const [selectMaincategory, setSelectMaincategory] = useState<string>("");
     const [selectSubcategory, setSelectSubcategory] = useState<string>("");
     const [selectProduct, setSelectProduct] = useState<string>("");
 
+    const [selectDate, setSelectDate] = useState<string>("");
+
     const manuFacturerOptions = [
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
             ? manuFacturerList.map((manuFacturerValue: IManufacturer) => ({
-                  //   console.log("manuFacturerValue.industryCode:" + manuFacturerValue.industryCode);
-                  //   console.log("manuFacturerValue.industryName:" + manuFacturerValue.industryName);
-                  //   console.log("manuFacturerValue.manufacturer_id:" + manuFacturerValue.manufacturer_id);
-
                   value: manuFacturerValue.industryCode,
                   label: manuFacturerValue.industryName,
               }))
@@ -58,11 +77,7 @@ export const SalesPlanSearch = () => {
     const mainCategoryOptions = [
         { value: "", label: "선택" },
         ...(mainCategoryList?.length > 0
-            ? mainCategoryList.map((mainCategoryValue) => ({
-                  //   console.log("manuFacturerValue.industryCode:" + manuFacturerValue.industryCode);
-                  //   console.log("manuFacturerValue.industryName:" + manuFacturerValue.industryName);
-                  //   console.log("manuFacturerValue.manufacturer_id:" + manuFacturerValue.manufacturer_id);
-
+            ? mainCategoryList.map((mainCategoryValue: IMaincategory) => ({
                   value: mainCategoryValue.group_code,
                   label: mainCategoryValue.group_name,
               }))
@@ -72,48 +87,46 @@ export const SalesPlanSearch = () => {
     const subCategoryOptions = [
         { value: "", label: "선택" },
         ...(subCategoryList?.length > 0
-            ? subCategoryList.map((subCategoryValue, index) => ({
-                  //   console.log("manuFacturerValue.industryCode:" + manuFacturerValue.industryCode);
-                  //   console.log("manuFacturerValue.industryName:" + manuFacturerValue.industryName);
-                  //   console.log("manuFacturerValue.manufacturer_id:" + manuFacturerValue.manufacturer_id);
+            ? subCategoryList.map((subCategoryValue: ISubcategory) => ({
+                  // key 요소가 활용 되고 있는지 확인 필요
+                  key: subCategoryValue.detail_code,
                   value: subCategoryValue.detail_code,
                   label: subCategoryValue.detail_name,
               }))
             : []),
     ];
 
+    const productIdx = new Array(productList.length).toString;
+
     const productOptions = [
         { value: "", label: "선택" },
         ...(productList?.length > 0
-            ? productList.map((productValue) => ({
-                  //   console.log("manuFacturerValue.industryCode:" + manuFacturerValue.industryCode);
-                  //   console.log("manuFacturerValue.industryName:" + manuFacturerValue.industryName);
-                  //   console.log("manuFacturerValue.manufacturer_id:" + manuFacturerValue.manufacturer_id);
-                  key: productValue.product_code,
-                  value: productValue.product_code,
+            ? productList.map((productValue: IProduct) => ({
+                  // 오류 발생
+                  // Warning: Encountered two children with the same key, `MF00102`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. Error Component Stack
+                  // select box에 새로운 리스트를 반영할 떄 기존 리스트가 사라지고 새로운 리스트가 담겨야 하는데 유일한 키값이 중복되어
+                  // 고유값 활용을 위한 mapper 영역 수정이 필요한지 확인 필요
+
+                  // key 요소가 활용 되고 있는지 확인 필요
+                  key: productIdx,
+                  value: productValue.name,
                   label: productValue.name,
               }))
             : []),
     ];
 
+    // select box의 option에 리스트를 불러올때 발생하는 지연현상 수정 필요
     useEffect(() => {
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();
         getProductList();
-        console.log("selectManuFacturer:" + selectManuFacturer);
-        console.log("selectMaincategory:" + selectMaincategory);
-        console.log("selectSubcategory:" + selectSubcategory);
-        console.log("selectProduct:" + selectProduct);
     }, [selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
 
-    // /리스트만 가져와서 값을 활용, useRef를 활용하여 재랜더링 방지와 값을 저장하여 사용?
     const getManufacturerList = () => {
         axios
             .post("/business/sales-plan/getmanufacturerBody.do", { key: "val1" })
             .then((res: AxiosResponse<IManufacturerResponse>) => {
-                // console.log("res.data.unitIndustrycode:" + res.data.unitIndustrycode);
-                console.log("res.data.manufacturerList:" + res.data.manuFacturerList);
                 setManuFacturerList(res.data.manuFacturerList);
             });
     };
@@ -121,8 +134,7 @@ export const SalesPlanSearch = () => {
     const getMainCategoryList = () => {
         axios
             .post("/business/sales-plan/getMainCategoryBody.do", { group_code: selectManuFacturer })
-            .then((res: AxiosResponse) => {
-                console.log("res.data.mainCategory:" + res.data.mainCategory);
+            .then((res: AxiosResponse<IMaincategoryResponse>) => {
                 setMainCategoryList(res.data.mainCategory);
             });
     };
@@ -130,8 +142,7 @@ export const SalesPlanSearch = () => {
     const getSubCategoryList = () => {
         axios
             .post("/business/sales-plan/getSubCategoryListBody.do", { group_code: selectMaincategory })
-            .then((res: AxiosResponse) => {
-                console.log("res.data.subCategory:" + res.data.subCategory);
+            .then((res: AxiosResponse<ISubcategoryResponse>) => {
                 setSubCategoryList(res.data.subCategory);
             });
     };
@@ -139,29 +150,18 @@ export const SalesPlanSearch = () => {
     const getProductList = () => {
         axios
             .post("/business/sales-plan/getProductListBody.do", { industry_code: selectSubcategory })
-            .then((res: AxiosResponse) => {
-                console.log("res.data.productList:" + res.data.productList);
+            .then((res: AxiosResponse<IProductResponse>) => {
                 setProductList(res.data.productList);
             });
     };
 
     const handlerSearch = () => {
-        // console.log("manuFacturer.current.value:" + manuFacturer.current.value);
-        // console.log("mainCategory.current.value:" + mainCategory.current.value);
-        // console.log("subCategory.current.value:" + subCategory.current.value);
-        // console.log("product.current.value:" + product.current.value);
-        // console.log("targetDate.current.value:" + targetDate.current.value);
         setSearchKeyword({
-            // // as-is 개발자도구-페이로드 결과 값들
+            // as-is 개발자도구-페이로드 결과 값들
             group_code: selectManuFacturer,
-            product_code: selectMaincategory,
-            target_date: targetDate,
-            product_name: "뽀로로 병원놀이",
-            enterence: "",
-            // group_code: mainCategory.current.value,
-            // product_code: subCategory.current.value,
-            // target_date: targetDate.current.value,
-            // product_name: product.current.value,
+            product_code: selectSubcategory,
+            target_date: selectDate,
+            product_name: selectProduct,
             // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
             // enterence: "",
         });
@@ -169,16 +169,18 @@ export const SalesPlanSearch = () => {
 
     return (
         <SalesPlanSearchStyled>
-            {/* <span>
-                {"산업군"}
-                <StyledInput ref={manuFacturer} />
-            </span> */}
             <span>
                 {"산업군"}
                 <StyledSelectBox
                     options={manuFacturerOptions}
+                    key={selectManuFacturer}
                     value={selectManuFacturer}
-                    onChange={(value: string) => setSelectManuFacturer(value)}
+                    onChange={(value: string) => {
+                        setSelectManuFacturer(value);
+                        setSelectMaincategory("");
+                        setSelectSubcategory("");
+                        setSelectProduct("");
+                    }}
                 />
             </span>
             <span>
@@ -186,7 +188,11 @@ export const SalesPlanSearch = () => {
                 <StyledSelectBox
                     options={mainCategoryOptions}
                     value={selectMaincategory}
-                    onChange={(value: string) => setSelectMaincategory(value)}
+                    onChange={(value: string) => {
+                        setSelectMaincategory(value);
+                        setSelectSubcategory("");
+                        setSelectProduct("");
+                    }}
                 />
             </span>
             <span>
@@ -194,7 +200,10 @@ export const SalesPlanSearch = () => {
                 <StyledSelectBox
                     options={subCategoryOptions}
                     value={selectSubcategory}
-                    onChange={(value: string) => setSelectSubcategory(value)}
+                    onChange={(value: string) => {
+                        setSelectSubcategory(value);
+                        setSelectProduct("");
+                    }}
                 />
             </span>
             <span>
@@ -207,7 +216,7 @@ export const SalesPlanSearch = () => {
             </span>
             <span>
                 {"날짜"}
-                <StyledInput type='date' ref={targetDate} />
+                <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
             </span>
             <StyledButton onClick={handlerSearch}>조회</StyledButton>
         </SalesPlanSearchStyled>
