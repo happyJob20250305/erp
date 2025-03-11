@@ -4,6 +4,8 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { AttendanceRequestSearchStyled } from "./styled"
 import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
 
 export const AttendanceRequestSearch = () => {
     const [startDate, setStartDate] = useState<string>();
@@ -11,6 +13,7 @@ export const AttendanceRequestSearch = () => {
     const [selectReqStatusValue, setSelectReqStatusValue] = useState<string>("");
     const [selectReqTypeValue, setSelectReqTypeValue] = useState<string>("");
     const { setSearchKeyword } = useContext(AttendanceContext);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
 
     const optionsReqType = [
         { label: "전체", value: "" },
@@ -55,6 +58,7 @@ export const AttendanceRequestSearch = () => {
                 onChange={setSelectReqStatusValue}
             />
             <StyledButton variant='secondary' onClick={handlerSearch}>검색</StyledButton>
+            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
         </AttendanceRequestSearchStyled>
     )
 }

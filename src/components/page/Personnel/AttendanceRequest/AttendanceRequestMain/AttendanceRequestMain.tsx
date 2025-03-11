@@ -32,6 +32,12 @@ interface IAttendanceCnt {
     leftAttCnt: number
 }
 
+export interface IloginInfo {
+    detail_name: string, //부서
+    usr_nm: string,
+    usr_idx: number, //사번
+}
+
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],
     attendanceRequestCnt: number
@@ -39,19 +45,23 @@ interface IAttendanceListResponse {
 
 interface IAttendanceCntResponse {
     attendanceCnt: IAttendanceCnt[]
+    loginInfo: IloginInfo
 }
 
 export const AttendanceRequestMain = () => {
-    const userInfo = sessionStorage.getItem("userInfo");
-    const loginEmpId = JSON.parse(userInfo).empId;
+    const loginUserInfo = sessionStorage.getItem("userInfo");
+    const loginEmpId = JSON.parse(loginUserInfo).empId;
 
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [attendanceCnt, setAttendanceCnt] = useState<IAttendanceCnt[]>([]);
+    const [loginInfo, setloginInfo] = useState<IloginInfo>();
+
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [id, setId] = useState<number>(0);
+    const [attId, setAttId] = useState<number>(0);
 
     const columns = [
         { key: "id", title: "번호" },
@@ -66,8 +76,8 @@ export const AttendanceRequestMain = () => {
     ] as Column<IAttendance>[];
 
     const columnsCnt = [
-        { key: "useAttCnt", title: "총연차" },
-        { key: "attCnt", title: "사용연차" },
+        { key: "attCnt", title: "총연차" },
+        { key: "useAttCnt", title: "사용연차" },
         { key: "leftAttCnt", title: "남은연차" },
     ] as Column<IAttendanceCnt>[];
 
@@ -82,6 +92,7 @@ export const AttendanceRequestMain = () => {
             userIdx: loginEmpId
         }).then((res: AxiosResponse<IAttendanceCntResponse>) => {
             setAttendanceCnt(res.data.attendanceCnt);
+            setloginInfo(res.data.loginInfo);
         })
 
         axios.post("/personnel/attendanceListBody.do", {
@@ -93,12 +104,18 @@ export const AttendanceRequestMain = () => {
             setAttendanceList(res.data.attendanceList);
             setAttendanceRequestCnt(res.data.attendanceRequestCnt);
             setCPage(currentPage);
+            setAttId(res.data.attendanceList[0].attId);
         })
     }
 
     const handlerModal = (id: number) => {
         setId(id);
         setModal(!modal);
+    }
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchAttendanceList();
     }
 
     return (
@@ -135,7 +152,7 @@ export const AttendanceRequestMain = () => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceRequestModal id={id} setId={setId} />
+                        <AttendanceRequestModal id={id} setId={setId} loginInfo={loginInfo} attId={attId} postSuccess={postSuccess} />
                     </Portal>
                 )
             }
