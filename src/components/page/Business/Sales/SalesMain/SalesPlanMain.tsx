@@ -2,6 +2,12 @@ import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
 import { SalesPlanMainStyled } from "./styled";
 import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { Portal } from "../../../../common/potal/Portal";
+import { SalesModal } from "../SalesModal/SalesModal";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
 
 interface ISalesPlan {
     client_id: number;
@@ -30,6 +36,19 @@ interface ISalesPlanResponse {
 export const SalesPlanMain = () => {
     const { searchKeyword } = useContext(SalesPlanContext);
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
+    const [planNum, setPlanNum] = useState<number>(0);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
+
+    const columns = [
+        { key: "target_date", title: "목표날짜" },
+        { key: "client_name", title: "거래처 이름" },
+        { key: "name", title: "재조업체" },
+        { key: "group_name", title: "대분류" },
+        { key: "detail_name", title: "소분류" },
+        { key: "product_name", title: "제품명" },
+        { key: "goal_quanti", title: "목표수량" },
+        { key: "plan_memo", title: "비고" },
+    ] as Column<ISalesPlan>[];
 
     useEffect(() => {
         searchSalesPlanList();
@@ -45,54 +64,20 @@ export const SalesPlanMain = () => {
             });
     };
 
+    const postSucces = () => {
+        setModal(!modal);
+        searchSalesPlanList();
+    };
+
     return (
         <SalesPlanMainStyled>
-            <table>
-                <colgroup>
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                    <col style={{ width: "12.5%", height: "400px" }} />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>목표날짜</th>
-                        <th>거래처 이름</th>
-                        <th>재조업체</th>
-                        <th>대분류</th>
-                        <th>소분류</th>
-                        <th>제품명</th>
-                        <th>목표수량</th>
-                        <th>비고</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salesPlanList?.length > 0 ? (
-                        salesPlanList.map((sales) => {
-                            return (
-                                <tr key={sales.plan_num}>
-                                    <td>{sales.target_date}</td>
-                                    <td>{sales.client_name}</td>
-                                    <td>{sales.name}</td>
-                                    <td>{sales.group_name}</td>
-                                    <td>{sales.detail_name}</td>
-                                    <td>{sales.product_name}</td>
-                                    <td>{sales.goal_quanti}</td>
-                                    <td>{sales.plan_memo}</td>
-                                </tr>
-                            );
-                        })
-                    ) : (
-                        <tr>
-                            <td colSpan={8}>검색 결과가 없습니다.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+            <StyledTable data={salesPlanList} columns={columns} hoverable={true} fullWidth={true} />
+
+            {modal && (
+                <Portal>
+                    <SalesModal planNum={planNum} setPlanNum={setPlanNum} postSucces={postSucces} />
+                </Portal>
+            )}
         </SalesPlanMainStyled>
     );
 };
