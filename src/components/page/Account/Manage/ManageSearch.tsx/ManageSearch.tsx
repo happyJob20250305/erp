@@ -81,10 +81,13 @@ export const ManageSearch = () => {
         axios
             .post("/account/accountSearchDetailBody.do", { group_code: selectedGroup })
             .then((res: AxiosResponse<IDetailGroupListBody>) => {
-                const selectDetailList: ISetListOption[] = res.data.searchAccount.map((detail: IDetailGroup) => ({
-                    label: detail.detail_name,
-                    value: detail.detail_code,
-                }));
+                const selectDetailList: ISetListOption[] = [
+                    { label: "전체", value: "" },
+                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
+                        label: detail.detail_name,
+                        value: detail.detail_code,
+                    })),
+                ];
                 setAccountDetailList(selectDetailList);
             });
     };

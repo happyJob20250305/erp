@@ -1,31 +1,26 @@
 import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { modalState } from "../../../../../stores/modalState";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import { ExpenseListSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
+import { ExpenseReviewSearchStyled } from "./styled";
+import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
-import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
-import axios, { AxiosResponse } from "axios";
+import { ExpenseReviewContext } from "../../../../../api/Provider/ExpenseReviewProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
+import axios, { AxiosResponse } from "axios";
+import {
+    IExpenseDetailGroup,
+    IExpenseDetailGroupListBody,
+} from "../../ExpenseList/ExpenseListSearch/ExpenseListSearch";
 
-export interface IExpenseDetailGroup {
-    detail_name: string;
-    detail_code: string;
-}
-
-export interface IExpenseDetailGroupListBody {
-    searchAccount: IExpenseDetailGroup[];
-}
-
-export const ExpenseListSearch = () => {
+export const ExpenseReviewSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const { setSearchKeyword } = useContext(ExpenseReviewContext);
     const [searchStDate, setSearchStDate] = useState<string>("");
     const [searchEdDate, setSearchEdDate] = useState<string>("");
     const [selectedGroup, setSelectedGroup] = useState<string>("");
     const [selectedDetail, setSelectedDetail] = useState<string>("");
     const [selectedApprove, setSelectedApprove] = useState<string>("");
-    const { setSearchKeyword } = useContext(ExpenseListContext);
     const [accountDetailList, setAccountDetailList] = useState<ISetListOption[]>([]);
     const approveStateList: ISetListOption[] = [
         { label: "전체", value: "" },
@@ -75,7 +70,7 @@ export const ExpenseListSearch = () => {
         });
     };
     return (
-        <ExpenseListSearchStyled>
+        <ExpenseReviewSearchStyled>
             <span>신청일자</span>
             <StyledInput
                 type='date'
@@ -90,13 +85,15 @@ export const ExpenseListSearch = () => {
                     setSearchEdDate(e.target.value);
                 }}
             ></StyledInput>
+            <span>승인여부</span>
             <StyledSelectBox options={approveStateList} value={selectedApprove} onChange={setSelectedApprove} />
+            <span>계정대분류</span>
             <StyledSelectBox options={accountGroupList} value={selectedGroup} onChange={setSelectedGroup} />
+            <span>계정과목</span>
             <StyledSelectBox options={accountDetailList} value={selectedDetail} onChange={setSelectedDetail} />
             <StyledButton variant='secondary' onClick={handlerSearch}>
                 검색
             </StyledButton>
-            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
-        </ExpenseListSearchStyled>
+        </ExpenseReviewSearchStyled>
     );
 };
