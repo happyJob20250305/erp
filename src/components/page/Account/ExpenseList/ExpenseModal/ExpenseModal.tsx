@@ -12,6 +12,7 @@ import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { IExpense } from "../ExpenseListMain/ExpenseListMain";
 import { IExpenseDetailGroup, IExpenseDetailGroupListBody } from "../ExpenseListSearch/ExpenseListSearch";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
+import { nullCheck } from "../../../../../common/nullCheck";
 
 interface ILoginUserInfo {
     usr_idx: number;
@@ -51,6 +52,11 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
         { label: "온라인지출", value: "AC03" },
         { label: "영업지출", value: "AC04" },
     ];
+    const LaberColor = ({ label, showAsterisk }: { label: string; showAsterisk: boolean }) => (
+        <th>
+            {label} {showAsterisk && <span style={{ color: "red" }}> * </span>}
+        </th>
+    );
 
     useEffect(() => {
         getLoginInfo();
@@ -100,6 +106,18 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
     };
 
     const expenseSave = () => {
+        const formData = new FormData(formRef.current);
+        const file = formData.get("fileInput") as File | null;
+        if (
+            nullCheck([
+                { inval: formData.get("use_date").toString(), msg: "사용일자를 선택해주세요." },
+                { inval: formData.get("exp_pay").toString(), msg: "결의금액을 입력해주세요." },
+            ])
+        )
+            if (!file || file.size === 0) {
+                alert("첨부파일을 등록해야 합니다.");
+                return;
+            }
         axios.post("/account/expenseFileSave.do", formRef.current).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
                 alert("저장되었습니다.");
@@ -162,7 +180,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                     <table className='row'>
                         <tbody>
                             <tr>
-                                <th scope='row'>결의번호</th>
+                                <th>결의번호</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -171,7 +189,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>신청일자</th>
+                                <th>신청일자</th>
                                 <td>
                                     <StyledInput
                                         type='date'
@@ -180,8 +198,8 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>
-                                    사용일자 <span className='font_red'>*</span>
+                                <th>
+                                    <LaberColor label='사용일자' showAsterisk={!expenseDetail}></LaberColor>
                                 </th>
                                 <td>
                                     <StyledInput
@@ -192,7 +210,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 </td>
                             </tr>
                             <tr>
-                                <th scope='row'>사번</th>
+                                <th>사번</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -208,7 +226,7 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                         defaultValue={expenseDetail ? expenseDetail.name : loginUserInfo?.usr_nm}
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>사용부서</th>
+                                <th>사용부서</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -220,8 +238,8 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 </td>
                             </tr>
                             <tr id='writer'>
-                                <th scope='row'>
-                                    계정대분류명 <span className='font_red'>*</span>
+                                <th>
+                                    <LaberColor label='계정대분류명' showAsterisk={!expenseDetail}></LaberColor>
                                 </th>
                                 <td>
                                     <StyledSelectBox
@@ -233,8 +251,8 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 </td>
                                 {flag && (
                                     <>
-                                        <th scope='row'>
-                                            계정과목 <span className='font_red'>*</span>
+                                        <th>
+                                            <LaberColor label='계정과목' showAsterisk={!expenseDetail}></LaberColor>
                                         </th>
                                         <td>
                                             <StyledSelectBox
@@ -243,8 +261,8 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                                 defaultValue={expenseDetail?.debit_code}
                                             />
                                         </td>
-                                        <th scope='row'>
-                                            거래처명 <span className='font_red'>*</span>
+                                        <th>
+                                            <label>거래처명</label>
                                         </th>
                                         <td>
                                             <StyledSelectBox
@@ -257,8 +275,8 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 )}
                             </tr>
                             <tr>
-                                <th scope='row'>
-                                    결의금액 <span className='font_red'>*</span>
+                                <th>
+                                    <LaberColor label='결의금액' showAsterisk={!expenseDetail}></LaberColor>
                                 </th>
                                 <td>
                                     <StyledInput
@@ -287,10 +305,9 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
                                 </td>
                             </tr>
                             <tr>
-                                <th scope='row'>
-                                    첨부파일<span className='font_red'>*</span>
+                                <th>
+                                    <LaberColor label='첨부파일' showAsterisk={!expenseDetail}></LaberColor>
                                 </th>
-
                                 {!expenseDetail ? (
                                     <td>
                                         <input type='file' className='inputTxt p100' name='fileInput' id='fileInput' />
