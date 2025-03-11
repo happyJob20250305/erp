@@ -9,16 +9,18 @@ interface SelectBoxProps {
     fullwidth?: boolean;
     name?: string;
     defaultValue?: string | number;
+    disabled?: boolean;
 }
 
 export const StyledSelectBox: FC<SelectBoxProps> = ({
-    name,
     options,
     value,
     onChange,
     variant = "default",
     fullwidth = false,
     defaultValue,
+    name,
+    disabled,
 }) => {
     return (
         <SelectBox
@@ -29,6 +31,7 @@ export const StyledSelectBox: FC<SelectBoxProps> = ({
             onChange={(e) => onChange?.(e.target.value)}
             variant={variant}
             fullwidth={fullwidth || undefined}
+            disabled={disabled}
         >
             {options.map((option) => (
                 <option key={option.value} value={option.value}>
