@@ -21,6 +21,8 @@ export interface IExpenseReview {
     group_code: string;
     detail_name: string;
     debit_code: string;
+    crebit_code: string;
+    crebit_name: string;
     use_department: string;
     expense_payment: string;
     is_approval: string;
