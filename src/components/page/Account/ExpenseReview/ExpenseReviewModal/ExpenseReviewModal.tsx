@@ -56,6 +56,9 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
 
     const expenseUpdate = () => {
         const formData = new FormData(formRef.current);
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
         formData.append("exp_id", expenseDetail.id.toString());
         axios.post("/account/expenseUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
@@ -252,16 +255,31 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         </div>
                                     </td>
                                 )}
-                                <th>대변 계정과목</th>
-                                <td>
-                                    <StyledSelectBox
-                                        name='crebitDetail'
-                                        options={crebitList}
-                                        value={selectedCrebitDetail}
-                                        onChange={setSelectedCrebitDetail}
-                                        disabled={expenseDetail.is_approval !== "W"}
-                                    />
-                                </td>
+                                {expenseDetail.is_approval == "W" ? (
+                                    <>
+                                        <th>대변 계정과목</th>
+                                        <td>
+                                            <StyledSelectBox
+                                                name='detail_code'
+                                                options={crebitList}
+                                                value={selectedCrebitDetail}
+                                                onChange={setSelectedCrebitDetail}
+                                            />
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th>대변 계정과목</th>
+                                        <td>
+                                            <StyledInput
+                                                type='text'
+                                                name='detail_code'
+                                                defaultValue={expenseDetail?.detail_name}
+                                                disabled
+                                            ></StyledInput>
+                                        </td>
+                                    </>
+                                )}
                             </tr>
                             <tr>
                                 <th>비고</th>
@@ -270,6 +288,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         name='expenseContent'
                                         id='content'
                                         defaultValue={expenseDetail?.expense_content}
+                                        disabled
                                     ></textarea>
                                 </td>
                             </tr>
@@ -281,7 +300,6 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                 검토완료
                             </StyledButton>
                         )}
-
                         <StyledButton type='button' onClick={() => setModal(!modal)}>
                             나가기
                         </StyledButton>
