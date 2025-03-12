@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { NoticeModal } from "../NoticeModal/NoticeModal";
-
+import { NoticeMainStyled } from "./styled";
+import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 
 export interface INotice {
     notiSeq: number,
@@ -26,7 +26,7 @@ export const NoticeMain = () => {
     const [noticeList, setNoticeList] = useState<INotice[]>([]);
     const [noticeCnt, setNoticeCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
-    const { search } = useLocation();
+    const { searchKeyword } = useContext(SystemContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [notiSeq, setNotiSeq] = useState<number>(0);
 
@@ -39,16 +39,16 @@ export const NoticeMain = () => {
 
     useEffect(() => {
         searchNoticeList();
-    }, [search])
+    }, [searchKeyword])
 
     const searchNoticeList = (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        const searchParam = new URLSearchParams(search);
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
-
-        axios.post("/system/noticeList.do", searchParam).then((res: AxiosResponse<INoticeListBodyResponse>) => {
+        axios.post("/system/noticeListBody.do", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        }).then((res: AxiosResponse<INoticeListBodyResponse>) => {
             setNoticeList(res.data.noticeList);
             setNoticeCnt(res.data.noticeCnt);
             setCPage(currentPage);
@@ -66,7 +66,7 @@ export const NoticeMain = () => {
     }
 
     return (
-        <>
+        <NoticeMainStyled>
             총 갯수 {noticeCnt} : 현재 페이지 : {cPage}
             <StyledTable
                 columns={columns}
@@ -90,6 +90,6 @@ export const NoticeMain = () => {
                     </Portal>
                 )
             }
-        </>
+        </NoticeMainStyled>
     );
 };

@@ -1,33 +1,24 @@
-import { Button } from "react-bootstrap";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { NoticeSearchStyled } from "./styled";
-import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
+import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 
 export const NoticeSearch = () => {
-
     const title = useRef<HTMLInputElement>();
     const [startDate, setStartDate] = useState<string>();
     const [endDate, setEndDate] = useState<string>();
-    const navigate = useNavigate();
+    const { setSearchKeyword } = useContext(SystemContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
 
-    useEffect(() => {
-        window.location.search && navigate(window.location.pathname, { replace: true });
-    }, [])
-
     const handlerSearch = () => {
-        const query: string[] = [];
-
-        !title.current.value || query.push(`searchTitle=${title.current.value}`);
-        !startDate || query.push(`searchStDate=${startDate}`);
-        !endDate || query.push(`searchEdDate=${endDate}`);
-
-        const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-        navigate(`/react/system/notice${queryString}`);
+        setSearchKeyword({
+            searchTitle: title.current.value,
+            searchStDate: startDate,
+            searchEdDate: endDate
+        })
     }
 
     return (

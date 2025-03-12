@@ -1,8 +1,7 @@
-import { atom, useSetRecoilState } from 'recoil';
-import { ILoginInfo } from '../models/interface/store/userInfo';
-import { useEffect } from 'react';
+import { atom } from "recoil";
+import { ILoginInfo } from "../models/interface/store/userInfo";
 
 export const loginInfoState = atom<ILoginInfo>({
-    key: 'loginInfoState',
+    key: "loginInfoState",
     default: {},
 });

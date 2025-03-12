@@ -1,5 +1,6 @@
 export interface ILoginInfo {
     loginId?: string;
+    empId?: string | number;
     userNm?: string;
     usrMnuAtrt?: IMenuState[];
     userType?: string;
