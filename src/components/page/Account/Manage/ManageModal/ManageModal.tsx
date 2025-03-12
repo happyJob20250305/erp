@@ -24,7 +24,6 @@ interface IManageModalProps {
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");
     const [selectCodeType, setSelectedCodeType] = useState<string>(detailCode?.code_type || "");
-    const [selectedUse, setSelectedUse] = useState<string>(detailCode?.use_yn || "");
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const formRef = useRef<HTMLFormElement>(null);
     const [accountGroupList, setAccountGroupList] = useState<ISetListOption[]>([]);
@@ -80,12 +79,8 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
 
     const accountUpdate = () => {
         const formData = new FormData(formRef.current);
-        if (
-            nullCheck([
-                { inval: formData.get("group_code").toString(), msg: "계정대분류를 선택해주세요." },
-                { inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." },
-            ])
-        )
+        console.log(formData.values());
+        if (nullCheck([{ inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." }]))
             formData.append("detail_code", detailCode.detail_code);
         axios.post("/account/accountUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
@@ -181,8 +176,6 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                                         <StyledSelectBox
                                             name='use_Yn'
                                             options={useYn}
-                                            // value={selectedUse}
-                                            // onChange={setSelectedUse}
                                             defaultValue={detailCode?.use_yn}
                                         />
                                     </td>
