@@ -1,12 +1,7 @@
 import axios, { AxiosResponse } from "axios";
-import { useContext, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import { SalesPlanSearchStyled } from "./styled";
-import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
 
 interface IManufacturer {
     industryCode?: string;
@@ -51,18 +46,41 @@ interface IProductResponse {
     productCnt: number;
 }
 
-export const SalesSearch = () => {
-    const { setSearchKeyword } = useContext(SalesPlanContext);
+interface ISalesSearchProps {
+    selectManuFacturer: string;
+    selectSubcategory: string;
+    selectDate: string;
+    selectProduct: string;
+    setSelectManuFacturer: React.Dispatch<React.SetStateAction<string>>;
+    setSelectSubcategory: React.Dispatch<React.SetStateAction<string>>;
+    setSelectDate: React.Dispatch<React.SetStateAction<string>>;
+    setSelectProduct: React.Dispatch<React.SetStateAction<string>>;
+}
 
+export const SalesSearch: FC<ISalesSearchProps> = ({
+    selectManuFacturer,
+    setSelectManuFacturer,
+    selectSubcategory,
+    setSelectSubcategory,
+    selectDate,
+    setSelectDate,
+    setSelectProduct,
+    selectProduct,
+}) => {
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectManuFacturer, setSelectManuFacturer] = useState<string>("");
     const [selectMaincategory, setSelectMaincategory] = useState<string>("");
-    const [selectSubcategory, setSelectSubcategory] = useState<string>("");
-    const [selectProduct, setSelectProduct] = useState<string>("");
+
+    // select box의 option에 리스트를 불러올때 발생하는 지연현상 수정 필요
+    useEffect(() => {
+        getManufacturerList();
+        getMainCategoryList();
+        getSubCategoryList();
+        getProductList();
+    }, [selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
 
     const manuFacturerOptions = [
         { value: "", label: "선택" },
@@ -115,14 +133,6 @@ export const SalesSearch = () => {
             : []),
     ];
 
-    // select box의 option에 리스트를 불러올때 발생하는 지연현상 수정 필요
-    useEffect(() => {
-        getManufacturerList();
-        getMainCategoryList();
-        getSubCategoryList();
-        getProductList();
-    }, [selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
-
     const getManufacturerList = () => {
         axios
             .post("/business/sales-plan/getmanufacturerBody.do", { key: "val1" })
@@ -155,85 +165,56 @@ export const SalesSearch = () => {
             });
     };
 
-    const handlerSalesSearch = () => {
-        setSearchKeyword({
-            // as-is 개발자도구-페이로드 결과 값들
-            // group_code: selectManuFacturer,
-            // product_code: selectSubcategory,
-            // product_name: selectProduct,
-            // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
-            // enterence: "",
-
-            manuFacturerList: manuFacturerList,
-            mainCategoryList: mainCategoryList,
-            subCategoryList: subCategoryList,
-            productList: productList,
-
-            manuFacturerOptions: manuFacturerOptions,
-            mainCategoryOptions: mainCategoryOptions,
-            subCategoryOptions: subCategoryOptions,
-            productOptions: productOptions,
-
-            // selectManuFacturer: selectManuFacturer,
-            // selectMaincategory: selectMaincategory,
-            // selectSubcategory: selectSubcategory,
-            // selectProduct: selectProduct,
-        });
-    };
-
-    // return (
-    //     <SalesPlanSearchStyled>
-    //         <span>
-    //             {"산업군"}
-    //             <StyledSelectBox
-    //                 options={manuFacturerOptions}
-    //                 key={selectManuFacturer}
-    //                 value={selectManuFacturer}
-    //                 onChange={(value: string) => {
-    //                     setSelectManuFacturer(value);
-    //                     setSelectMaincategory("");
-    //                     setSelectSubcategory("");
-    //                     setSelectProduct("");
-    //                 }}
-    //             />
-    //         </span>
-    //         <span>
-    //             {"대분류"}
-    //             <StyledSelectBox
-    //                 options={mainCategoryOptions}
-    //                 value={selectMaincategory}
-    //                 onChange={(value: string) => {
-    //                     setSelectMaincategory(value);
-    //                     setSelectSubcategory("");
-    //                     setSelectProduct("");
-    //                 }}
-    //             />
-    //         </span>
-    //         <span>
-    //             {"소분류"}
-    //             <StyledSelectBox
-    //                 options={subCategoryOptions}
-    //                 value={selectSubcategory}
-    //                 onChange={(value: string) => {
-    //                     setSelectSubcategory(value);
-    //                     setSelectProduct("");
-    //                 }}
-    //             />
-    //         </span>
-    //         <span>
-    //             {"제품"}
-    //             <StyledSelectBox
-    //                 options={productOptions}
-    //                 value={selectProduct}
-    //                 onChange={(value: string) => setSelectProduct(value)}
-    //             />
-    //         </span>
-    //         <span>
-    //             {"날짜"}
-    //             <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
-    //         </span>
-    //         <StyledButton onClick={handlerSearch}>조회</StyledButton>
-    //         <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
-    //     </SalesPlanSearchStyled>
-    // );
+    return (
+        <>
+            <label>
+                제조업체
+                <StyledSelectBox
+                    options={manuFacturerOptions}
+                    value={selectManuFacturer}
+                    onChange={(value: string) => {
+                        setSelectManuFacturer(value);
+                        setSelectMaincategory("");
+                        setSelectSubcategory("");
+                        setSelectProduct("");
+                    }}
+                />
+            </label>
+            <label>
+                대분류
+                <StyledSelectBox
+                    options={mainCategoryOptions}
+                    value={selectMaincategory}
+                    onChange={(value: string) => {
+                        setSelectMaincategory(value);
+                        setSelectSubcategory("");
+                        setSelectProduct("");
+                    }}
+                />
+            </label>
+            <label>
+                소분류
+                <StyledSelectBox
+                    options={subCategoryOptions}
+                    value={selectSubcategory}
+                    onChange={(value: string) => {
+                        setSelectSubcategory(value);
+                        setSelectProduct("");
+                    }}
+                />
+            </label>
+            <label>
+                제품
+                <StyledSelectBox
+                    options={productOptions}
+                    value={selectProduct}
+                    onChange={(value: string) => setSelectProduct(value)}
+                />
+            </label>
+            <label>
+                날짜
+                <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
+            </label>
+        </>
+    );
 };
