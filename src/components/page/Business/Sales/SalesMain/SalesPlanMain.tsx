@@ -8,36 +8,17 @@ import { Portal } from "../../../../common/potal/Portal";
 import { SalesModal } from "../SalesModal/SalesModal";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-
-interface ISalesPlan {
-    client_id: number;
-    client_name: string;
-    detail_code: string;
-    detail_name: string;
-    emp_id: number;
-    emp_name: string;
-    goal_quanti: number;
-    group_name: string;
-    industry_code: string;
-    manufacturer_id: number;
-    name: string;
-    perform_qut: number;
-    plan_memo: string;
-    plan_num: number;
-    product_name: string;
-    target_date: string;
-}
-
-interface ISalesPlanResponse {
-    searchPlanList: ISalesPlan[];
-    salesCnt: number;
-}
+import { ISalesPlan, ISalesPlanResponse } from "../../../../../models/interface/ISales";
 
 export const SalesPlanMain = () => {
     const { searchKeyword } = useContext(SalesPlanContext);
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
-    const [planNum, setPlanNum] = useState<number>(0);
+    const [planNum, setPlanNum] = useState<ISalesPlan>();
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+
+    useEffect(() => {
+        searchSalesPlanList();
+    }, [searchKeyword]);
 
     const columns = [
         { key: "target_date", title: "목표날짜" },
@@ -50,10 +31,6 @@ export const SalesPlanMain = () => {
         { key: "plan_memo", title: "비고" },
     ] as Column<ISalesPlan>[];
 
-    useEffect(() => {
-        searchSalesPlanList();
-    }, [searchKeyword]);
-
     const searchSalesPlanList = () => {
         axios
             .post("/business/sales-plan/searchPlanListBody.do", {
@@ -64,6 +41,11 @@ export const SalesPlanMain = () => {
             });
     };
 
+    const handlerSalesPlanModal = (row: ISalesPlan) => {
+        setModal(!modal);
+        setPlanNum(row);
+    };
+
     const postSucces = () => {
         setModal(!modal);
         searchSalesPlanList();
@@ -71,7 +53,15 @@ export const SalesPlanMain = () => {
 
     return (
         <SalesPlanMainStyled>
-            <StyledTable data={salesPlanList} columns={columns} hoverable={true} fullWidth={true} />
+            <StyledTable
+                data={salesPlanList}
+                columns={columns}
+                hoverable={true}
+                fullWidth={true}
+                onCellClick={(row) => {
+                    handlerSalesPlanModal(row);
+                }}
+            />
 
             {modal && (
                 <Portal>
