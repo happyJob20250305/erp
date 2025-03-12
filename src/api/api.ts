@@ -17,3 +17,11 @@ export const MySalaryDetail = {
 export const SalaryOptionList = {
     optionList: "/personnel/salary-manage-body",
 };
+
+export const Employee = {
+    employeeList: "/personnel/employeeList.do",
+    getJobRolesByDepartment: "/personnel/getJobRolesByDepartment.do",
+    employeeSave: "/personnel/employeeSave.do",
+    employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
+    employeeDetail: "/personnel/employeeDetail.do",
+};

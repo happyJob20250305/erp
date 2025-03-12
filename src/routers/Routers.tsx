@@ -13,6 +13,7 @@ import { DetailCode } from "../pages/system/DetailCode";
 import { Department } from "../pages/system/Department";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
+import { Employee } from "../pages/personnel/Employee";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -54,6 +55,8 @@ const routers: RouteObject[] = [
                     { path: "code", element: <CommonCode /> },
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
+
+                    { path: "employee", element: <Employee /> },
                 ],
             },
         ],
