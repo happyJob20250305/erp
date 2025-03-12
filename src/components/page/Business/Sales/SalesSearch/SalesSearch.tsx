@@ -2,49 +2,16 @@ import axios, { AxiosResponse } from "axios";
 import { FC, useEffect, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-
-interface IManufacturer {
-    industryCode?: string;
-    industryName: string;
-    manufacturer_id: number;
-}
-
-interface IManufacturerResponse {
-    manuFacturerList: IManufacturer[];
-    unitIndustrycode: string;
-    manufacturerCnt: number;
-}
-
-interface IMaincategory {
-    group_code: string;
-    group_name: string;
-}
-
-interface IMaincategoryResponse {
-    mainCategory: IMaincategory[];
-    mainCategoryCnt: number;
-}
-
-interface ISubcategory {
-    detail_code: string;
-    detail_name: string;
-}
-
-interface ISubcategoryResponse {
-    subCategory: ISubcategory[];
-    subcategoryCnt: number;
-}
-
-interface IProduct {
-    industry_code: string;
-    name: string;
-    product_code: string;
-}
-
-interface IProductResponse {
-    productList: IProduct[];
-    productCnt: number;
-}
+import {
+    IMaincategory,
+    IMaincategoryResponse,
+    IManufacturer,
+    IManufacturerResponse,
+    IProduct,
+    IProductResponse,
+    ISubcategory,
+    ISubcategoryResponse,
+} from "../../../../../models/interface/ISales";
 
 interface ISalesSearchProps {
     selectManuFacturer: string;
@@ -172,6 +139,7 @@ export const SalesSearch: FC<ISalesSearchProps> = ({
                 <StyledSelectBox
                     options={manuFacturerOptions}
                     value={selectManuFacturer}
+                    defaultValue={selectManuFacturer}
                     onChange={(value: string) => {
                         setSelectManuFacturer(value);
                         setSelectMaincategory("");
