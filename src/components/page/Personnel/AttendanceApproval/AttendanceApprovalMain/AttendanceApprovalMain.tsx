@@ -4,6 +4,10 @@ import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable"
 import { AttendanceApprovalMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { AttendanceApprovalModal } from "../AttendanceApprovalModal/AttendanceApprovalModal";
 
 export interface IAttendance {
     id: number,
@@ -30,6 +34,8 @@ export const AttendanceApprovalMain = () => {
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [id, setId] = useState<number>(0);
 
     const columns = [
         { key: "id", title: "번호" },
@@ -59,6 +65,11 @@ export const AttendanceApprovalMain = () => {
         })
     }
 
+    const handlerModal = (id: number) => {
+        setId(id);
+        setModal(!modal);
+    }
+
     return (
         <AttendanceApprovalMainStyled>
             <StyledTable
@@ -66,6 +77,9 @@ export const AttendanceApprovalMain = () => {
                 data={attendanceList}
                 hoverable={true}
                 fullWidth={true}
+                onCellClick={(row, columns) => {
+                    handlerModal(row.id);
+                }}
             />
             <PageNavigate
                 totalItemsCount={attendanceRequestCnt}
@@ -73,6 +87,13 @@ export const AttendanceApprovalMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchAttendanceList}
             />
+            {
+                modal && (
+                    <Portal>
+                        <AttendanceApprovalModal id={id} setId={setId} />
+                    </Portal>
+                )
+            }
         </AttendanceApprovalMainStyled>
     )
 }
