@@ -26,6 +26,7 @@ const routers: RouteObject[] = [
                 children: [
                     { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
+                    { path: "attendance-list", element: <AttendanceRequest /> },
                     { path: "salary-manage", element: <SalaryManager /> },
                     { path: "salary-list", element: <MySalary /> },
                 ],
