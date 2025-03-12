@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { AttendanceApprovalModalStyle } from "./styled"
 import { modalState } from "../../../../../stores/modalState";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { IAttendance } from "../AttendanceApprovalMain/AttendanceApprovalMain";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
@@ -25,6 +25,11 @@ interface AttendanceApprovalDetailResponse {
 export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [attendanceApprovalDetail, setAttendanceApprovalDetail] = useState<IAttendanceDetail>();
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const loginUserInfo = sessionStorage.getItem("userInfo");
+    const loginUserType = JSON.parse(loginUserInfo).userType;
+    const loginUserEmpid = JSON.parse(loginUserInfo).empId;
 
     useEffect(() => {
         id && searchDetail();
@@ -35,16 +40,27 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
     }, [])
 
     const searchDetail = () => {
+        console.log(loginUserInfo);
         axios.post("/personnel/attendanceDetailBody.do", { id })
             .then((res: AxiosResponse<AttendanceApprovalDetailResponse>) => {
                 setAttendanceApprovalDetail(res.data.detail);
             })
     }
 
+    const rejectAttendance = () => {
+        const formData = new FormData(formRef.current);
+
+        axios.post("/personnel/attendanceRejectBody.do", {
+            reqId: id,
+            userIdx: loginUserEmpid,
+            appReason: formData.get("appReason").toString()
+        })
+    }
+
     return (
         <AttendanceApprovalModalStyle>
             <div className='container'>
-                <form>
+                <form ref={formRef}>
                     <label>
                         근무부서
                         <StyledInput type='text' name="deptName" defaultValue={attendanceApprovalDetail?.deptName} readOnly />
@@ -74,7 +90,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                         <textarea name="reqReason" defaultValue={attendanceApprovalDetail?.reqReason} readOnly />
                     </label>
                     <label>
-                        승인/반려 사유
+                        승인/반려 사유*
                         <textarea name="appReason" defaultValue={attendanceApprovalDetail?.appReason} />
                     </label>
                     <label>
@@ -86,6 +102,23 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                         <StyledInput type='text' name="reqdate" defaultValue={attendanceApprovalDetail?.reqdate} readOnly />
                     </label>
                     <div className={"button-container"}>
+                        {
+                            (loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "검토 대기"))
+                            && <button type='button'>승인</button>
+                        }
+                        {
+                            (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
+                            && <button type='button'>승인</button>
+                        }
+                        {
+                            (loginUserType === "A" && ((attendanceApprovalDetail?.reqStatus === "검토 대기")))
+                            && <button type='button' onClick={rejectAttendance}>반려</button>
+                        }
+                        {
+                            ((loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
+                                || (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기")))
+                            && <button type='button'>반려</button>
+                        }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
                 </form>
