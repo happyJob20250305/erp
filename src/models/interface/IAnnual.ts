@@ -6,6 +6,7 @@ export interface IAnnual {
     totalExpenseAmount: bigint;
     totalReceivableAmount: bigint;
     totalRevenueAmount: bigint;
+    totalSupplyAmount: bigint;
 }
 export interface IAnnualListBodyResponse {
     annualList: IAnnual[];

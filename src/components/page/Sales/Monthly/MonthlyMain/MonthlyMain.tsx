@@ -17,7 +17,6 @@ export const MonthlyMain = () => {
     const [monthlyList, setMonthlyList] = useState<IMonthly[]>([]);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [modalType, setModalType] = useState<"product" | "client">("product");
-    const [monthlyStatistics, setMonthlyStatistics] = useState<IMonthly>(null);
 
     useEffect(() => {
         searchMonthlyList();
@@ -29,7 +28,6 @@ export const MonthlyMain = () => {
         const result = await searchApi<IMonthlyListBodyResponse>(Monthly.search, searchParam);
         if (result && result.monthlyList) {
             setMonthlyList(result.monthlyList);
-            setMonthlyStatistics(result.monthlyStatistics);
         }
     };
     const monthlyModal = (type: "product" | "client") => {
@@ -43,7 +41,7 @@ export const MonthlyMain = () => {
     return (
         <>
             <MonthlyChart monthlyListChart={monthlyList}></MonthlyChart>
-            <MonthlyStatistics monthlyStatistics={monthlyStatistics}></MonthlyStatistics>
+            <MonthlyStatistics monthlyStatistics={monthlyList}></MonthlyStatistics>
             <StyledButton onClick={() => monthlyModal("product")}>매출상위제품</StyledButton>
             <StyledButton onClick={() => monthlyModal("client")}>메출상위기업</StyledButton>
             <StyledTable>
