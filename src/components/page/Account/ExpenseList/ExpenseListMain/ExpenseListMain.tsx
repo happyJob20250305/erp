@@ -98,6 +98,7 @@ export const ExpenseListMain = () => {
             <StyledTable
                 data={expenseList}
                 columns={columns}
+                fullWidth={true}
                 renderAction={(row) => approvalCode(row.is_approval)}
                 onCellClick={(row) => {
                     handlerModal(row);

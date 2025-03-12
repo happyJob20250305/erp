@@ -13,6 +13,7 @@ import { IExpense } from "../ExpenseListMain/ExpenseListMain";
 import { IExpenseDetailGroup, IExpenseDetailGroupListBody } from "../ExpenseListSearch/ExpenseListSearch";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface ILoginUserInfo {
     usr_idx: number;
@@ -24,7 +25,7 @@ interface IPostResponse {
     result: string;
 }
 
-interface IManageModalProps {
+interface IExpenseModalProps {
     expenseDetail?: IExpense;
     postSuccess: () => void;
     setExpenseDetail: (expenseDetail?: IExpense) => void;
@@ -39,7 +40,7 @@ export interface IClient {
     id: number;
     clientName: string;
 }
-export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
+export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [selectedGroup, setSelectedGroup] = useState<string>(expenseDetail?.group_code || "AC03");
     const [accountDetailList, setAccountDetailList] = useState<ISetListOption[]>([]);
@@ -53,9 +54,10 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
         { label: "영업지출", value: "AC04" },
     ];
     const LaberColor = ({ label, showAsterisk }: { label: string; showAsterisk: boolean }) => (
-        <th>
-            {label} {showAsterisk && <span style={{ color: "red" }}> * </span>}
-        </th>
+        <label>
+            {label}
+            {showAsterisk && <span className='asterisk'> * </span>}
+        </label>
     );
 
     useEffect(() => {
@@ -174,182 +176,191 @@ export const ExpenseModal: FC<IManageModalProps> = ({ expenseDetail, postSuccess
     };
 
     return (
-        <ExpenseListModalStyle>
-            <div className='container'>
-                <form ref={formRef}>
-                    <table className='row'>
-                        <tbody>
-                            <tr>
-                                <th>결의번호</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='exp_id'
-                                        defaultValue={expenseDetail?.id || "(신청시 자동생성됩니다)"}
-                                        disabled
-                                    ></StyledInput>
-                                </td>
-                                <th>신청일자</th>
-                                <td>
-                                    <StyledInput
-                                        type='date'
-                                        name='request_date'
-                                        defaultValue={expenseDetail ? expenseDetail.req_date : formatDate}
-                                        disabled
-                                    ></StyledInput>
-                                </td>
-                                <th>
-                                    <LaberColor label='사용일자' showAsterisk={!expenseDetail}></LaberColor>
-                                </th>
-                                <td>
-                                    <StyledInput
-                                        type='date'
-                                        name='use_date'
-                                        defaultValue={expenseDetail?.use_date}
-                                    ></StyledInput>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>사번</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='emp_no'
-                                        defaultValue={expenseDetail ? expenseDetail.emp_no : loginUserInfo?.usr_idx}
-                                    ></StyledInput>
-                                </td>
-                                <th scope='row'>사원명</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='emp_name'
-                                        defaultValue={expenseDetail ? expenseDetail.name : loginUserInfo?.usr_nm}
-                                    ></StyledInput>
-                                </td>
-                                <th>사용부서</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='use_dept'
-                                        defaultValue={
-                                            expenseDetail ? expenseDetail.use_department : loginUserInfo?.detail_name
-                                        }
-                                    ></StyledInput>
-                                </td>
-                            </tr>
-                            <tr id='writer'>
-                                <th>
-                                    <LaberColor label='계정대분류명' showAsterisk={!expenseDetail}></LaberColor>
-                                </th>
-                                <td>
-                                    <StyledSelectBox
-                                        name='accountGroup'
-                                        options={accountGroupList}
-                                        value={selectedGroup}
-                                        onChange={setSelectedGroup}
-                                    />
-                                </td>
-                                {flag && (
-                                    <>
-                                        <th>
-                                            <LaberColor label='계정과목' showAsterisk={!expenseDetail}></LaberColor>
-                                        </th>
+        <>
+            <ExpenseListModalStyle>
+                <div className='container'>
+                    <form ref={formRef}>
+                        <ModalStyledTable>
+                            <tbody>
+                                <tr>
+                                    <th>결의번호</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='exp_id'
+                                            defaultValue={expenseDetail?.id || "(신청시 자동생성됩니다)"}
+                                            disabled
+                                        ></StyledInput>
+                                    </td>
+                                    <th>신청일자</th>
+                                    <td>
+                                        <StyledInput
+                                            type='date'
+                                            name='request_date'
+                                            defaultValue={expenseDetail ? expenseDetail.req_date : formatDate}
+                                            disabled
+                                        ></StyledInput>
+                                    </td>
+                                    <th>
+                                        <LaberColor label='사용일자' showAsterisk={!expenseDetail}></LaberColor>
+                                    </th>
+                                    <td>
+                                        <StyledInput
+                                            type='date'
+                                            name='use_date'
+                                            defaultValue={expenseDetail?.use_date}
+                                        ></StyledInput>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>사번</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='emp_no'
+                                            defaultValue={expenseDetail ? expenseDetail.emp_no : loginUserInfo?.usr_idx}
+                                        ></StyledInput>
+                                    </td>
+                                    <th scope='row'>사원명</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='emp_name'
+                                            defaultValue={expenseDetail ? expenseDetail.name : loginUserInfo?.usr_nm}
+                                        ></StyledInput>
+                                    </td>
+                                    <th>사용부서</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='use_dept'
+                                            defaultValue={
+                                                expenseDetail
+                                                    ? expenseDetail.use_department
+                                                    : loginUserInfo?.detail_name
+                                            }
+                                        ></StyledInput>
+                                    </td>
+                                </tr>
+                                <tr id='writer'>
+                                    <th>
+                                        <LaberColor label='계정대분류명' showAsterisk={!expenseDetail}></LaberColor>
+                                    </th>
+                                    <td>
+                                        <StyledSelectBox
+                                            name='accountGroup'
+                                            options={accountGroupList}
+                                            value={selectedGroup}
+                                            onChange={setSelectedGroup}
+                                        />
+                                    </td>
+                                    {flag && (
+                                        <>
+                                            <th>
+                                                <LaberColor label='계정과목' showAsterisk={!expenseDetail}></LaberColor>
+                                            </th>
+                                            <td>
+                                                <StyledSelectBox
+                                                    name='accountDetail'
+                                                    options={accountDetailList}
+                                                    defaultValue={expenseDetail?.debit_code}
+                                                />
+                                            </td>
+                                            <th>
+                                                <label>거래처명</label>
+                                            </th>
+                                            <td>
+                                                <StyledSelectBox
+                                                    name='clientId'
+                                                    options={clientList}
+                                                    defaultValue={expenseDetail?.client_id || ""}
+                                                />
+                                            </td>
+                                        </>
+                                    )}
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <LaberColor label='결의금액' showAsterisk={!expenseDetail}></LaberColor>
+                                    </th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='exp_pay'
+                                            defaultValue={expenseDetail?.expense_payment}
+                                        ></StyledInput>
+                                    </td>
+                                    <th scope='row'>승인여부</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='isApproval'
+                                            defaultValue={approvalCode(expenseDetail?.is_approval)}
+                                            disabled
+                                        ></StyledInput>
+                                    </td>
+                                    <th scope='row'>승인일자</th>
+                                    <td>
+                                        <StyledInput
+                                            type='text'
+                                            name='approval_date'
+                                            defaultValue={expenseDetail?.approval_date}
+                                            disabled
+                                        ></StyledInput>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <LaberColor label='첨부파일' showAsterisk={!expenseDetail}></LaberColor>
+                                    </th>
+                                    {!expenseDetail ? (
                                         <td>
-                                            <StyledSelectBox
-                                                name='accountDetail'
-                                                options={accountDetailList}
-                                                defaultValue={expenseDetail?.debit_code}
+                                            <input
+                                                type='file'
+                                                className='inputTxt p100'
+                                                name='fileInput'
+                                                id='fileInput'
                                             />
                                         </td>
-                                        <th>
-                                            <label>거래처명</label>
-                                        </th>
+                                    ) : (
                                         <td>
-                                            <StyledSelectBox
-                                                name='clientId'
-                                                options={clientList}
-                                                defaultValue={expenseDetail?.client_id || ""}
-                                            />
+                                            <div onClick={expensefileDownload}>
+                                                <label>다운로드</label>
+                                            </div>
                                         </td>
-                                    </>
-                                )}
-                            </tr>
-                            <tr>
-                                <th>
-                                    <LaberColor label='결의금액' showAsterisk={!expenseDetail}></LaberColor>
-                                </th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='exp_pay'
-                                        defaultValue={expenseDetail?.expense_payment}
-                                    ></StyledInput>
-                                </td>
-                                <th scope='row'>승인여부</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='isApproval'
-                                        defaultValue={approvalCode(expenseDetail?.is_approval)}
-                                        disabled
-                                    ></StyledInput>
-                                </td>
-                                <th scope='row'>승인일자</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='approval_date'
-                                        defaultValue={expenseDetail?.approval_date}
-                                        disabled
-                                    ></StyledInput>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    <LaberColor label='첨부파일' showAsterisk={!expenseDetail}></LaberColor>
-                                </th>
-                                {!expenseDetail ? (
-                                    <td>
-                                        <input type='file' className='inputTxt p100' name='fileInput' id='fileInput' />
+                                    )}
+                                </tr>
+                                <tr>
+                                    <th scope='row'>비고</th>
+                                    <td colSpan={10}>
+                                        <textarea
+                                            name='expenseContent'
+                                            id='content'
+                                            defaultValue={expenseDetail?.expense_content}
+                                        ></textarea>
                                     </td>
-                                ) : (
-                                    <td>
-                                        <div onClick={expensefileDownload}>
-                                            <label>다운로드</label>
-                                        </div>
-                                    </td>
-                                )}
-                            </tr>
-                            <tr>
-                                <th scope='row'>비고</th>
-                                <td colSpan={10}>
-                                    <textarea
-                                        name='expenseContent'
-                                        id='content'
-                                        defaultValue={expenseDetail?.expense_content}
-                                    ></textarea>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </tr>
+                            </tbody>
+                        </ModalStyledTable>
 
-                    <div className={"button-container"}>
-                        {!expenseDetail && (
-                            <StyledButton type='button' onClick={expenseSave}>
-                                저장
+                        <ButtonArea>
+                            {!expenseDetail && (
+                                <StyledButton type='button' onClick={expenseSave}>
+                                    저장
+                                </StyledButton>
+                            )}
+                            {expenseDetail && expenseDetail.is_approval == "W" && (
+                                <StyledButton type='button' onClick={expenseDelete}>
+                                    삭제
+                                </StyledButton>
+                            )}
+                            <StyledButton variant='secondary' type='button' onClick={() => setModal(!modal)}>
+                                나가기
                             </StyledButton>
-                        )}
-                        {expenseDetail && expenseDetail.is_approval == "W" && (
-                            <StyledButton type='button' onClick={expenseDelete}>
-                                삭제
-                            </StyledButton>
-                        )}
-                        <StyledButton type='button' onClick={() => setModal(!modal)}>
-                            나가기
-                        </StyledButton>
-                    </div>
-                </form>
-            </div>
-        </ExpenseListModalStyle>
+                        </ButtonArea>
+                    </form>
+                </div>
+            </ExpenseListModalStyle>
+        </>
     );
 };

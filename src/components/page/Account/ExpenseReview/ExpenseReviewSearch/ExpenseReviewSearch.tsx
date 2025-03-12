@@ -71,29 +71,50 @@ export const ExpenseReviewSearch = () => {
     };
     return (
         <ExpenseReviewSearchStyled>
-            <span>신청일자</span>
-            <StyledInput
-                type='date'
-                onChange={(e) => {
-                    setSearchStDate(e.target.value);
-                }}
-            ></StyledInput>
-            <span>~</span>
-            <StyledInput
-                type='date'
-                onChange={(e) => {
-                    setSearchEdDate(e.target.value);
-                }}
-            ></StyledInput>
-            <span>승인여부</span>
-            <StyledSelectBox options={approveStateList} value={selectedApprove} onChange={setSelectedApprove} />
-            <span>계정대분류</span>
-            <StyledSelectBox options={accountGroupList} value={selectedGroup} onChange={setSelectedGroup} />
-            <span>계정과목</span>
-            <StyledSelectBox options={accountDetailList} value={selectedDetail} onChange={setSelectedDetail} />
-            <StyledButton variant='secondary' onClick={handlerSearch}>
-                검색
-            </StyledButton>
+            <div className='searchBar'>
+                <span>신청일자</span>
+                <StyledInput
+                    width={110}
+                    type='date'
+                    onChange={(e) => {
+                        setSearchStDate(e.target.value);
+                    }}
+                ></StyledInput>
+                <span>~</span>
+                <StyledInput
+                    width={110}
+                    type='date'
+                    onChange={(e) => {
+                        setSearchEdDate(e.target.value);
+                    }}
+                ></StyledInput>
+                <span>승인여부</span>
+                <StyledSelectBox
+                    width={120}
+                    options={approveStateList}
+                    value={selectedApprove}
+                    onChange={setSelectedApprove}
+                />
+                <span>계정대분류</span>
+                <StyledSelectBox
+                    width={120}
+                    options={accountGroupList}
+                    value={selectedGroup}
+                    onChange={setSelectedGroup}
+                />
+                <span>계정과목</span>
+                <StyledSelectBox
+                    width={120}
+                    options={accountDetailList}
+                    value={selectedDetail}
+                    onChange={setSelectedDetail}
+                />
+            </div>
+            <div className='button-container'>
+                <StyledButton variant='secondary' onClick={handlerSearch}>
+                    검색
+                </StyledButton>
+            </div>
         </ExpenseReviewSearchStyled>
     );
 };

@@ -15,6 +15,8 @@ import { AttendanceRequest } from "../pages/personnel/AttendanceRequest";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
 import { Annual } from "../pages/sales/Annual";
+import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
+import { VoucherList } from "../pages/account/VoucherList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -26,6 +28,7 @@ const routers: RouteObject[] = [
             {
                 path: "personnel",
                 children: [
+                    { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
                     { path: "salary-manage", element: <SalaryManager /> },
                     { path: "salary-list", element: <MySalary /> },
@@ -38,6 +41,7 @@ const routers: RouteObject[] = [
                     { path: "expense-list", element: <ExpenseList /> },
                     { path: "expense-review", element: <ExpenseReview /> },
                     { path: "expense-approval", element: <ExpenseReview /> },
+                    { path: "voucher-list", element: <VoucherList /> },
                 ],
             },
             {
