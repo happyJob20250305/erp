@@ -6,9 +6,16 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 
 export const MonthlySearch = () => {
-    const [searchStMonth, setSearchStMonth] = useState<string>();
-    const [searchEdMonth, setSearchEdMonth] = useState<string>();
     const navigate = useNavigate();
+
+    const getCurrentMonth = () => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        return `${year}-${month}`;
+    };
+    const [searchStMonth, setSearchStMonth] = useState<string>(getCurrentMonth);
+    const [searchEdMonth, setSearchEdMonth] = useState<string>(getCurrentMonth);
 
     const monthlySearch = () => {
         const query: string[] = [];
@@ -18,12 +25,23 @@ export const MonthlySearch = () => {
         const queryString = query.length > 0 ? `?${query.join("&")}` : "";
         navigate(`/react/sales/monthly${queryString}`);
     };
+    useEffect(() => {
+        monthlySearch();
+    }, []);
     return (
         <MonthlySearchStyled>
             <div>
                 <label>기간</label>
-                <StyledInput type='month' onChange={(e) => setSearchStMonth(e.target.value)}></StyledInput>
-                <StyledInput type='month' onChange={(e) => setSearchEdMonth(e.target.value)}></StyledInput>
+                <StyledInput
+                    type='month'
+                    value={searchStMonth}
+                    onChange={(e) => setSearchStMonth(e.target.value)}
+                ></StyledInput>
+                <StyledInput
+                    type='month'
+                    value={searchEdMonth}
+                    onChange={(e) => setSearchEdMonth(e.target.value)}
+                ></StyledInput>
                 <StyledButton variant='secondary' onClick={monthlySearch}>
                     조회
                 </StyledButton>
