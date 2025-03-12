@@ -20,6 +20,9 @@ export const StyledInputStyled = styled.input<InputProps>`
         }
     }}
 
+    /* 가로 옵션 */
+  ${({ width }) => `width: ${width}px;`}
+
     /* 가로 100% 옵션 */
   ${({ fullWidth }) => fullWidth && `width: 100%;`}
 
