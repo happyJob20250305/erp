@@ -6,6 +6,7 @@ import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IExpenseApprovalModalProps {
     expenseDetail?: IExpenseReview;
@@ -77,7 +78,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
         <ExpenseApprovalModalStyle>
             <div className='container'>
                 <form ref={formRef}>
-                    <table className='row'>
+                    <ModalStyledTable>
                         <tbody>
                             <tr>
                                 <th scope='row'>결의번호</th>
@@ -261,7 +262,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
+                    </ModalStyledTable>
 
                     <div className={"button-container"}>
                         {expenseDetail.is_approval == "F" && (

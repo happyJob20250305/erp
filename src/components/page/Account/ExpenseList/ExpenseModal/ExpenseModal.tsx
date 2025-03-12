@@ -13,7 +13,7 @@ import { IExpense } from "../ExpenseListMain/ExpenseListMain";
 import { IExpenseDetailGroup, IExpenseDetailGroupListBody } from "../ExpenseListSearch/ExpenseListSearch";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { nullCheck } from "../../../../../common/nullCheck";
-import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal.tsx/styled";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface ILoginUserInfo {
     usr_idx: number;

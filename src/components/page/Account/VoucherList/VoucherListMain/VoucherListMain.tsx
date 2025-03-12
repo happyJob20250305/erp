@@ -7,7 +7,7 @@ import axios, { AxiosResponse } from "axios";
 import { VoucherListMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
-import { VoucherListModal } from "../VoucherListModal.tsx/VoucherListModal";
+import { VoucherListModal } from "../VoucherListModal/VoucherListModal";
 
 export interface IVoucher {
     voucher_no: string;

@@ -1,7 +1,7 @@
 import { VoucherListProvider } from "../../api/Provider/VoucherListProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { VoucherListMain } from "../../components/page/Account/VoucherList/VoucherListMain/VoucherListMain";
-import { VoucherListSearch } from "../../components/page/Account/VoucherList/VoucherListSearch.tsx/VoucherListSearch";
+import { VoucherListSearch } from "../../components/page/Account/VoucherList/VoucherListSearch/VoucherListSearch";
 
 export const VoucherList = () => {
     return (

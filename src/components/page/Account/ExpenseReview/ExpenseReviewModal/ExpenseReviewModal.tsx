@@ -12,7 +12,7 @@ import axios, { AxiosResponse } from "axios";
 import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { Ratio } from "react-bootstrap";
-import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal.tsx/styled";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;

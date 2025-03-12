@@ -9,7 +9,7 @@ import axios, { AxiosResponse } from "axios";
 import { IAccountGroup, IAccountGroupListBody, ISetListOption } from "../ManageSearch.tsx/ManageSearch";
 import { IAccount } from "../ManageMain/ManageMain";
 import { nullCheck } from "../../../../../common/nullCheck";
-import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal.tsx/styled";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IPostResponse {
     result: string;

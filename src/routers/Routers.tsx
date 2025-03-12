@@ -12,6 +12,7 @@ import { Department } from "../pages/system/Department";
 import { AttendanceRequest } from "../pages/personnel/AttendanceRequest";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
+import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { VoucherList } from "../pages/account/VoucherList";
 
 const routers: RouteObject[] = [
@@ -24,6 +25,7 @@ const routers: RouteObject[] = [
             {
                 path: "personnel",
                 children: [
+                    { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
                     { path: "salary-manage", element: <SalaryManager /> },
                     { path: "salary-list", element: <MySalary /> },
