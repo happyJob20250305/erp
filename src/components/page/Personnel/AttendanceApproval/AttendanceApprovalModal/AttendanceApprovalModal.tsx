@@ -5,6 +5,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import axios, { AxiosResponse } from "axios";
 import { IAttendance } from "../AttendanceApprovalMain/AttendanceApprovalMain";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
+import { nullCheck } from "../../../../../common/nullCheck";
 
 interface AttendanceApprovalProps {
     id: number,
@@ -46,7 +47,6 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
     }, [])
 
     const searchDetail = () => {
-        console.log(loginUserInfo);
         axios.post("/personnel/attendanceDetailBody.do", { id })
             .then((res: AxiosResponse<AttendanceApprovalDetailResponse>) => {
                 setAttendanceApprovalDetail(res.data.detail);
@@ -56,13 +56,19 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
     const rejectAttendance = () => {
         const formData = new FormData(formRef.current);
 
+        if (!nullCheck([
+            { inval: formData.get("appReason").toString(), msg: "반려 사유를 입력해주세요." }
+        ])) { return false; }
+
         axios.post("/personnel/attendanceRejectBody.do", {
             reqId: id,
             userIdx: loginUserEmpid,
             appReason: formData.get("appReason").toString()
         }).then((res: AxiosResponse<IPostResponse>) => {
-            alert("반려되었습니다.");
-            postSuccess();
+            if (res.data.result === "success") {
+                alert("반려되었습니다.");
+                postSuccess();
+            }
         })
     }
 
@@ -71,19 +77,29 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
             reqId: id,
             userIdx: loginUserEmpid,
         }).then((res: AxiosResponse<IPostResponse>) => {
-            alert("승인되었습니다.");
-            postSuccess();
+            if (res.data.result === "success") {
+                alert("승인되었습니다.");
+                postSuccess();
+            }
         })
     }
 
-
     const approveRejectAttendance = () => {
-        axios.post("/personnel//attendanceApproveRejectBody.do", {
+        const formData = new FormData(formRef.current);
+
+        if (!nullCheck([
+            { inval: formData.get("appReason").toString(), msg: "반려 사유를 입력해주세요." }
+        ])) { return false; }
+
+        axios.post("/personnel/attendanceApproveRejectBody.do", {
             reqId: id,
             userIdx: loginUserEmpid,
+            appReason: formData.get("appReason").toString()
         }).then((res: AxiosResponse<IPostResponse>) => {
-            alert("반려되었습니다.");
-            postSuccess();
+            if (res.data.result === "success") {
+                alert("반려되었습니다.");
+                postSuccess();
+            }
         })
     }
 
@@ -92,8 +108,10 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
             reqId: id,
             userIdx: loginUserEmpid,
         }).then((res: AxiosResponse<IPostResponse>) => {
-            alert("승인되었습니다.");
-            postSuccess();
+            if (res.data.result === "success") {
+                alert("승인되었습니다.");
+                postSuccess();
+            }
         })
     }
 
