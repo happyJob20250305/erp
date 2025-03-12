@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { AttendanceApprovalMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
 
 export interface IAttendance {
     id: number,
@@ -28,6 +29,7 @@ export const AttendanceApprovalMain = () => {
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const { searchKeyword } = useContext(AttendanceContext);
 
     const columns = [
         { key: "id", title: "번호" },
@@ -42,11 +44,12 @@ export const AttendanceApprovalMain = () => {
 
     useEffect(() => {
         searchAttendanceList();
-    }, [])
+    }, [searchKeyword])
 
     const searchAttendanceList = (currentPage?: number) => {
         currentPage = currentPage || 1;
         axios.post("/personnel/attendanceListBody.do", {
+            ...searchKeyword,
             pageSize: 5,
             currentPage,
         }).then((res: AxiosResponse<IAttendanceListResponse>) => {
