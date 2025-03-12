@@ -15,6 +15,7 @@ export const MonthlyMain = () => {
     const { search } = useLocation();
     const [monthlyList, setMonthlyList] = useState<IMonthly[]>([]);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [modalType, setModalType] = useState<"product" | "client">("product");
 
     useEffect(() => {
         searchMonthlyList();
@@ -28,7 +29,8 @@ export const MonthlyMain = () => {
             setMonthlyList(result.monthlyList);
         }
     };
-    const monthlyModal = () => {
+    const monthlyModal = (type: "product" | "client") => {
+        setModalType(type);
         setModal(!modal);
     };
     const postSuccess = () => {
@@ -38,8 +40,8 @@ export const MonthlyMain = () => {
     return (
         <>
             <MonthlyChart monthlyListChart={monthlyList}></MonthlyChart>
-            <StyledButton onClick={monthlyModal}>매출상위제품</StyledButton>
-            <StyledButton onClick={monthlyModal}>메출상위기업</StyledButton>
+            <StyledButton onClick={() => monthlyModal("product")}>매출상위제품</StyledButton>
+            <StyledButton onClick={() => monthlyModal("client")}>메출상위기업</StyledButton>
             <StyledTable>
                 <thead>
                     <tr>
@@ -74,7 +76,7 @@ export const MonthlyMain = () => {
             </StyledTable>
             {modal && (
                 <Portal>
-                    <MonthlyModal postSuccess={postSuccess} />
+                    <MonthlyModal postSuccess={postSuccess} modalType={modalType} />
                 </Portal>
             )}
         </>

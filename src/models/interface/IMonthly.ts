@@ -23,5 +23,5 @@ export interface IMonthlyProductDetail {
     detail: IMonthlyModalDetail[];
 }
 export interface IMonthlyClientDetail {
-    detailClient: IMonthlyModalDetail[];
+    detail: IMonthlyModalDetail[];
 }

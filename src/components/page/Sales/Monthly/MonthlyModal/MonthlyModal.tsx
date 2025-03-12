@@ -15,87 +15,79 @@ import { searchApi } from "../../../../../api/MonthlyApi/searchApi";
 import { Monthly } from "../../../../../api/api";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Modal } from "react-bootstrap";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface IMonthlyModalProps {
     postSuccess: () => void;
+    modalType: "product" | "client";
 }
-
-export const MonthlyModal: FC<IMonthlyModalProps> = ({ postSuccess }) => {
-    const { search, pathname } = useLocation();
+export const MonthlyModal: React.FC<IMonthlyModalProps> = ({ postSuccess, modalType }) => {
+    const { search } = useLocation();
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [topProduct, setTopProduct] = useState<IMonthlyModalDetail[]>([]);
     const [topClient, setTopClient] = useState<IMonthlyModalDetail[]>([]);
 
     useEffect(() => {
         monthlyModal();
-    }, []);
+    }, [search, modalType]);
 
     const monthlyModal = async () => {
         const searchParam = new URLSearchParams(search);
 
-        const productResult = await searchApi<IMonthlyProductDetail>(Monthly.detail, searchParam);
-        if (productResult.detail) {
-            setTopProduct(productResult.detail);
-        }
-        const clientResult = await searchApi<IMonthlyClientDetail>(Monthly.detailClient, searchParam);
-        if (clientResult.detailClient) {
-            setTopClient(clientResult.detailClient);
+        if (modalType === "product") {
+            const productResult = await searchApi<IMonthlyProductDetail>(Monthly.detail, searchParam);
+            if (productResult.detail) setTopProduct(productResult.detail);
+            console.log("topProduct데이터:", productResult.detail);
+        } else {
+            const clientResult = await searchApi<IMonthlyClientDetail>(Monthly.detailClient, searchParam);
+            console.log("clientResult", clientResult);
+            if (clientResult.detail) setTopClient(clientResult.detail);
+            console.log("topClient데이터:", clientResult.detail);
         }
     };
 
-    const monthlyModalPieChart = {
-        labels: topProduct.map((product) => product.topTitle),
-        type: "Pie",
-        data: {
-            labels: topProduct.map((product) => product.topTitle),
-            datasets: [
-                {
-                    label: "매출",
-                    data: topProduct.map((product) => product.totalSupplyPrice),
-                    backgroundColor: ["#f27777", "#f5a96c", "#f2c64b", "#a8e3bf", "#9bc6fa"],
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            legend: { display: true, position: "top" },
-        },
+    const chartData = {
+        labels: (modalType === "product" ? topProduct : topClient).map((item) => item.topTitle),
+        datasets: [
+            {
+                label: "매출",
+                data: (modalType === "product" ? topProduct : topClient).map((item) => item.totalSupplyPrice),
+                backgroundColor: ["#f27777", "#f5a96c", "#f2c64b", "#a8e3bf", "#9bc6fa"],
+            },
+        ],
     };
 
     return (
         <MonthlyModalStyled>
             <div className='container'>
-                <h2> {pathname === "/sales/monthlyTopProduct.do" ? "매출 상위 제품" : "매출 상위 기업"} </h2>
-                {topProduct.length > 0 && (
-                    <Pie data={monthlyModalPieChart.data} options={monthlyModalPieChart.options} />
-                )}
-                <StyledTable>
-                    <thead>
-                        <tr>
-                            <StyledTh>순위</StyledTh>
-                            <StyledTh>{pathname === "/sales/monthlyTopProduct.do" ? "제품명" : "기업명"}</StyledTh>
-
-                            <StyledTh>매출액</StyledTh>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {topProduct.length > 0 ? (
-                            topProduct.map((product, index) => (
-                                <tr key={product.RNUM}>
-                                    <StyledTd>{product.RNUM || index + 1}</StyledTd>
-                                    <StyledTd>{product.topTitle}</StyledTd>
-                                    <StyledTd>{product.totalSupplyPrice.toLocaleString()}</StyledTd>
+                <h2>{modalType === "product" ? "매출 상위 제품" : "매출 상위 기업"}</h2>
+                {(modalType === "product" ? topProduct : topClient).length > 0 ? (
+                    <>
+                        <Pie data={chartData} options={{ responsive: true }} />
+                        <StyledTable>
+                            <thead>
+                                <tr>
+                                    <StyledTh>순위</StyledTh>
+                                    <StyledTh>{modalType === "product" ? "제품명" : "기업명"}</StyledTh>
+                                    <StyledTh>매출액</StyledTh>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
-                            </tr>
-                        )}
-                    </tbody>
-                </StyledTable>
+                            </thead>
+                            <tbody>
+                                {(modalType === "product" ? topProduct : topClient).map((item, index) => (
+                                    <tr key={item.RNUM || index}>
+                                        <StyledTd>{item.RNUM || index + 1}</StyledTd>
+                                        <StyledTd>{item.topTitle}</StyledTd>
+                                        <StyledTd>{item.totalSupplyPrice.toLocaleString()}</StyledTd>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </StyledTable>
+                    </>
+                ) : (
+                    <p>데이터를 불러오는 중...</p>
+                )}
                 <StyledButton type='button' onClick={() => setModal(false)}>
                     닫기
                 </StyledButton>

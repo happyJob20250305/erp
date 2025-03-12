@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/store/IDaily";
+import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/IDaily";
 import { Daily } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/DailyApi/searchApi";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";

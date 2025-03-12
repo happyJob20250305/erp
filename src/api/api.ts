@@ -11,6 +11,12 @@ export const Monthly = {
     detail: "/sales/monthlyTopProduct.do",
     detailClient: "/sales/monthlyTopClient.do",
 };
+
+export const Annual = {
+    search: "/sales/annualList.do",
+    detail: "/sales/annualTopProduct.do",
+    detailClient: "/sales/annualTopClient.do",
+};
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",

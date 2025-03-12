@@ -1,5 +1,5 @@
 import React from "react";
-import { IDaily } from "../../../../../models/interface/store/IDaily";
+import { IDaily } from "../../../../../models/interface/IDaily";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 
 interface DailyStatisticsProps {
