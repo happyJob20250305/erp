@@ -111,15 +111,16 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
         const formData = new FormData(formRef.current);
         const file = formData.get("fileInput") as File | null;
         if (
-            nullCheck([
+            !nullCheck([
                 { inval: formData.get("use_date").toString(), msg: "사용일자를 선택해주세요." },
                 { inval: formData.get("exp_pay").toString(), msg: "결의금액을 입력해주세요." },
             ])
-        )
-            if (!file || file.size === 0) {
-                alert("첨부파일을 등록해야 합니다.");
-                return;
-            }
+        ) {
+            return false;
+        } else if (!file || file.size === 0) {
+            alert("파일을 첨부해주세요");
+            return;
+        }
         axios.post("/account/expenseFileSave.do", formRef.current).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
                 alert("저장되었습니다.");
@@ -285,7 +286,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                     </th>
                                     <td>
                                         <StyledInput
-                                            type='text'
+                                            type='number'
                                             name='exp_pay'
                                             defaultValue={expenseDetail?.expense_payment}
                                         ></StyledInput>
@@ -337,6 +338,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             name='expenseContent'
                                             id='content'
                                             defaultValue={expenseDetail?.expense_content}
+                                            disabled={!!expenseDetail}
                                         ></textarea>
                                     </td>
                                 </tr>
