@@ -76,6 +76,17 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
         })
     }
 
+
+    const approveRejectAttendance = () => {
+        axios.post("/personnel//attendanceApproveRejectBody.do", {
+            reqId: id,
+            userIdx: loginUserEmpid,
+        }).then((res: AxiosResponse<IPostResponse>) => {
+            alert("반려되었습니다.");
+            postSuccess();
+        })
+    }
+
     return (
         <AttendanceApprovalModalStyle>
             <div className='container'>
@@ -136,7 +147,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                         {
                             ((loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
                                 || (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기")))
-                            && <button type='button'>반려</button>
+                            && <button type='button' onClick={approveRejectAttendance}>반려</button>
                         }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>
