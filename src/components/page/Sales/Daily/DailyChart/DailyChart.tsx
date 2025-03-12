@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IDaily } from "../../../../../models/interface/IDaily";
 import { Bar } from "react-chartjs-2";
+import { IDaily } from "../../../../../models/interface/IDaily";
 
 interface DailyChartProps {
     dailyListChart: IDaily[];
