@@ -5,13 +5,9 @@ import { ExpenseReviewModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
 import { ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
-import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../../stores/userInfo";
-import moment from "moment";
 import axios, { AxiosResponse } from "axios";
 import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { Ratio } from "react-bootstrap";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IExpenseReviewModalProps {
