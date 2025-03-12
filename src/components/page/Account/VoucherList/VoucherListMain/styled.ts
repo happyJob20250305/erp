@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
-export const ManageMainStyled = styled.div`
+export const VoucherListMainStyled = styled.div`
     margin-top: 5px;
 `;

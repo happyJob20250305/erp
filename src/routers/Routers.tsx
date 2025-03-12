@@ -12,6 +12,7 @@ import { Department } from "../pages/system/Department";
 import { AttendanceRequest } from "../pages/personnel/AttendanceRequest";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
+import { VoucherList } from "../pages/account/VoucherList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -35,6 +36,7 @@ const routers: RouteObject[] = [
                     { path: "expense-list", element: <ExpenseList /> },
                     { path: "expense-review", element: <ExpenseReview /> },
                     { path: "expense-approval", element: <ExpenseReview /> },
+                    { path: "voucher-list", element: <VoucherList /> },
                 ],
             },
             {

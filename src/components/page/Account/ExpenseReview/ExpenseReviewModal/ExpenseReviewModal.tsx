@@ -277,7 +277,6 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                             </tr>
                         </tbody>
                     </table>
-
                     <div className={"button-container"}>
                         {expenseDetail.is_approval == "W" && (
                             <StyledButton type='button' onClick={expenseUpdate}>

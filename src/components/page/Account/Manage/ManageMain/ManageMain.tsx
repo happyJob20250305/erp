@@ -76,6 +76,7 @@ export const ManageMain = () => {
             <StyledTable
                 data={accountList}
                 columns={columns}
+                fullWidth={true}
                 onCellClick={(row) => {
                     handlerModal(row);
                 }}
