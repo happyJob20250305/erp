@@ -5,9 +5,11 @@ interface AnnualStatisticsProps {
     annualStatistics: IAnnual[];
 }
 
-export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) => {
-    const { totalSupplyPrice, totalExpenseAmount, totalReceivableAmount, totalRevenueAmount } = annualStatistics[0];
+const formatBigInt = (value: bigint) => {
+    return new Intl.NumberFormat("ko-KR").format(value);
+};
 
+export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) => {
     return (
         <StyledTable>
             <thead>
@@ -18,24 +20,38 @@ export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) =>
             </thead>
             <tbody>
                 {annualStatistics.length > 0 ? (
-                    <>
-                        <tr>
-                            <StyledTd>매출 순수익 ①</StyledTd>
-                            <StyledTd>{totalSupplyPrice.toLocaleString()} 원</StyledTd>
-                        </tr>
-                        <tr>
-                            <StyledTd>지출 총액 ②</StyledTd>
-                            <StyledTd>{totalExpenseAmount.toLocaleString()} 원</StyledTd>
-                        </tr>
-                        <tr>
-                            <StyledTd>미수금 총액 ③</StyledTd>
-                            <StyledTd>{totalReceivableAmount.toLocaleString()} 원</StyledTd>
-                        </tr>
-                        <tr>
-                            <StyledTd>손익 총계 (①-②-③)</StyledTd>
-                            <StyledTd>{totalRevenueAmount.toLocaleString()} 원</StyledTd>
-                        </tr>
-                    </>
+                    annualStatistics.map((annual) => {
+                        return (
+                            <>
+                                <tr>
+                                    <StyledTd>매출 순수익 ①</StyledTd>
+                                    <StyledTd>
+                                        {formatBigInt(annual.totalSupplyPrice - annual.totalUnitPrice)} 원
+                                    </StyledTd>
+                                </tr>
+                                <tr>
+                                    <StyledTd>지출 총액 ②</StyledTd>
+                                    <StyledTd>{formatBigInt(annual.totalExpenseAmount)} 원</StyledTd>
+                                </tr>
+                                <tr>
+                                    <StyledTd>미수금 총액 ③</StyledTd>
+                                    <StyledTd>{formatBigInt(annual.totalReceivableAmount)} 원</StyledTd>
+                                </tr>
+                                <tr>
+                                    <StyledTd>손익 총계 (①-②-③)</StyledTd>
+                                    <StyledTd>
+                                        {annual.totalRevenueAmount < 0 ? "▲ " : "▼ "}
+                                        {formatBigInt(
+                                            annual.totalSupplyPrice -
+                                                annual.totalExpenseAmount -
+                                                annual.totalReceivableAmount
+                                        )}
+                                        원
+                                    </StyledTd>
+                                </tr>
+                            </>
+                        );
+                    })
                 ) : (
                     <tr>
                         <StyledTd colSpan={2}>데이터가 없습니다.</StyledTd>

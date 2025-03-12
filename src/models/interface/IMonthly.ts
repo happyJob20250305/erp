@@ -6,8 +6,8 @@ export interface IMonthly {
     totalUnitPrice: bigint;
     totalReceivableAmount: bigint;
     totalExpenseAmount: bigint;
-    totalSupplyAmount: BigInt;
-    totalRevenueAmount: BigInt;
+    totalSupplyAmount: bigint;
+    totalRevenueAmount: bigint;
 }
 
 export interface IMonthlyListBodyResponse {
