@@ -10,6 +10,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { AnnualModal } from "../AnnualModal/AnnualModal";
 import { AnnualChart } from "../AnnualChart/AnnualChart";
+import { AnnualStatistics } from "../AnnualStatistics/AnnualStatistics";
 
 export const AnnualMain = () => {
     const { search } = useLocation();
@@ -42,6 +43,7 @@ export const AnnualMain = () => {
     return (
         <>
             <AnnualChart annualListChart={annualList}></AnnualChart>
+            <AnnualStatistics annualStatistics={annualList}></AnnualStatistics>
             <StyledButton onClick={() => annualModal("product")}>매출상위제품</StyledButton>
             <StyledButton onClick={() => annualModal("client")}>매출상위기업</StyledButton>
             <StyledTable>

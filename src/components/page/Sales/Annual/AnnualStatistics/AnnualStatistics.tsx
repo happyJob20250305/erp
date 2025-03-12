@@ -21,19 +21,19 @@ export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) =>
                     <>
                         <tr>
                             <StyledTd>매출 순수익 ①</StyledTd>
-                            <StyledTd>{totalSupplyPrice.toLocaleString()} 원</StyledTd>
+                            <StyledTd>{totalSupplyPrice.toString()} 원</StyledTd>
                         </tr>
                         <tr>
                             <StyledTd>지출 총액 ②</StyledTd>
-                            <StyledTd>{totalExpenseAmount.toLocaleString()} 원</StyledTd>
+                            <StyledTd>{totalExpenseAmount.toString()} 원</StyledTd>
                         </tr>
                         <tr>
                             <StyledTd>미수금 총액 ③</StyledTd>
-                            <StyledTd>{totalReceivableAmount.toLocaleString()} 원</StyledTd>
+                            <StyledTd>{totalReceivableAmount.toString()} 원</StyledTd>
                         </tr>
                         <tr>
                             <StyledTd>손익 총계 (①-②-③)</StyledTd>
-                            <StyledTd>{totalRevenueAmount.toLocaleString()} 원</StyledTd>
+                            <StyledTd>{totalRevenueAmount.toString()} 원</StyledTd>
                         </tr>
                     </>
                 ) : (
