@@ -72,7 +72,6 @@ export const ManageMain = () => {
 
     return (
         <ManageMainStyled>
-            총 갯수 : {accountCnt} 현재 페이지 : {cPage}
             <StyledTable
                 data={accountList}
                 columns={columns}

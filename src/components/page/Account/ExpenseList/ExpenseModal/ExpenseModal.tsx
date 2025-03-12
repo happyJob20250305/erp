@@ -54,12 +54,10 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
         { label: "영업지출", value: "AC04" },
     ];
     const LaberColor = ({ label, showAsterisk }: { label: string; showAsterisk: boolean }) => (
-        <th>
-            <label>
-                {label}
-                {showAsterisk && <span className='asterisk'> * </span>}
-            </label>
-        </th>
+        <label>
+            {label}
+            {showAsterisk && <span className='asterisk'> * </span>}
+        </label>
     );
 
     useEffect(() => {
