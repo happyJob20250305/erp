@@ -105,6 +105,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
             <div className='container'>
                 <form ref={formRef}>
                     <ModalStyledTable>
+                    <ModalStyledTable>
                         <tbody>
                             <tr>
                                 <th>결의번호</th>
