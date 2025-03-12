@@ -87,6 +87,16 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
         })
     }
 
+    const secondApproveAttendance = () => {
+        axios.post("/personnel/attendanceSecondApproveBody.do", {
+            reqId: id,
+            userIdx: loginUserEmpid,
+        }).then((res: AxiosResponse<IPostResponse>) => {
+            alert("승인되었습니다.");
+            postSuccess();
+        })
+    }
+
     return (
         <AttendanceApprovalModalStyle>
             <div className='container'>
@@ -138,7 +148,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                         }
                         {
                             (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
-                            && <button type='button'>승인</button>
+                            && <button type='button' onClick={secondApproveAttendance}>승인</button>
                         }
                         {
                             (loginUserType === "A" && ((attendanceApprovalDetail?.reqStatus === "검토 대기")))
