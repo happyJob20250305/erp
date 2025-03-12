@@ -70,6 +70,11 @@ export const AttendanceApprovalMain = () => {
         setModal(!modal);
     }
 
+    const postSuccess = () => {
+        setModal(!modal);
+        searchAttendanceList();
+    }
+
     return (
         <AttendanceApprovalMainStyled>
             <StyledTable
@@ -90,7 +95,7 @@ export const AttendanceApprovalMain = () => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceApprovalModal id={id} setId={setId} />
+                        <AttendanceApprovalModal id={id} setId={setId} postSuccess={postSuccess} />
                     </Portal>
                 )
             }

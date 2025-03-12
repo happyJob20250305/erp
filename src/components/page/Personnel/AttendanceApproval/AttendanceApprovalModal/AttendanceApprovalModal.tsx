@@ -9,6 +9,7 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 interface AttendanceApprovalProps {
     id: number,
     setId: React.Dispatch<React.SetStateAction<number>>,
+    postSuccess: () => void
 }
 
 interface IAttendanceDetail extends IAttendance {
@@ -22,7 +23,12 @@ interface AttendanceApprovalDetailResponse {
     detail: IAttendanceDetail
 }
 
-export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId }) => {
+interface IPostResponse {
+    result: string
+    message?: string
+}
+
+export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [attendanceApprovalDetail, setAttendanceApprovalDetail] = useState<IAttendanceDetail>();
     const formRef = useRef<HTMLFormElement>(null);
@@ -54,6 +60,19 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
             reqId: id,
             userIdx: loginUserEmpid,
             appReason: formData.get("appReason").toString()
+        }).then((res: AxiosResponse<IPostResponse>) => {
+            alert("반려되었습니다.");
+            postSuccess();
+        })
+    }
+
+    const firstApproveAttendance = () => {
+        axios.post("/personnel/attendanceFirstApproveBody.do", {
+            reqId: id,
+            userIdx: loginUserEmpid,
+        }).then((res: AxiosResponse<IPostResponse>) => {
+            alert("승인되었습니다.");
+            postSuccess();
         })
     }
 
@@ -104,7 +123,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                     <div className={"button-container"}>
                         {
                             (loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "검토 대기"))
-                            && <button type='button'>승인</button>
+                            && <button type='button' onClick={firstApproveAttendance}>승인</button>
                         }
                         {
                             (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
