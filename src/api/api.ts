@@ -8,4 +8,6 @@ export const Daily = {
 
 export const Monthly = {
     search: "/sales/monthlyList.do",
+    detail: "/sales/monthlyTopProduct.do",
+    detailClient: "/sales/monthlyTopClient.do",
 };

@@ -12,3 +12,16 @@ export interface IMonthly {
 export interface IMonthlyListBodyResponse {
     monthlyList: IMonthly[];
 }
+
+export interface IMonthlyModalDetail {
+    RNUM: number;
+    topTitle: string;
+    totalSupplyPrice: bigint;
+}
+
+export interface IMonthlyProductDetail {
+    detail: IMonthlyModalDetail[];
+}
+export interface IMonthlyClientDetail {
+    detailClient: IMonthlyModalDetail[];
+}

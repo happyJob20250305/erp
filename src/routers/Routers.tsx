@@ -6,6 +6,9 @@ import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
 import { Daily } from "../pages/sales/Daily";
 import { Monthly } from "../pages/sales/Monthly";
+import { CommonCode } from "../pages/system/CommonCode";
+import { DetailCode } from "../pages/system/DetailCode";
+import { Department } from "../pages/system/Department";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -16,7 +19,12 @@ const routers: RouteObject[] = [
         children: [
             {
                 path: "system",
-                children: [{ path: "notice", element: <Notice /> }],
+                children: [
+                    { path: "notice", element: <Notice /> },
+                    { path: "code", element: <CommonCode /> },
+                    { path: "code/:groupCode", element: <DetailCode /> },
+                    { path: "department", element: <Department /> },
+                ],
             },
 
             {

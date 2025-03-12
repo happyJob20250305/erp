@@ -8,7 +8,7 @@ import { MonthlyChart } from "../MonthlyChart/MonthlyChart";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import Portal from "react-datepicker/dist/portal";
+import { Portal } from "../../../../common/potal/Portal";
 import { MonthlyModal } from "../MonthlyModal/MonthlyModal";
 
 export const MonthlyMain = () => {
@@ -31,11 +31,15 @@ export const MonthlyMain = () => {
     const monthlyModal = () => {
         setModal(!modal);
     };
+    const postSuccess = () => {
+        setModal(!modal);
+        searchMonthlyList();
+    };
     return (
         <>
             <MonthlyChart monthlyListChart={monthlyList}></MonthlyChart>
-            <StyledButton onClick={() => monthlyModal()}>매출상위제품</StyledButton>
-            <StyledButton>메출상위기업</StyledButton>
+            <StyledButton onClick={monthlyModal}>매출상위제품</StyledButton>
+            <StyledButton onClick={monthlyModal}>메출상위기업</StyledButton>
             <StyledTable>
                 <thead>
                     <tr>
@@ -70,7 +74,7 @@ export const MonthlyMain = () => {
             </StyledTable>
             {modal && (
                 <Portal>
-                    <MonthlyModal></MonthlyModal>
+                    <MonthlyModal postSuccess={postSuccess} />
                 </Portal>
             )}
         </>
