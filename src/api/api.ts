@@ -10,6 +10,7 @@ export const Monthly = {
     search: "/sales/monthlyList.do",
     detail: "/sales/monthlyTopProduct.do",
     detailClient: "/sales/monthlyTopClient.do",
+};
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
