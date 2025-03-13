@@ -3,6 +3,10 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useEffect, useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../../../../stores/modalState';
+import { Portal } from '../../../../common/potal/Portal';
+import { AttendanceListModal } from '../AttendanceListModal/AttendanceListModal';
 
 export interface IAttendance {
     id: number,
@@ -32,7 +36,9 @@ interface IEvent {
 export const AttendanceListMain = () => {
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [events, setEvents] = useState<IEvent[]>([]);
-    const [isEvent, setIsEvent] = useState<boolean>(false);
+    const [modal, setModal] = useRecoilState<Boolean>(modalState);
+    const [searchStDate, setSearchStDate] = useState<string>("");
+    const [reqStatus, setReqStatus] = useState<string>("");
 
     useEffect(() => {
         attendanceCalendar();
@@ -50,7 +56,6 @@ export const AttendanceListMain = () => {
             .then((res: AxiosResponse<IAttendanceListResponse>) => {
                 setAttendanceList(res.data.attendanceList);
             })
-
     }
 
     const makeEvents = () => {
@@ -72,26 +77,10 @@ export const AttendanceListMain = () => {
         let myevents = [];
 
         dataMap.forEach((value, key) => {
-            console.log("key: " + key + ", value: " + value);
-
             let date = key.substring(0, 10);
             let reqStatus = key.substring(11);
             let title = `${reqStatus} ${value}건`
             switch (reqStatus) {
-                case "검토 대기":
-                    myevents.push({
-                        title: title,
-                        date: date,
-                        color: '#5B91D4'
-                    })
-                    break;
-                case "반려":
-                    myevents.push({
-                        title: title,
-                        date: date,
-                        color: '#E57373'
-                    })
-                    break;
                 case "승인":
                     myevents.push({
                         title: title,
@@ -106,11 +95,52 @@ export const AttendanceListMain = () => {
                         color: '#E6B800'
                     })
                     break;
+                case "검토 대기":
+                    myevents.push({
+                        title: title,
+                        date: date,
+                        color: '#5B91D4'
+                    })
+                    break;
+                case "반려":
+                    myevents.push({
+                        title: title,
+                        date: date,
+                        color: '#E57373'
+                    })
+                    break;
                 default:
                     break;
             }
         });
         setEvents(myevents);
+    }
+
+    const handlerModal = (id: Date, color: string) => {
+        let eventDay = new Date(id);
+        let year = eventDay.getFullYear();
+        let month = ('0' + (eventDay.getMonth() + 1)).slice(-2);
+        let day = ('0' + eventDay.getDate()).slice(-2);
+        let dateString = year + '-' + month + '-' + day;
+        setSearchStDate(dateString);
+
+        switch (color) {
+            case "#71C379": //승인
+                setReqStatus("S");
+                break;
+            case "#E6B800"://승인 대기
+                setReqStatus("F");
+                break;
+            case "#5B91D4"://검토 대기
+                setReqStatus("W");
+                break;
+            case "#E57373"://반려
+                setReqStatus("N");
+                break;
+            default:
+                break;
+        }
+        setModal(!modal);
     }
 
     function renderEventContent(eventInfo) {
@@ -121,6 +151,7 @@ export const AttendanceListMain = () => {
             </>
         )
     }
+
     return (
         <AttendanceListMainStyled>
             <FullCalendar
@@ -129,7 +160,15 @@ export const AttendanceListMain = () => {
                 events={events}
                 eventContent={renderEventContent}
                 locale={'ko'}
+                eventClick={(e) => { handlerModal(e.event.start, e.event.backgroundColor) }}
             />
+            {
+                modal && (
+                    <Portal>
+                        <AttendanceListModal reqStatus={reqStatus} searchStDate={searchStDate} />
+                    </Portal>
+                )
+            }
         </AttendanceListMainStyled>
     )
 }
