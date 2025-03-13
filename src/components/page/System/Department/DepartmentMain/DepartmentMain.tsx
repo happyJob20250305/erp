@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react"
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";

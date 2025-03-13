@@ -1,7 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react"
 import { StyledInput } from "../../../../common/StyledInput/StyledInput"
 import { DepartmentModalStyle } from "./styled"
-import axios, { AxiosResponse } from "axios";
 import { IDepartment } from "../DepartmentMain/DepartmentMain";
 import { modalState } from "../../../../../stores/modalState";
 import { useRecoilState } from "recoil";
