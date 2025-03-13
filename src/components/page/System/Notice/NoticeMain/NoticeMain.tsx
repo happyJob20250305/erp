@@ -9,6 +9,7 @@ import { NoticeModal } from "../NoticeModal/NoticeModal";
 import { NoticeMainStyled } from "./styled";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { Notice } from "../../../../../api/api";
 
 export interface INotice {
     notiSeq: number,
@@ -45,7 +46,7 @@ export const NoticeMain = () => {
     const searchNoticeList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        const result = await searchApi<INoticeListBodyResponse>("/system/noticeListBody.do", {
+        const result = await searchApi<INoticeListBodyResponse>(Notice.searchNoticeList, {
             ...searchKeyword,
             pageSize: 5,
             currentPage,

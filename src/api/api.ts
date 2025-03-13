@@ -20,4 +20,8 @@ export const SalaryOptionList = {
 
 export const Notice = {
     searchNoticeList: "/system/noticeListBody.do",
+    searchDetail: "/system/noticeFileDetailBody.do",
+    saveNotice: "/system/noticeFileSave.do",
+    updateNotice: "/system/noticeFileUpdate.do",
+    deleteNotice: "/system/noticeDeleteBody.do",
 };
