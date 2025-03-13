@@ -13,8 +13,8 @@ import {
     IDetailGroupListBody,
 } from "../../../../../models/interface/Account/Manage/IAccount";
 
-import { ManageApi } from "../../../../../api/api";
-import { accountSearchApi } from "../../../../../api/Account/ManageApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -48,7 +48,7 @@ export const ManageSearch = () => {
     }, [selectedGroup]);
 
     const searchAccountGroupList = async () => {
-        const result = await accountSearchApi<IAccountGroupListBody>(ManageApi.searchGroupList, {});
+        const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
         if (result) {
             const selectGroupList: ISetListOption[] = [
                 { label: "전체", value: "" },
@@ -62,7 +62,7 @@ export const ManageSearch = () => {
     };
 
     const searchAccountDetailList = async (selectedGroup: string) => {
-        const result = await accountSearchApi<IDetailGroupListBody>(ManageApi.searchDetailList, {
+        const result = await accountSearchApi<IDetailGroupListBody>(Manage.searchDetailList, {
             group_code: selectedGroup,
         });
         if (result) {
@@ -88,7 +88,7 @@ export const ManageSearch = () => {
 
     return (
         <ManageSearchStyled>
-            <div className='searchBar'>
+            <div className='search-bar'>
                 계정대분류명:
                 <StyledSelectBox
                     width={150}

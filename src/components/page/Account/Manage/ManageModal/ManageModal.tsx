@@ -14,9 +14,9 @@ import {
 } from "../../../../../models/interface/Account/Manage/IAccount";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
-import { accountSearchApi } from "../../../../../api/Account/ManageApi/accountSearchApi";
-import { ManageApi } from "../../../../../api/api";
-import { accountPostApi } from "../../../../../api/Account/ManageApi/accountPostApi";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
+import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");
@@ -46,7 +46,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
     }, [detailCode]);
 
     const searchAccountGroupList = async () => {
-        const result = await accountSearchApi<IAccountGroupListBody>(ManageApi.searchGroupList, {});
+        const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
         if (result) {
             const selectGroupList: ISetListOption[] = [
                 { label: "전체", value: "" },
@@ -69,7 +69,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
         ) {
             return false;
         }
-        const result = await accountPostApi<IPostResponse>(ManageApi.save, formRef.current);
+        const result = await accountPostApi<IPostResponse>(Manage.save, formRef.current);
         if (result.result === "success") {
             alert("저장되었습니다.");
             postSuccess();
@@ -83,7 +83,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
             return false;
         }
         formData.append("detail_code", detailCode.detail_code);
-        const result = await accountPostApi<IPostResponse>(ManageApi.update, formData);
+        const result = await accountPostApi<IPostResponse>(Manage.update, formData);
         if (result.result === "success") {
             alert("수정되었습니다.");
             postSuccess();
@@ -92,7 +92,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
 
     const accountDelete = async () => {
         const result = await accountPostApi<IPostResponse>(
-            ManageApi.delete,
+            Manage.delete,
             new URLSearchParams({ detail_code: detailCode.detail_code })
         );
         if (result.result === "success") {

@@ -9,8 +9,8 @@ import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { ManageModal } from "../ManageModal/ManageModal";
 import { IAccount, IAccountBodyResponse } from "../../../../../models/interface/Account/Manage/IAccount";
-import { accountSearchApi } from "../../../../../api/Account/ManageApi/accountSearchApi";
-import { ManageApi } from "../../../../../api/api";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
 
 export const ManageMain = () => {
     const { searchKeyword } = useContext(AccountManageContext);
@@ -36,7 +36,7 @@ export const ManageMain = () => {
     const searchAccountList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        const result = await accountSearchApi<IAccountBodyResponse>(ManageApi.searchAccountList, {
+        const result = await accountSearchApi<IAccountBodyResponse>(Manage.searchAccountList, {
             ...searchKeyword,
             pageSize: 5,
             currentPage,

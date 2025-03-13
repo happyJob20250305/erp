@@ -18,6 +18,15 @@ export const SalaryOptionList = {
     optionList: "/personnel/salary-manage-body",
 };
 
+export const Manage = {
+    searchGroupList: "/account/accountGroupList.do",
+    searchDetailList: "/account/accountSearchDetailBody.do",
+    searchAccountList: "/account/accountListBody.do",
+    save: "/account/accountSave.do",
+    update: "/account/accountUpdate.do",
+    delete: "/account/accountDelete.do",
+};
+
 export const CommonCode = {
     searchGroupCodeList: "/system/groupListBody",
     searchGroupCodeDetail: "/system/groupDetailBody",
@@ -43,13 +52,4 @@ export const Department = {
     searchDetail: "/system/departmentDetailBody",
     saveDepartment: "/system/departmentSave",
     updateDepartment: "/system/departmentUpdate",
-};
-
-export const ManageApi = {
-    searchGroupList: "/account/accountGroupList.do",
-    searchDetailList: "/account/accountSearchDetailBody.do",
-    searchAccountList: "/account/accountListBody.do",
-    save: "/account/accountSave.do",
-    update: "/account/accountUpdate.do",
-    delete: "/account/accountDelete.do",
 };
