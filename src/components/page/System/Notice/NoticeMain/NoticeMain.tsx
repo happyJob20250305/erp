@@ -8,6 +8,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { NoticeModal } from "../NoticeModal/NoticeModal";
 import { NoticeMainStyled } from "./styled";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
 
 export interface INotice {
     notiSeq: number,
@@ -41,18 +42,20 @@ export const NoticeMain = () => {
         searchNoticeList();
     }, [searchKeyword])
 
-    const searchNoticeList = (currentPage?: number) => {
+    const searchNoticeList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/system/noticeListBody.do", {
+        const result = await searchApi<INoticeListBodyResponse>("/system/noticeListBody.do", {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<INoticeListBodyResponse>) => {
-            setNoticeList(res.data.noticeList);
-            setNoticeCnt(res.data.noticeCnt);
-            setCPage(currentPage);
         })
+
+        if (result) {
+            setNoticeList(result.noticeList);
+            setNoticeCnt(result.noticeCnt);
+            setCPage(currentPage);
+        }
     };
 
     const handlerModal = (id: number) => {

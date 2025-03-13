@@ -17,3 +17,7 @@ export const MySalaryDetail = {
 export const SalaryOptionList = {
     optionList: "/personnel/salary-manage-body",
 };
+
+export const Notice = {
+    searchNoticeList: "/system/noticeListBody.do",
+};
