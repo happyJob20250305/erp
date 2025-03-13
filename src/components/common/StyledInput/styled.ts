@@ -4,6 +4,8 @@ import { InputProps } from "./StyledInput";
 export const StyledInputStyled = styled.input<InputProps>`
     font-size: 16px;
     padding: 10px;
+    margin-left: 20px;
+    margin-right: 50px;
     border-radius: 6px;
     outline: none;
     transition: all 0.3s ease-in-out;

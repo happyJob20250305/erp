@@ -7,6 +7,8 @@ export const StyledButtonStyled = styled.button<ButtonProps>`
     justify-content: center;
     font-weight: bold;
     border: none;
+    margin-left: 20px;
+    margin-right: 20px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     border-radius: 6px;
