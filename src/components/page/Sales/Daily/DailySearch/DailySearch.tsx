@@ -8,10 +8,15 @@ import axios, { AxiosResponse } from "axios";
 import { error } from "console";
 
 export const DailySearch = () => {
-    const [searchDate, setSearchDate] = useState<string>();
     const [selectedClient, setSelectedClient] = useState<string>("");
     const [clientOptions, setClientOptions] = useState<{ label: string; value: string }[]>([]);
     const navigate = useNavigate();
+
+    const getCurrentDate = () => {
+        const now = new Date();
+        return now.toISOString().split("T")[0];
+    };
+    const [searchDate, setSearchDate] = useState<string>(getCurrentDate());
 
     //거래처 목록 가져오기
     useEffect(() => {
@@ -25,6 +30,7 @@ export const DailySearch = () => {
                 setClientOptions([{ label: "전체", value: "" }, ...clientData]);
             })
             .catch((error) => alert("거래처 목록 불러오기 실패"));
+        dailySearch();
     }, []);
 
     //검색기능
@@ -44,7 +50,11 @@ export const DailySearch = () => {
                 <label>거래처명</label>
                 <StyledSelectBox options={clientOptions} value={selectedClient} onChange={setSelectedClient} />
                 <label>기간</label>
-                <StyledInput type='date' onChange={(e) => setSearchDate(e.target.value)}></StyledInput>
+                <StyledInput
+                    type='date'
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                ></StyledInput>
                 <i className='bi bi-arrow-left-circle-fill'></i>
                 <StyledButton> 오늘</StyledButton>
                 <i className='bi bi-arrow-right-circle-fill'></i>
