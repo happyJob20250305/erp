@@ -16,5 +16,6 @@ export const ManageSearchStyled = styled.div`
 
     .button-container {
         display: flex;
+        gap: 5px;
     }
 `;

@@ -44,3 +44,12 @@ export const Department = {
     saveDepartment: "/system/departmentSave",
     updateDepartment: "/system/departmentUpdate",
 };
+
+export const ManageApi = {
+    searchGroupList: "/account/accountGroupList.do",
+    searchDetailList: "/account/accountSearchDetailBody.do",
+    searchAccountList: "/account/accountListBody.do",
+    save: "/account/accountSave.do",
+    update: "/account/accountUpdate.do",
+    delete: "/account/accountDelete.do",
+};

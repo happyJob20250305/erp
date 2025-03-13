@@ -4,11 +4,11 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { ExpenseReviewModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import { ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
 import axios, { AxiosResponse } from "axios";
 import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
