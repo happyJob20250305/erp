@@ -4,12 +4,12 @@ import { DetailCodeMainStyled } from "./styled";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { DetailModal } from "../DetailModal/DetailModal";
 import { Portal } from "../../../../common/potal/Portal";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
+import { DetailCodeModal } from "../DetailCodeModal/DetailCodeModal";
 
 
 export interface IDetailCode {
@@ -92,7 +92,7 @@ export const DetailCodeMain = () => {
             {
                 modal && (
                     <Portal>
-                        <DetailModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
+                        <DetailCodeModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
                     </Portal>
                 )
             }

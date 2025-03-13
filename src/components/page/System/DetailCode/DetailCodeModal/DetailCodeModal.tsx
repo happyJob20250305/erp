@@ -31,7 +31,7 @@ interface IPostResponse {
     message?: string
 }
 
-export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, postSuccess }) => {
+export const DetailCodeModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, postSuccess }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [detailCodeDetail, setDetailCodeDetail] = useState<IDetailCodeDetail>();
     const formRef = useRef<HTMLFormElement>(null);
