@@ -108,18 +108,16 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                         <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note} />
                     </label>
                     {
-                        groupCode?.length > 0 ?
-                            (
-                                <label>
-                                    사용여부*
-                                    <StyledSelectBox
-                                        options={options}
-                                        name="groupUseYn"
-                                        defaultValue={groupCodeDetail?.useYn}
-                                    />
-                                </label>
-                            )
-                            : (<> </>)
+                        groupCode?.length > 0 && (
+                            <label>
+                                사용여부*
+                                <StyledSelectBox
+                                    options={options}
+                                    name="groupUseYn"
+                                    defaultValue={groupCodeDetail?.useYn}
+                                />
+                            </label>
+                        )
                     }
                     <div className={"button-container"}>
                         <button type='button' onClick={groupCode ? updateGroupCode : saveGroupCode}>
