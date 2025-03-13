@@ -3,7 +3,6 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { CommonCodeModalStyle } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
@@ -108,18 +107,16 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                         <StyledInput type='text' name="groupNote" defaultValue={groupCodeDetail?.note} />
                     </label>
                     {
-                        groupCode?.length > 0 ?
-                            (
-                                <label>
-                                    사용여부*
-                                    <StyledSelectBox
-                                        options={options}
-                                        name="groupUseYn"
-                                        defaultValue={groupCodeDetail?.useYn}
-                                    />
-                                </label>
-                            )
-                            : (<> </>)
+                        groupCode?.length > 0 && (
+                            <label>
+                                사용여부*
+                                <StyledSelectBox
+                                    options={options}
+                                    name="groupUseYn"
+                                    defaultValue={groupCodeDetail?.useYn}
+                                />
+                            </label>
+                        )
                     }
                     <div className={"button-container"}>
                         <button type='button' onClick={groupCode ? updateGroupCode : saveGroupCode}>

@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { CommonCodeMainStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
