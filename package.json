@@ -3,6 +3,9 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/daygrid": "^6.1.15",
+        "@fullcalendar/react": "^6.1.15",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
@@ -34,6 +37,8 @@
         "react-modal": "^3.16.1",
         "react-router-dom": "^6.24.1",
         "react-scripts": "5.0.1",
+        "react-table": "^7.8.0",
+        "react-to-print": "^3.0.5",
         "recharts": "^2.15.1",
         "recoil": "^0.7.7",
         "recoil-persist": "^5.1.0",

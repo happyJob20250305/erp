@@ -16,6 +16,9 @@ import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
 import { Annual } from "../pages/sales/Annual";
 import { ReceivablesList } from "../pages/sales/ReceivablesList";
+import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
+import { AttendanceList } from "../pages/personnel/AttendanceList";
+import { VoucherList } from "../pages/account/VoucherList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -27,7 +30,9 @@ const routers: RouteObject[] = [
             {
                 path: "personnel",
                 children: [
+                    { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
+                    { path: "attendance-list", element: <AttendanceList /> },
                     { path: "salary-manage", element: <SalaryManager /> },
                     { path: "salary-list", element: <MySalary /> },
                 ],

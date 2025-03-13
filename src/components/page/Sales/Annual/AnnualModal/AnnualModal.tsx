@@ -80,7 +80,7 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
                         </StyledTable>
                     </>
                 ) : (
-                    <p>데이터를 불러오는 중...</p>
+                    <p>데이터가 존재하지 않습니다.</p>
                 )}
                 <StyledButton type='button' onClick={() => setModal(false)}>
                     닫기

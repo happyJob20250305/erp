@@ -6,4 +6,15 @@ export const ManageSearchStyled = styled.div`
     align-items: center;
     justify-content: flex-end;
     margin-top: 5px;
+
+    .searchBar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .button-container {
+        display: flex;
+    }
 `;

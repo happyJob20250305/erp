@@ -103,14 +103,32 @@ export const ManageSearch = () => {
 
     return (
         <ManageSearchStyled>
-            <StyledSelectBox options={accountGroupList} value={selectedGroup} onChange={setSelectedGroup} />
-            <StyledSelectBox options={accountDetailList} value={selectedDetail} onChange={setSelectedDetail} />
-            <StyledSelectBox options={codeType} value={selectCodeType} onChange={setSelectedCodeType} />
-            <StyledSelectBox options={useYn} value={selectedUse} onChange={setSelectedUse} />
-            <StyledButton variant='secondary' onClick={handlerSearch}>
-                검색
-            </StyledButton>
-            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <div className='searchBar'>
+                계정대분류명:
+                <StyledSelectBox
+                    width={150}
+                    options={accountGroupList}
+                    value={selectedGroup}
+                    onChange={setSelectedGroup}
+                />
+                계정세부명:
+                <StyledSelectBox
+                    width={150}
+                    options={accountDetailList}
+                    value={selectedDetail}
+                    onChange={setSelectedDetail}
+                />
+                구분:
+                <StyledSelectBox width={100} options={codeType} value={selectCodeType} onChange={setSelectedCodeType} />
+                사용여부:
+                <StyledSelectBox width={100} options={useYn} value={selectedUse} onChange={setSelectedUse} />
+            </div>
+            <div className='button-container'>
+                <StyledButton variant='secondary' onClick={handlerSearch}>
+                    검색
+                </StyledButton>
+                <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            </div>
         </ManageSearchStyled>
     );
 };

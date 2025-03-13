@@ -38,7 +38,6 @@ export const DailySearch = () => {
         const query: string[] = [];
         !searchDate || query.push(`orderDate=${searchDate}`);
         !selectedClient || query.push(`clientId=${selectedClient}`);
-        //if (selectedClient) query.push(`clientId=${selectedClient}`);
 
         const queryString = query.length > 0 ? `?${query.join("&")}` : "";
         navigate(`/react/sales/daily${queryString}`);

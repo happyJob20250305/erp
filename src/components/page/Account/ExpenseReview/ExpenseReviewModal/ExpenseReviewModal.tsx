@@ -10,7 +10,7 @@ import { loginInfoState } from "../../../../../stores/userInfo";
 import axios, { AxiosResponse } from "axios";
 import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { Ratio } from "react-bootstrap";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
@@ -102,7 +102,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
         <ExpenseReviewModalStyle>
             <div className='container'>
                 <form ref={formRef}>
-                    <table className='row'>
+                    <ModalStyledTable>
                         <tbody>
                             <tr>
                                 <th>결의번호</th>
@@ -261,6 +261,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         options={crebitList}
                                         value={selectedCrebitDetail}
                                         onChange={setSelectedCrebitDetail}
+                                        disabled={expenseDetail.is_approval !== "W"}
                                     />
                                 </td>
                             </tr>
@@ -275,9 +276,8 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
-
-                    <div className={"button-container"}>
+                    </ModalStyledTable>
+                    <ButtonArea>
                         {expenseDetail.is_approval == "W" && (
                             <StyledButton type='button' onClick={expenseUpdate}>
                                 검토완료
@@ -287,7 +287,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                         <StyledButton type='button' onClick={() => setModal(!modal)}>
                             나가기
                         </StyledButton>
-                    </div>
+                    </ButtonArea>
                 </form>
             </div>
         </ExpenseReviewModalStyle>

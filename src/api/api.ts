@@ -12,6 +12,10 @@ export const Monthly = {
     detailClient: "/sales/monthlyTopClient.do",
 };
 
+export const ReceivablesList = {
+    search: "/sales/receivableList.do",
+};
+
 export const Annual = {
     search: "/sales/annualList.do",
     detail: "/sales/annualTopProduct.do",
