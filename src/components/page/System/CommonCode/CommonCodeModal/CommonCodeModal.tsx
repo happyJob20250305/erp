@@ -45,7 +45,7 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
     }, [])
 
     const searchDetail = async () => {
-        const result = await searchApi<IGroupCodeDetailResponse>(CommonCode.searchGroupDetail, { groupCode });
+        const result = await searchApi<IGroupCodeDetailResponse>(CommonCode.searchGroupCodeDetail, { groupCode });
 
         if (result) {
             setGroupCodeDetail(result.detail);

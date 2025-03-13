@@ -4,11 +4,13 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { DetailModalStyled } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { IDetailCode } from "../DetailCodeMain/DetailCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useLocation } from "react-router-dom";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { CommonCode } from "../../../../../api/api";
+import { postApi } from "../../../../../api/SystemApi/postApi";
 
 interface IDetailCodeProps {
     detailCode: string,
@@ -48,52 +50,50 @@ export const DetailModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, p
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/system/detailDetailBody", { detailCode })
-            .then((res: AxiosResponse<IDetailCodeDetailResponse>) => {
-                setDetailCodeDetail(res.data.detail)
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<IDetailCodeDetailResponse>(CommonCode.searchDetailCodeDetail, { detailCode });
+
+        if (result) {
+            setDetailCodeDetail(result.detail)
+        }
     }
 
-    const saveDetailCode = () => {
+    const saveDetailCode = async () => {
         const formData = new FormData(formRef.current);
         formData.append("groupCode", state.groupCode);
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("detailCode").toString(), msg: "상세코드를 입력해주세요." },
             { inval: formData.get("detailName").toString(), msg: "상세코드명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/detailSave", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("저장되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(CommonCode.saveDetailCode, formData);
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
-    const updateDetailCode = () => {
+    const updateDetailCode = async () => {
         const formData = new FormData(formRef.current);
         formData.append("oldDetailCode", detailCode);
         formData.append("newDetailCode", formData.get("detailCode"));
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("detailCode").toString(), msg: "상세코드를 입력해주세요." },
             { inval: formData.get("detailName").toString(), msg: "상세코드명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/detailUpdate", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("수정되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(CommonCode.updateDetailCode, formData);
+
+        if (result.result === "success") {
+            alert("수정되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
     return (

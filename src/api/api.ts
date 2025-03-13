@@ -20,9 +20,13 @@ export const SalaryOptionList = {
 
 export const CommonCode = {
     searchGroupCodeList: "/system/groupListBody",
-    searchGroupDetail: "/system/groupDetailBody",
+    searchGroupCodeDetail: "/system/groupDetailBody",
     saveGroupCode: "/system/groupSave",
     updateGroupCode: "/system/groupUpdate",
+    searchDetailCodeList: "/system/detailListBody",
+    searchDetailCodeDetail: "/system/detailDetailBody",
+    saveDetailCode: "/system/detailSave",
+    updateDetailCode: "/system/detailUpdate",
 };
 
 export const Notice = {
