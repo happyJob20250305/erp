@@ -7,7 +7,7 @@ interface ISearchKeyword {
 
 export const SalesPlanContext = createContext<ISearchKeyword>({});
 
-export const SalesPlanProvider: FC<{
+export const SalesPlanListProvider: FC<{
     children: React.ReactNode | React.ReactNode[];
 }> = ({ children }) => {
     const [searchKeyword, setSearchKeyword] = useState<object>({});

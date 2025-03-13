@@ -42,7 +42,7 @@ export const SalesPlanSearch = () => {
         getMainCategoryList();
         getSubCategoryList();
         getProductList();
-    }, [selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
+    }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
 
     const manuFacturerOptions = [
         { value: "", label: "선택" },
