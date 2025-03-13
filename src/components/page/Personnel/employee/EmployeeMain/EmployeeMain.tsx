@@ -14,6 +14,7 @@ import {
     EmployeeDetailModalContext,
     EmployeeDetailProvider,
 } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
+import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 
 export const EmplyoeeMain = () => {
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
@@ -23,16 +24,42 @@ export const EmplyoeeMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const { employeeId, setEmployeeId, jobGradeCode, setJobGradeCode, departmentCode, setdepartmentCode } =
         useContext(EmployeeDetailModalContext);
+    //context 상태 및 업데이트 함수 가져오기
+    const {
+        searchId,
+        setSearchId,
+        searchName,
+        setSearchName,
+        searchRegDateStart,
+        setSearchRegDateStart,
+        searchRegDateEnd,
+        setSearchRegDateEnd,
+        jobGrade,
+        setJobGrade,
+        department,
+        setDepartment,
+        emplStatus,
+        setEmplStatus,
+    } = useContext(EmployeeSearchContext);
 
     useEffect(() => {
         employeeBasicList(cPage);
-    }, [cPage]);
+    }, [cPage, searchId, searchName, searchRegDateEnd, searchRegDateStart, jobGrade, department, emplStatus]);
+
+    useEffect(() => {});
 
     //리스트 출력
     const employeeBasicList = async (currentPage: number) => {
         const searchParam = new URLSearchParams();
         searchParam.append("currentPage", currentPage.toString());
         searchParam.append("pageSize", "5");
+        if (searchId) searchParam.append("searchId", searchId);
+        if (searchName) searchParam.append("searchName", searchName);
+        if (searchRegDateStart) searchParam.append("searchRegDateStart", searchRegDateStart);
+        if (searchRegDateEnd) searchParam.append("searchRegDateEnd", searchRegDateEnd);
+        if (jobGrade) searchParam.append("jobGrade", jobGrade);
+        if (department) searchParam.append("department", department);
+        if (emplStatus) searchParam.append("emplStatus", emplStatus);
 
         const result = await postApi<IEmployeeResponse>(Employee.employeeList, searchParam);
         if (result) {
