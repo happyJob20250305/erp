@@ -14,6 +14,7 @@ import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { VoucherList } from "../pages/account/VoucherList";
+import { ClientList } from "../pages/business/ClientList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -49,6 +50,10 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
+            },
+            {
+                path: "business",
+                children: [{ path: "client-list", element: <ClientList /> }],
             },
         ],
     },
