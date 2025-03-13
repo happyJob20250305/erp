@@ -43,12 +43,13 @@ export const VoucherListSearch = () => {
                 { label: "전체", value: "" },
                 ...res.data.clientList.map((detail: IClient) => ({
                     label: detail.clientName,
-                    value: detail.id,
+                    value: detail.clientName,
                 })),
             ];
             setClientList(getClientList);
         });
     };
+
     const handlerSearch = () => {
         setSearchKeyword({
             searchStDate: searchStDate,

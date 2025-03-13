@@ -13,6 +13,7 @@ import { AttendanceRequest } from "../pages/personnel/AttendanceRequest";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
+import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 
 const routers: RouteObject[] = [
@@ -27,6 +28,7 @@ const routers: RouteObject[] = [
                 children: [
                     { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
+                    { path: "attendance-list", element: <AttendanceList /> },
                     { path: "salary-manage", element: <SalaryManager /> },
                     { path: "salary-list", element: <MySalary /> },
                 ],
