@@ -16,7 +16,6 @@ import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { VoucherList } from "../pages/account/VoucherList";
 
 import { Sales } from "../pages/business/Sales";
-import { Client } from "../pages/business/Client";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -55,10 +54,7 @@ const routers: RouteObject[] = [
             },
             {
                 path: "business",
-                children: [
-                    { path: "sales-plan", element: <Sales /> },
-                    { path: "client-list", element: <Client /> },
-                ],
+                children: [{ path: "sales-plan", element: <Sales /> }],
             },
         ],
     },

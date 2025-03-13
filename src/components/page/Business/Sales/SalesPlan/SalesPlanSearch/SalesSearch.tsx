@@ -1,10 +1,5 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { SalesPlanSearchStyled } from "./styled";
-import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
-import { SalesSearch } from "./SalesSearch";
+import axios, { AxiosResponse } from "axios";
+import { FC, useEffect, useState } from "react";
 import {
     IMaincategory,
     IMaincategoryResponse,
@@ -14,14 +9,31 @@ import {
     IProductResponse,
     ISubcategory,
     ISubcategoryResponse,
-} from "../../../../../models/interface/ISales";
-import axios, { AxiosResponse } from "axios";
-import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { StyledInput } from "../../../../common/StyledInput/StyledInput";
+} from "../../../../../../models/interface/personnel/Sales/ISales";
+import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
+import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 
-export const SalesPlanSearch = () => {
-    const { setSearchKeyword } = useContext(SalesPlanContext);
+interface ISalesSearchProps {
+    selectManuFacturer: string;
+    selectSubcategory: string;
+    selectDate: string;
+    selectProduct: string;
+    setSelectManuFacturer: React.Dispatch<React.SetStateAction<string>>;
+    setSelectSubcategory: React.Dispatch<React.SetStateAction<string>>;
+    setSelectDate: React.Dispatch<React.SetStateAction<string>>;
+    setSelectProduct: React.Dispatch<React.SetStateAction<string>>;
+}
 
+export const SalesSearch: FC<ISalesSearchProps> = ({
+    selectManuFacturer,
+    setSelectManuFacturer,
+    selectSubcategory,
+    setSelectSubcategory,
+    selectDate,
+    setSelectDate,
+    setSelectProduct,
+    selectProduct,
+}) => {
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
@@ -29,16 +41,7 @@ export const SalesPlanSearch = () => {
 
     const [selectMaincategory, setSelectMaincategory] = useState<string>("");
 
-    const [selectManuFacturer, setSelectManuFacturer] = useState<string>("");
-    const [selectSubcategory, setSelectSubcategory] = useState<string>("");
-    const [selectProduct, setSelectProduct] = useState<string>("");
-
-    const [selectDate, setSelectDate] = useState<string>("");
-
-    const [modal, setModal] = useRecoilState<boolean>(modalState);
-
-    // // select box의 option에 리스트를 불러올때 발생하는 지연현상 수정 필요
-    // // 의존성 배열 분기 처리 필요
+    // select box의 option에 리스트를 불러올때 발생하는 지연현상 수정 필요
     useEffect(() => {
         getManufacturerList();
         getMainCategoryList();
@@ -71,7 +74,7 @@ export const SalesPlanSearch = () => {
         ...(subCategoryList?.length > 0
             ? subCategoryList.map((subCategoryValue: ISubcategory) => ({
                   // key 요소가 활용 되고 있는지 확인 필요
-                  //   key: subCategoryValue.detail_code,
+                  key: subCategoryValue.detail_code,
                   value: subCategoryValue.detail_code,
                   label: subCategoryValue.detail_name,
               }))
@@ -129,35 +132,14 @@ export const SalesPlanSearch = () => {
             });
     };
 
-    const handlerSearch = () => {
-        setSearchKeyword({
-            // as-is 개발자도구-페이로드 결과 값들
-            group_code: selectManuFacturer,
-            product_code: selectSubcategory,
-            target_date: selectDate,
-            product_name: selectProduct,
-            // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
-            enterence: "",
-        });
-    };
-
     return (
-        <SalesPlanSearchStyled>
-            {/* <SalesSearch
-                setSelectManuFacturer={setSelectManuFacturer}
-                selectManuFacturer={selectManuFacturer}
-                setSelectSubcategory={setSelectSubcategory}
-                selectSubcategory={selectSubcategory}
-                setSelectDate={setSelectDate}
-                selectDate={selectDate}
-                setSelectProduct={setSelectProduct}
-                selectProduct={selectProduct}
-            /> */}
+        <>
             <label>
                 제조업체
                 <StyledSelectBox
                     options={manuFacturerOptions}
                     value={selectManuFacturer}
+                    defaultValue={selectManuFacturer}
                     onChange={(value: string) => {
                         setSelectManuFacturer(value);
                         setSelectMaincategory("");
@@ -201,8 +183,6 @@ export const SalesPlanSearch = () => {
                 날짜
                 <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
             </label>
-            <StyledButton onClick={handlerSearch}>조회</StyledButton>
-            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
-        </SalesPlanSearchStyled>
+        </>
     );
 };

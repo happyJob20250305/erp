@@ -1,26 +1,24 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { SalesModalStyle } from "./styled";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../../stores/userInfo";
-import { SalesSearch } from "../SalesSearch/SalesSearch";
 import axios, { AxiosResponse } from "axios";
+import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
+import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
+import { ILoginInfo } from "../../../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../../../stores/userInfo";
 import {
-    IManufacturer,
-    IManufacturerResponse,
     IMaincategory,
     IMaincategoryResponse,
-    ISubcategory,
-    ISubcategoryResponse,
+    IManufacturer,
+    IManufacturerResponse,
     IProduct,
     IProductResponse,
     ISalesPlan,
-    ISalesPlanResponse,
-} from "../../../../../models/interface/ISales";
+    ISubcategory,
+    ISubcategoryResponse,
+} from "../../../../../../models/interface/personnel/Sales/ISales";
+import { SalesModalStyle } from "./styled";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { SalesSearch } from "../SalesPlanSearch/SalesSearch";
 
 interface ISalesModalProps {
     planNum?: ISalesPlan;

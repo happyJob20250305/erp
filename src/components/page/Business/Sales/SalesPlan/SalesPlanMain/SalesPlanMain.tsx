@@ -1,19 +1,19 @@
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
+import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { SalesPlanMainStyled } from "./styled";
-import { SalesPlanContext } from "../../../../../api/Provider/SalesPlanProvider";
-import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-import { StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import { Portal } from "../../../../common/potal/Portal";
-import { SalesModal } from "../SalesModal/SalesModal";
+import { ISalesPlan, ISalesPlanResponse } from "../../../../../../models/interface/personnel/Sales/ISales";
+import { SalesPlanContext } from "../../../../../../api/Provider/SalesPlanProvider";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
-import { ISalesPlan, ISalesPlanResponse } from "../../../../../models/interface/ISales";
+import { Portal } from "../../../../../common/potal/Portal";
+import { modalState } from "../../../../../../stores/modalState";
+import { SalesModal } from "../SalesPlanModal/SalesPlanModal";
 
 export const SalesPlanMain = () => {
-    const { searchKeyword } = useContext(SalesPlanContext);
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
     const [planNum, setPlanNum] = useState<ISalesPlan>();
+
+    const { searchKeyword } = useContext(SalesPlanContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {

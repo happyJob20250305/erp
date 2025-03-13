@@ -1,7 +1,7 @@
 import { SalesPlanProvider } from "../../api/Provider/SalesPlanProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
-import { SalesPlanMain } from "../../components/page/Business/Sales/SalesMain/SalesPlanMain";
-import { SalesPlanSearch } from "../../components/page/Business/Sales/SalesSearch/SalesPlanSearch";
+import { SalesPlanMain } from "../../components/page/Business/Sales/SalesPlan/SalesPlanMain/SalesPlanMain";
+import { SalesPlanSearch } from "../../components/page/Business/Sales/SalesPlan/SalesPlanSearch/SalesPlanSearch";
 
 export const Sales = () => {
     return (
