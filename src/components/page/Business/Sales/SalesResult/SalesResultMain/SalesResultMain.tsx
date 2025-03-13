@@ -4,6 +4,11 @@ import { SalesResultMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { SalesResultContext } from "../../../../../../api/Provider/SalesResultProvider";
 import { ISales, ISalesResponse } from "../../../../../../models/interface/personnel/Sales/ISales";
+import { SalesResult } from "../../../../../../pages/business/SalesResult";
+
+interface INewSales extends ISales {
+    perform_ratio: number;
+}
 
 export const SalesResultMain = () => {
     const [salesResultList, setSalesResultList] = useState<ISales[]>([]);
@@ -12,6 +17,21 @@ export const SalesResultMain = () => {
 
     useEffect(() => {
         searchSalesResultList();
+        // 실적 계산 및 객체 key, value 추가 코드 -> 화면 전달은 아직 미수행 -> 추후 수정 추가 필요
+        let addSalesResultList = new Array();
+        for (let key in salesResultList) {
+            // console.log(salesResultList[key]);
+            let salesResultObj: any = salesResultList[key];
+            salesResultObj.perform_ratio = (salesResultObj.perform_qut / salesResultObj.goal_quanti) * 100;
+
+            addSalesResultList = salesResultList.map((salesResultObjValue: INewSales) => {
+                return salesResultObj;
+            });
+        }
+        console.log(
+            "===================================================================================================="
+        );
+        console.log(addSalesResultList);
     }, [searchKeyword]);
 
     const columns = [
