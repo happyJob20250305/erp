@@ -4,14 +4,11 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { ExpenseReviewModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import { ISetListOption } from "../../Manage/ManageSearch.tsx/ManageSearch";
-import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../../stores/userInfo";
-import moment from "moment";
 import axios, { AxiosResponse } from "axios";
 import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { Ratio } from "react-bootstrap";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
@@ -33,7 +30,6 @@ interface IPostResponse {
 }
 export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const loginInfo = useRecoilValue<ILoginInfo>(loginInfoState);
     const formRef = useRef<HTMLFormElement>(null);
     const [crebitList, setCrebitList] = useState<ISetListOption[]>([]);
     const [selectedCrebitDetail, setSelectedCrebitDetail] = useState<string>("");
@@ -60,6 +56,9 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
 
     const expenseUpdate = () => {
         const formData = new FormData(formRef.current);
+        formData.forEach((value, key) => {
+            console.log(key, value);
+        });
         formData.append("exp_id", expenseDetail.id.toString());
         axios.post("/account/expenseUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
@@ -104,10 +103,10 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
         <ExpenseReviewModalStyle>
             <div className='container'>
                 <form ref={formRef}>
-                    <table className='row'>
+                    <ModalStyledTable>
                         <tbody>
                             <tr>
-                                <th scope='row'>결의번호</th>
+                                <th>결의번호</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -116,7 +115,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>신청일자</th>
+                                <th>신청일자</th>
                                 <td>
                                     <StyledInput
                                         type='date'
@@ -125,9 +124,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>
-                                    사용일자 <span className='font_red'>*</span>
-                                </th>
+                                <th>사용일자</th>
                                 <td>
                                     <StyledInput
                                         type='date'
@@ -138,7 +135,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                 </td>
                             </tr>
                             <tr>
-                                <th scope='row'>사번</th>
+                                <th>사번</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -147,7 +144,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>사원명</th>
+                                <th>사원명</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -156,7 +153,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>사용부서</th>
+                                <th>사용부서</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -166,10 +163,8 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                     ></StyledInput>
                                 </td>
                             </tr>
-                            <tr id='writer'>
-                                <th scope='row'>
-                                    계정대분류명 <span className='font_red'>*</span>
-                                </th>
+                            <tr>
+                                <th>계정대분류명</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -178,9 +173,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>
-                                    계정과목 <span className='font_red'>*</span>
-                                </th>
+                                <th>계정과목 </th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -189,7 +182,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>거래처명</th>
+                                <th>거래처명</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -200,7 +193,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                 </td>
                             </tr>
                             <tr>
-                                <th scope='row'>결의금액</th>
+                                <th>결의금액</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -209,7 +202,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         disabled
                                     ></StyledInput>
                                 </td>
-                                <th scope='row'>승인여부</th>
+                                <th>승인여부</th>
                                 <td>
                                     {expenseDetail.is_approval == "W" ? (
                                         <>
@@ -239,7 +232,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         ></StyledInput>
                                     )}
                                 </td>
-                                <th scope='row'>승인일자</th>
+                                <th>승인일자</th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -250,8 +243,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                 </td>
                             </tr>
                             <tr>
-                                <th scope='row'>첨부파일</th>
-
+                                <th>첨부파일</th>
                                 {!expenseDetail ? (
                                     <td>
                                         <input type='file' className='inputTxt p100' name='fileInput' id='fileInput' />
@@ -263,40 +255,55 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         </div>
                                     </td>
                                 )}
-                                <th scope='row'>대변 계정과목</th>
-                                <td>
-                                    <StyledSelectBox
-                                        name='crebitDetail'
-                                        options={crebitList}
-                                        value={selectedCrebitDetail}
-                                        onChange={setSelectedCrebitDetail}
-                                    />
-                                </td>
+                                {expenseDetail.is_approval == "W" ? (
+                                    <>
+                                        <th>대변 계정과목</th>
+                                        <td>
+                                            <StyledSelectBox
+                                                name='detail_code'
+                                                options={crebitList}
+                                                value={selectedCrebitDetail}
+                                                onChange={setSelectedCrebitDetail}
+                                            />
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th>대변 계정과목</th>
+                                        <td>
+                                            <StyledInput
+                                                type='text'
+                                                name='crebit_name'
+                                                defaultValue={expenseDetail?.crebit_name}
+                                                disabled
+                                            ></StyledInput>
+                                        </td>
+                                    </>
+                                )}
                             </tr>
                             <tr>
-                                <th scope='row'>비고</th>
+                                <th>비고</th>
                                 <td colSpan={10}>
                                     <textarea
                                         name='expenseContent'
                                         id='content'
                                         defaultValue={expenseDetail?.expense_content}
+                                        disabled
                                     ></textarea>
                                 </td>
                             </tr>
                         </tbody>
-                    </table>
-
-                    <div className={"button-container"}>
+                    </ModalStyledTable>
+                    <ButtonArea>
                         {expenseDetail.is_approval == "W" && (
                             <StyledButton type='button' onClick={expenseUpdate}>
                                 검토완료
                             </StyledButton>
                         )}
-
                         <StyledButton type='button' onClick={() => setModal(!modal)}>
                             나가기
                         </StyledButton>
-                    </div>
+                    </ButtonArea>
                 </form>
             </div>
         </ExpenseReviewModalStyle>

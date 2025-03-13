@@ -7,6 +7,7 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import axios, { AxiosResponse } from "axios";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
 export interface IExpenseDetailGroup {
     detail_name: string;
@@ -15,11 +16,6 @@ export interface IExpenseDetailGroup {
 
 export interface IExpenseDetailGroupListBody {
     searchAccount: IExpenseDetailGroup[];
-}
-
-export interface ISetListOption {
-    label: string;
-    value: string | number;
 }
 
 export const ExpenseListSearch = () => {
@@ -80,27 +76,51 @@ export const ExpenseListSearch = () => {
     };
     return (
         <ExpenseListSearchStyled>
-            <span>신청일자</span>
-            <StyledInput
-                type='date'
-                onChange={(e) => {
-                    setSearchStDate(e.target.value);
-                }}
-            ></StyledInput>
-            <span>~</span>
-            <StyledInput
-                type='date'
-                onChange={(e) => {
-                    setSearchEdDate(e.target.value);
-                }}
-            ></StyledInput>
-            <StyledSelectBox options={approveStateList} value={selectedApprove} onChange={setSelectedApprove} />
-            <StyledSelectBox options={accountGroupList} value={selectedGroup} onChange={setSelectedGroup} />
-            <StyledSelectBox options={accountDetailList} value={selectedDetail} onChange={setSelectedDetail} />
-            <StyledButton variant='secondary' onClick={handlerSearch}>
-                검색
-            </StyledButton>
-            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <div className='searchBar'>
+                <span>신청일자</span>
+                <StyledInput
+                    width={105}
+                    type='date'
+                    onChange={(e) => {
+                        setSearchStDate(e.target.value);
+                    }}
+                ></StyledInput>
+                <span>~</span>
+                <StyledInput
+                    width={105}
+                    type='date'
+                    onChange={(e) => {
+                        setSearchEdDate(e.target.value);
+                    }}
+                ></StyledInput>
+                승인여부
+                <StyledSelectBox
+                    width={110}
+                    options={approveStateList}
+                    value={selectedApprove}
+                    onChange={setSelectedApprove}
+                />
+                계정대분류
+                <StyledSelectBox
+                    width={120}
+                    options={accountGroupList}
+                    value={selectedGroup}
+                    onChange={setSelectedGroup}
+                />
+                계정과목
+                <StyledSelectBox
+                    width={120}
+                    options={accountDetailList}
+                    value={selectedDetail}
+                    onChange={setSelectedDetail}
+                />
+            </div>
+            <div className='button-container'>
+                <StyledButton variant='secondary' onClick={handlerSearch}>
+                    검색
+                </StyledButton>
+                <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            </div>
         </ExpenseListSearchStyled>
     );
 };
