@@ -273,8 +273,8 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         <td>
                                             <StyledInput
                                                 type='text'
-                                                name='detail_code'
-                                                defaultValue={expenseDetail?.detail_name}
+                                                name='crebit_name'
+                                                defaultValue={expenseDetail?.crebit_name}
                                                 disabled
                                             ></StyledInput>
                                         </td>
