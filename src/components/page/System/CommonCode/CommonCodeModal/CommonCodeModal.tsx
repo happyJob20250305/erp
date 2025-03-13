@@ -7,6 +7,9 @@ import axios, { AxiosResponse } from "axios";
 import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { CommonCode } from "../../../../../api/api";
+import { postApi } from "../../../../../api/SystemApi/postApi";
 
 
 interface IGroupCodeProps {
@@ -42,51 +45,50 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/system/groupDetailBody", { groupCode })
-            .then((res: AxiosResponse<IGroupCodeDetailResponse>) => {
-                setGroupCodeDetail(res.data.detail);
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<IGroupCodeDetailResponse>(CommonCode.searchGroupDetail, { groupCode });
+
+        if (result) {
+            setGroupCodeDetail(result.detail);
+        }
     }
 
-    const saveGroupCode = () => {
+    const saveGroupCode = async () => {
         const formData = new FormData(formRef.current);
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("groupCode").toString(), msg: "공통코드를 입력해주세요." },
             { inval: formData.get("groupName").toString(), msg: "공통코드명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/groupSave", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("저장되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(CommonCode.saveGroupCode, formData);
+
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
-    const updateGroupCode = () => {
+    const updateGroupCode = async () => {
         const formData = new FormData(formRef.current);
         formData.append("oldGroupCode", groupCode);
         formData.append("newGroupCode", groupCode);
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("groupCode").toString(), msg: "공통코드를 입력해주세요." },
             { inval: formData.get("groupName").toString(), msg: "공통코드명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/groupUpdate", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("수정되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(CommonCode.updateGroupCode, formData);
+
+        if (result.result === "success") {
+            alert("수정되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
     return (
