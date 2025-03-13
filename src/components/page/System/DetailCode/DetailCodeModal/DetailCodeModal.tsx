@@ -113,7 +113,7 @@ export const DetailCodeModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCod
                         <StyledInput type='text' name="higher_code" defaultValue={detailCodeDetail?.higherCode} />
                     </label>
                     {
-                        detailCode ?
+                        detailCode && (
                             (
                                 <label>
                                     사용여부
@@ -124,7 +124,7 @@ export const DetailCodeModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCod
                                     />
                                 </label>
                             )
-                            : (<></>)
+                        )
                     }
                     <label>
                         비고
