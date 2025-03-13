@@ -50,7 +50,6 @@ export const AttendanceListMain = () => {
         }
     }, [attendanceList]);
 
-
     const attendanceCalendar = () => {
         axios.post("/personnel/attendanceCalendar.do")
             .then((res: AxiosResponse<IAttendanceListResponse>) => {
@@ -160,6 +159,7 @@ export const AttendanceListMain = () => {
                 events={events}
                 eventContent={renderEventContent}
                 locale={'ko'}
+                height={750}
                 eventClick={(e) => { handlerModal(e.event.start, e.event.backgroundColor) }}
             />
             {
