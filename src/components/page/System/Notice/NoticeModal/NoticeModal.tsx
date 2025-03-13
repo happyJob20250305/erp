@@ -106,23 +106,25 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
         }
     }
 
-    const fileDownload = () => {
+    const fileDownload = async () => {
         const param = new URLSearchParams();
         param.append("noticeSeq", notiSeq.toString());
-        axios.post("/system/noticeDownload.do", param, { responseType: "blob" })
-            .then((res: AxiosResponse<Blob>) => {
-                const url = window.URL.createObjectURL(res.data);
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", detail.fileName as string);
-                document.body.appendChild(link);
-                link.click();
 
-                //브라우저에서 a태그 삭제
-                document.body.removeChild(link);
-                //삭제
-                window.URL.revokeObjectURL(url);
-            })
+        const result = await postApi<Blob>(Notice.fileDownload, param, { responseType: "blob" });
+
+        if (result) {
+            const url = window.URL.createObjectURL(result);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", detail.fileName as string);
+            document.body.appendChild(link);
+            link.click();
+
+            //브라우저에서 a태그 삭제
+            document.body.removeChild(link);
+            //삭제
+            window.URL.revokeObjectURL(url);
+        }
     }
 
     const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {

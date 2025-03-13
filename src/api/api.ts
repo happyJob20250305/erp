@@ -24,4 +24,5 @@ export const Notice = {
     saveNotice: "/system/noticeFileSave.do",
     updateNotice: "/system/noticeFileUpdate.do",
     deleteNotice: "/system/noticeDeleteBody.do",
+    fileDownload: "/system/noticeDownload.do",
 };
