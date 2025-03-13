@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useRecoilState } from "recoil";

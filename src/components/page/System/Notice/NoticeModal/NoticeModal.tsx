@@ -4,7 +4,6 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { NoticeModalStyled } from "./styled";
 import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { INotice } from "../NoticeMain/NoticeMain";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { Notice } from "../../../../../api/api";
