@@ -6,7 +6,7 @@ const VoucherListModalStyle = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%;
-    max-width: 1180px;
+    max-width: 1100px;
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -46,7 +46,7 @@ const ModalStyledTable = styled.table`
         color: black;
         text-align: left;
         font-size: 15px;
-        width: 150px;
+        width: 70px;
     }
 
     th label {
@@ -60,6 +60,7 @@ const ModalStyledTable = styled.table`
     }
     td {
         background: white;
+        width: 150px;
     }
 `;
 
