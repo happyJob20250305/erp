@@ -4,8 +4,6 @@ export const SelectBox = styled.select.withConfig({
     shouldForwardProp: (prop) => prop !== "fullWidth" && prop !== "customWidth",
 })<{ variant: string; fullwidth?: boolean; customWidth?: number }>`
     padding: 10px;
-    margin-left: 30px;
-    margin-right: 70px;
     font-size: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
