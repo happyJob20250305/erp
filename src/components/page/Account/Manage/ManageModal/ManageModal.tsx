@@ -9,6 +9,7 @@ import axios, { AxiosResponse } from "axios";
 import { IAccountGroup, IAccountGroupListBody, ISetListOption } from "../ManageSearch.tsx/ManageSearch";
 import { IAccount } from "../ManageMain/ManageMain";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 
 interface IPostResponse {
     result: string;
@@ -23,7 +24,6 @@ interface IManageModalProps {
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");
     const [selectCodeType, setSelectedCodeType] = useState<string>(detailCode?.code_type || "");
-    const [selectedUse, setSelectedUse] = useState<string>(detailCode?.use_yn || "");
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const formRef = useRef<HTMLFormElement>(null);
     const [accountGroupList, setAccountGroupList] = useState<ISetListOption[]>([]);
@@ -79,12 +79,8 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
 
     const accountUpdate = () => {
         const formData = new FormData(formRef.current);
-        if (
-            nullCheck([
-                { inval: formData.get("group_code").toString(), msg: "계정대분류를 선택해주세요." },
-                { inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." },
-            ])
-        )
+        console.log(formData.values());
+        if (nullCheck([{ inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." }]))
             formData.append("detail_code", detailCode.detail_code);
         axios.post("/account/accountUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
             if (res.data.result === "success") {
@@ -109,7 +105,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
         <ManageModalStyle>
             <div className='container'>
                 <form ref={formRef}>
-                    <table className='row'>
+                    <ModalStyledTable>
                         <tbody>
                             <tr>
                                 <th>
@@ -119,7 +115,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                                             flexDirection: "row",
                                         }}
                                     >
-                                        계정대분류명 <span style={{ color: "red" }}>*</span> :
+                                        계정대분류명 <span style={{ color: "red" }}>*</span>
                                     </label>
                                 </th>
                                 <td colSpan={3}>
@@ -135,7 +131,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                             <tr>
                                 <th>
                                     <label style={{ display: "flex", flexDirection: "row" }}>
-                                        계정세부명<span style={{ color: "red" }}> * </span> :
+                                        계정세부명<span style={{ color: "red" }}> * </span>
                                     </label>
                                 </th>
                                 <td colSpan={3}>
@@ -148,7 +144,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                             </tr>
                             <tr>
                                 <th>
-                                    <label>상세내용 :</label>
+                                    <label>상세내용</label>
                                 </th>
                                 <td colSpan={3}>
                                     <StyledInput
@@ -160,7 +156,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                             </tr>
                             <tr>
                                 <th>
-                                    <label>수입/지출구분 :</label>
+                                    <label>수입/지출구분</label>
                                 </th>
                                 <td colSpan={3}>
                                     <StyledSelectBox
@@ -174,14 +170,12 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                             {detailCode ? (
                                 <tr>
                                     <th>
-                                        <label>사용여부 :</label>
+                                        <label>사용여부 </label>
                                     </th>
                                     <td colSpan={3}>
                                         <StyledSelectBox
                                             name='use_Yn'
                                             options={useYn}
-                                            // value={selectedUse}
-                                            // onChange={setSelectedUse}
                                             defaultValue={detailCode?.use_yn}
                                         />
                                     </td>
@@ -194,8 +188,8 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                                 </tr>
                             )}
                         </tbody>
-                    </table>
-                    <div className={"button-container"}>
+                    </ModalStyledTable>
+                    <ButtonArea>
                         <StyledButton type='button' onClick={detailCode ? accountUpdate : accountSave}>
                             {detailCode ? "수정" : "저장"}
                         </StyledButton>
@@ -207,7 +201,7 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                         <StyledButton type='button' onClick={() => setModal(!modal)}>
                             나가기
                         </StyledButton>
-                    </div>
+                    </ButtonArea>
                 </form>
             </div>
         </ManageModalStyle>
