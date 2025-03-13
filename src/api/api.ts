@@ -2,6 +2,15 @@ export const Login = {
     login: "/loginProc.do",
 };
 
+export const Employee = {
+    employeeList: "/personnel/employeeList.do",
+    getJobRolesByDepartment: "/personnel/getJobRolesByDepartment.do",
+    employeeSave: "/personnel/employeeSave.do",
+    employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
+    employeeDetail: "/personnel/employeeDetail.do",
+    emplStatusUpdate: "/personnel/emplStatusUpdate.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
