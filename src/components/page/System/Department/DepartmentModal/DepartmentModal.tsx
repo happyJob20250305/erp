@@ -6,6 +6,9 @@ import { IDepartment } from "../DepartmentMain/DepartmentMain";
 import { modalState } from "../../../../../stores/modalState";
 import { useRecoilState } from "recoil";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { Department } from "../../../../../api/api";
+import { postApi } from "../../../../../api/SystemApi/postApi";
 
 
 interface IDepartmentProps {
@@ -35,51 +38,50 @@ export const DepartmentModal: FC<IDepartmentProps> = ({ detailCode, setDetailCod
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/system/departmentDetailBody", { detailCode })
-            .then((res: AxiosResponse<IDepartmentDetailResponse>) => {
-                setDetail(res.data.detail);
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<IDepartmentDetailResponse>(Department.searchDetail, { detailCode });
+
+        if (result) {
+            setDetail(result.detail);
+        }
     }
 
-    const saveDepartment = () => {
+    const saveDepartment = async () => {
         const formData = new FormData(formRef.current);
 
-        if (nullCheck([ //유효성검사
+        if (!nullCheck([ //유효성검사
             { inval: formData.get("detailCode").toString(), msg: "부서코드를 입력해주세요." },
             { inval: formData.get("detailName").toString(), msg: "부서명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/departmentSave", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("저장되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(Department.saveDepartment, formData);
+
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
-    const updateDepartment = () => {
+    const updateDepartment = async () => {
         const formData = new FormData(formRef.current);
         formData.append("oldDetailCode", detailCode);
         formData.append("newDetailCode", formData.get("detailCode"));
 
-        if (nullCheck([ //유효성검사
-            { inval: formData.get("newDetailCode").toString(), msg: "부서코드를 입력해주세요." },
+        if (!nullCheck([ //유효성검사
+            { inval: formData.get("detailCode").toString(), msg: "부서코드를 입력해주세요." },
             { inval: formData.get("detailName").toString(), msg: "부서명을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/departmentUpdate", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("저장되었습니다.");
-                        postSuccess();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
+        const result = await postApi<IPostResponse>(Department.saveDepartment, formData);
+
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        } else {
+            alert(result.message);
+        }
     }
 
     return (
