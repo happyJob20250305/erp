@@ -37,3 +37,10 @@ export const Notice = {
     deleteNotice: "/system/noticeDeleteBody.do",
     fileDownload: "/system/noticeDownload.do",
 };
+
+export const Department = {
+    searchDepartmentList: "/system/departmentListBody",
+    searchDetail: "/system/departmentDetailBody",
+    saveDepartment: "/system/departmentSave",
+    updateDepartment: "/system/departmentUpdate",
+};

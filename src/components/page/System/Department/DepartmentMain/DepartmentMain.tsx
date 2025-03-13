@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react"
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -8,6 +7,8 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { DepartmentModal } from "../DepartmentModal/DepartmentModal";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { Department } from "../../../../../api/api";
 
 
 export interface IDepartment {
@@ -37,18 +38,20 @@ export const DepartmentMain = () => {
         searchDepartmentList();
     }, [searchKeyword])
 
-    const searchDepartmentList = (currentPage?: number) => {
+    const searchDepartmentList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/system/departmentListBody", {
+        const result = await searchApi<IDepartmentListBodyResponse>(Department.searchDepartmentList, {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<IDepartmentListBodyResponse>) => {
-            setDepartmentList(res.data.departmentList);
-            setDepartmentCnt(res.data.departmentCnt);
-            setCPage(currentPage);
         })
+
+        if (result) {
+            setDepartmentList(result.departmentList);
+            setDepartmentCnt(result.departmentCnt);
+            setCPage(currentPage);
+        }
     }
 
     const handlerModal = (id: string) => {
