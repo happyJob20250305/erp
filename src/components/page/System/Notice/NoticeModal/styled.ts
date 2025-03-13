@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const NoticeModalStyled = styled.div`
     width: 100%;
@@ -17,7 +17,7 @@ export const NoticeModalStyled = styled.div`
         flex-direction: column;
     }
 
-    input[type='text'] {
+    input[type="text"] {
         padding: 8px;
         margin-top: 5px;
         margin-bottom: 5px;
@@ -60,7 +60,7 @@ export const NoticeModalStyled = styled.div`
     }
 
     .button-container {
-        text-align: right;
+        text-align: center;
         margin-top: 10px;
     }
     button {

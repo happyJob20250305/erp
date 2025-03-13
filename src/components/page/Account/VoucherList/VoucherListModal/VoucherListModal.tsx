@@ -25,77 +25,21 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail, se
                         <tbody>
                             <tr>
                                 <th scope='row'>전표번호</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='voucher_no'
-                                        defaultValue={voucherDetail?.voucher_no}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.voucher_no}</td>
                                 <th scope='row'>구분</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='account_type'
-                                        defaultValue={voucherDetail?.account_type}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.account_type}</td>
                                 <th scope='row'>담당자</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='emp_name'
-                                        defaultValue={voucherDetail?.emp_name}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.emp_name}</td>
                                 <th scope='row'>일자 </th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='voucher_date'
-                                        defaultValue={voucherDetail?.voucher_date}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.voucher_date}</td>
                             </tr>
                             <tr>
                                 <th scope='row'>거래처</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='client_name'
-                                        defaultValue={voucherDetail?.client_name}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.client_name}</td>
                                 <th scope='row'>주문번호</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='order_id'
-                                        defaultValue={voucherDetail?.order_id}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.order_id}</td>
                                 <th scope='row'>지출번호</th>
-                                <td>
-                                    <StyledInput
-                                        type='text'
-                                        name='exp_id'
-                                        defaultValue={voucherDetail?.exp_id || "-"}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td>{voucherDetail?.exp_id || "-"}</td>
                             </tr>
                             <tr id='writer'>
                                 <th scope='row' colSpan={4}>
@@ -109,84 +53,24 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail, se
                                 </th>
                             </tr>
                             <tr>
-                                <td colSpan={4}>
-                                    <StyledInput
-                                        type='text'
-                                        name='debit_name'
-                                        defaultValue={voucherDetail?.debit_name}
-                                        size='small'
-                                        width={450}
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
-                                <td colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='voucher_amount'
-                                        defaultValue={voucherDetail?.voucher_amount}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
-                                <td colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='view__amount'
-                                        defaultValue={0}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td colSpan={4}>{voucherDetail?.debit_name}</td>
+                                <td colSpan={2}>{voucherDetail?.voucher_amount}</td>
+                                <td colSpan={2}>0</td>
                             </tr>
                             <tr>
-                                <td colSpan={4}>
-                                    <StyledInput
-                                        type='text'
-                                        name='crebit_name'
-                                        defaultValue={voucherDetail?.crebit_name}
-                                        size='small'
-                                        width={450}
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
-                                <td colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='view__amount'
-                                        defaultValue={0}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
-                                <td colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='voucher_amount'
-                                        defaultValue={voucherDetail?.voucher_amount}
-                                        size='small'
-                                        readOnly
-                                    ></StyledInput>
-                                </td>
+                                <td colSpan={4}>{voucherDetail?.crebit_name}</td>
+                                <td colSpan={2}>0</td>
+                                <td colSpan={2}>{voucherDetail?.voucher_amount}</td>
                             </tr>
                             <tr>
                                 <th scope='row' colSpan={4}>
                                     합계
                                 </th>
                                 <th scope='row' colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='emp_name'
-                                        defaultValue={voucherDetail?.voucher_amount}
-                                        readOnly
-                                    ></StyledInput>
+                                    {voucherDetail?.voucher_amount}
                                 </th>
                                 <th scope='row' colSpan={2}>
-                                    <StyledInput
-                                        type='text'
-                                        name='emp_name'
-                                        defaultValue={voucherDetail?.voucher_amount}
-                                        readOnly
-                                    ></StyledInput>
+                                    {voucherDetail?.voucher_amount}
                                 </th>
                             </tr>
                         </tbody>

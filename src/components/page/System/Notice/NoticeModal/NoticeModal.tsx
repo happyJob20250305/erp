@@ -4,9 +4,11 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { NoticeModalStyled } from "./styled";
 import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { INotice } from "../NoticeMain/NoticeMain";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { Notice } from "../../../../../api/api";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { postApi } from "../../../../../api/SystemApi/postApi";
 
 interface INoticeModalProps {
     notiSeq: number;
@@ -43,86 +45,85 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/system/noticeFileDetailBody.do", { noticeSeq: notiSeq })
-            .then((res: AxiosResponse<INoticeDetailResponse>) => {
-                setDetail(res.data.detail);
+    const searchDetail = async () => {
+        const result = await searchApi<INoticeDetailResponse>(Notice.searchDetail, { noticeSeq: notiSeq });
 
-                const { fileExt, logicalPath } = res.data.detail;
+        if (result) {
+            setDetail(result.detail);
+            const { fileExt, logicalPath } = result.detail;
 
-                if (fileExt) {
-                    const fileExtLowerCase = fileExt.toLowerCase();
-                    if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
-                        setImageUrl(logicalPath);
-                    } else {
-                        setImageUrl("");
-                    }
+            if (fileExt) {
+                const fileExtLowerCase = fileExt.toLowerCase();
+                if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
+                    setImageUrl(logicalPath);
+                } else {
+                    setImageUrl("");
                 }
-            });
+            }
+        }
     }
 
-    const saveNotice = () => {
+    const saveNotice = async () => {
         const formData = new FormData(formRef.current);
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
             { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/noticeFileSave.do", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("저장되었습니다.");
-                        postSuccess();
-                    }
-                })
+        const result = await postApi<IPostResponse>(Notice.saveNotice, formData);
+
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        }
     }
 
-    const updateNotice = () => {
+    const updateNotice = async () => {
         const formData = new FormData(formRef.current);
         formData.append("noticeSeq", notiSeq.toString());
 
-        if (nullCheck([
+        if (!nullCheck([
             { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
             { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
-        ]))
+        ])) { return false; }
 
-            axios.post("/system/noticeFileUpdate.do", formData)
-                .then((res: AxiosResponse<IPostResponse>) => {
-                    if (res.data.result === "success") {
-                        alert("수정되었습니다.");
-                        postSuccess();
-                    }
-                })
+        const result = await postApi<IPostResponse>(Notice.updateNotice, formData);
+
+        if (result.result === "success") {
+            alert("수정되었습니다.");
+            postSuccess();
+        }
     }
 
-    const deleteNotice = () => {
-        axios.post("/system/noticeDeleteBody.do", { noticeSeq: notiSeq })
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("삭제되었습니다.");
-                    postSuccess();
-                }
-            })
+    const deleteNotice = async () => {
+        const result = await postApi<IPostResponse>(Notice.deleteNotice, { noticeSeq: notiSeq });
+
+        if (result.result === "success") {
+            alert("삭제되었습니다.");
+            postSuccess();
+        }
     }
 
-    const fileDownload = () => {
+    const fileDownload = async () => {
         const param = new URLSearchParams();
         param.append("noticeSeq", notiSeq.toString());
-        axios.post("/system/noticeDownload.do", param, { responseType: "blob" })
-            .then((res: AxiosResponse<Blob>) => {
-                const url = window.URL.createObjectURL(res.data);
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", detail.fileName as string);
-                document.body.appendChild(link);
-                link.click();
 
-                //브라우저에서 a태그 삭제
-                document.body.removeChild(link);
-                //삭제
-                window.URL.revokeObjectURL(url);
-            })
+        const result = await postApi<Blob>(Notice.fileDownload, param, { responseType: "blob" });
+
+        if (result) {
+            const url = window.URL.createObjectURL(result);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", detail.fileName as string);
+            document.body.appendChild(link);
+            link.click();
+
+            //브라우저에서 a태그 삭제
+            document.body.removeChild(link);
+            //삭제
+            window.URL.revokeObjectURL(url);
+        }
     }
 
     const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {

@@ -3,7 +3,7 @@ import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { DetailSearchStyled } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 
-export const DetailSearch = () => {
+export const DetailCodeSearch = () => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
 
     return (

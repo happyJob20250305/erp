@@ -19,10 +19,14 @@ export const DepartmentSearch = () => {
 
     return (
         <DepartmentSearchStyled>
-            <span>부서명</span>
-            <StyledInput ref={title}></StyledInput>
-            <StyledButton variant='secondary' onClick={handlerSearch}>검색</StyledButton>
-            <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            <div className="search-bar">
+                <span>부서명</span>
+                <StyledInput ref={title}></StyledInput>
+            </div>
+            <div className="button-container">
+                <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>
+                <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            </div>
         </DepartmentSearchStyled>
     )
 }
