@@ -23,14 +23,18 @@ export const NoticeSearch = () => {
 
     return (
         <NoticeSearchStyled>
-            <span>제목</span>
-            <StyledInput ref={title}></StyledInput>
-            <span>기간</span>
-            <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}></StyledInput>
-            <span>~</span>
-            <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}></StyledInput>
-            <StyledButton variant='secondary' onClick={handlerSearch}>검색</StyledButton>
-            <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            <div className="searchBar">
+                <span>제목</span>
+                <StyledInput ref={title}></StyledInput>
+                <span>기간</span>
+                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}></StyledInput>
+                <span>~</span>
+                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}></StyledInput>
+            </div>
+            <div className="button-container">
+                <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>
+                <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            </div>
         </NoticeSearchStyled>
     );
 };
