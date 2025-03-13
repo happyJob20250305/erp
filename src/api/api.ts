@@ -24,4 +24,5 @@ export const Employee = {
     employeeSave: "/personnel/employeeSave.do",
     employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
     employeeDetail: "/personnel/employeeDetail.do",
+    emplStatusUpdate: "/personnel/emplStatusUpdate.do",
 };

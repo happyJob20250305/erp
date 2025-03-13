@@ -15,6 +15,8 @@ import {
     EmployeeDetailProvider,
 } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
+import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
+import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
 
 export const EmplyoeeMain = () => {
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
@@ -41,6 +43,17 @@ export const EmplyoeeMain = () => {
         emplStatus,
         setEmplStatus,
     } = useContext(EmployeeSearchContext);
+
+    const {
+        retireEmployeeId,
+        setRetireEmployeeId,
+        retireEmployeeNumber,
+        setRetireEmployeeNumber,
+        retireEmployeeName,
+        setRetireEmployeeName,
+        regDate,
+        setRegDate,
+    } = useContext(EmployeeRetirementModalContext);
 
     useEffect(() => {
         employeeBasicList(cPage);
@@ -85,6 +98,20 @@ export const EmplyoeeMain = () => {
         setModal(!modal);
     };
 
+    const handleResign = (employeeId, employeeNumber, employeeName, regDate) => {
+        const confirmResign = window.confirm(`${employeeNumber}님을 퇴직 처리하시겠습니까?`);
+        if (!confirmResign) return; // 아니오 클릭 시 아무 일 없음
+
+        // 예 클릭 시 퇴직 모달 열기
+        setRetireEmployeeId(employeeId);
+        setRetireEmployeeNumber(employeeNumber);
+        setRetireEmployeeName(employeeName);
+        setRegDate(regDate);
+
+        setModalType("retireModal");
+        setModal(true); // ✅ 무조건 열기 (토글 금지)
+    };
+
     // const closeModal = () => {
     //     setModal(!modal);
     //     setModalType("");
@@ -105,6 +132,7 @@ export const EmplyoeeMain = () => {
                         <StyledTh>입사일자</StyledTh>
                         <StyledTh>휴직</StyledTh>
                         <StyledTh>퇴직일자</StyledTh>
+                        <StyledTh>퇴직처리</StyledTh>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,7 +148,7 @@ export const EmplyoeeMain = () => {
                                     )
                                 }
                             >
-                                <StyledTd>{employee.employeeId}</StyledTd>
+                                <StyledTd>{employee.number}</StyledTd>
                                 <StyledTd>{employee.employeeName}</StyledTd>
                                 <StyledTd>{employee.departmentCode}</StyledTd>
                                 <StyledTd>{employee.departmentDetailName}</StyledTd>
@@ -128,6 +156,25 @@ export const EmplyoeeMain = () => {
                                 <StyledTd>{employee.regDate}</StyledTd>
                                 <StyledTd>{employee.emplStatus}</StyledTd>
                                 <StyledTd>{employee.resignationDate}</StyledTd>
+                                <StyledTd>
+                                    {employee.emplStatus === "W" ? (
+                                        <StyledButton
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // ✅ tr 클릭 방지
+                                                handleResign(
+                                                    employee.employeeId,
+                                                    employee.number,
+                                                    employee.employeeName,
+                                                    employee.regDate
+                                                );
+                                            }}
+                                        >
+                                            퇴직처리
+                                        </StyledButton>
+                                    ) : (
+                                        <StyledButton disabled>퇴직불가</StyledButton>
+                                    )}
+                                </StyledTd>
                             </tr>
                         ))
                     ) : (
@@ -148,6 +195,11 @@ export const EmplyoeeMain = () => {
             {modalType === "detailModal" && modal && (
                 <Portal>
                     <EmployeeDetailModal />
+                </Portal>
+            )}
+            {modalType === "retireModal" && modal && (
+                <Portal>
+                    <EmployeeRetireModal />
                 </Portal>
             )}
         </>
