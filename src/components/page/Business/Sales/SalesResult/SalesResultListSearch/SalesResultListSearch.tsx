@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
-import { SalesResultSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
@@ -14,9 +13,10 @@ import {
     ISubcategory,
     ISubcategoryResponse,
 } from "../../../../../../models/interface/personnel/Sales/ISales";
-import { SalesResultContext } from "../../../../../../api/Provider/SalesResultProvider";
+import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
+import { SalesResultListSearchStyled } from "./styled";
 
-export const SalesReultSearch = () => {
+export const SalesReultListSearch = () => {
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
@@ -29,7 +29,7 @@ export const SalesReultSearch = () => {
 
     const [selectDate, setSelectDate] = useState<string>("");
 
-    const { setSearchKeyword } = useContext(SalesResultContext);
+    const { setSearchKeyword } = useContext(SalesResultListContext);
 
     useEffect(() => {
         getManufacturerList();
@@ -134,7 +134,7 @@ export const SalesReultSearch = () => {
     ];
 
     return (
-        <SalesResultSearchStyled>
+        <SalesResultListSearchStyled>
             <label>
                 제조업체
                 <StyledSelectBox
@@ -184,6 +184,6 @@ export const SalesReultSearch = () => {
                 <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
             </label>
             <StyledButton onClick={handlerSearchSalesResult}>조회</StyledButton>
-        </SalesResultSearchStyled>
+        </SalesResultListSearchStyled>
     );
 };

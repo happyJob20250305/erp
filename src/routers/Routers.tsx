@@ -20,7 +20,7 @@ import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
-import { SalesResult } from "../pages/business/SalesResult";
+import { SalesResultList } from "../pages/business/SalesResultList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -69,7 +69,7 @@ const routers: RouteObject[] = [
             },
             {
                 path: "business",
-                children: [{ path: "sales-list", element: <SalesResult /> }],
+                children: [{ path: "sales-list", element: <SalesResultList /> }],
             },
         ],
     },

@@ -5,15 +5,15 @@ interface ISearchKeyword {
     setSearchKeyword?: React.Dispatch<React.SetStateAction<object>>;
 }
 
-export const SalesResultContext = createContext<ISearchKeyword>({});
+export const SalesResultListContext = createContext<ISearchKeyword>({});
 
-export const SalesResultProvider: FC<{
+export const SalesResultListProvider: FC<{
     children: React.ReactNode | React.ReactNode[];
 }> = ({ children }) => {
     const [searchKeyword, setSearchKeyword] = useState<object>({});
     return (
-        <SalesResultContext.Provider value={{ searchKeyword, setSearchKeyword }}>
+        <SalesResultListContext.Provider value={{ searchKeyword, setSearchKeyword }}>
             {children}
-        </SalesResultContext.Provider>
+        </SalesResultListContext.Provider>
     );
 };

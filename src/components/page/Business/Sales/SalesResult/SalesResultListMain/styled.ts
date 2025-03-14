@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SalesResultMainStyled = styled.div`
+export const SalesResultMainListStyled = styled.div`
     table {
         width: 100%;
         border-collapse: collapse;
