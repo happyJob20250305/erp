@@ -46,13 +46,19 @@ export const ExpensePrintTable = styled.div`
 
     th[colspan="6"] {
         background: #e9ecef;
-        text-align: center;
     }
 
-    .content {
+    td[colspan="6"] {
         width: 600px;
     }
 
     display: block;
     width: 100%;
+`;
+
+export const Sign = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;

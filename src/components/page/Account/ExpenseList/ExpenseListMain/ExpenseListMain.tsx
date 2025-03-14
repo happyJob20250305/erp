@@ -3,36 +3,15 @@ import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-import axios, { AxiosResponse } from "axios";
 import { ExpenseListMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { ExpenseModal } from "../ExpenseModal/ExpenseModal";
+import { approvalCode } from "../../../../../common/approvalStatus";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { ExpenseList } from "../../../../../api/api";
+import { IExpense, IExpenseResponseBody } from "../../../../../models/interface/account/expenstList/IExpenseList";
 
-export interface IExpense {
-    id: string;
-    req_date: string;
-    use_date: string;
-    group_name: string;
-    group_code: string;
-    detail_name: string;
-    debit_code: string;
-    use_department: string;
-    expense_payment: string;
-    is_approval: string;
-    content: string;
-    expense_content: string;
-    file_name: string;
-    emp_no: number;
-    name: string;
-    client_id: number;
-    approval_date: string;
-}
-
-export interface IExpenseResponseBody {
-    expense: IExpense[];
-    expenseCnt: number;
-}
 export const ExpenseListMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const { searchKeyword } = useContext(ExpenseListContext);
@@ -55,31 +34,18 @@ export const ExpenseListMain = () => {
         searchExpenseList();
     }, [searchKeyword]);
 
-    const searchExpenseList = (currentPage?: number) => {
+    const searchExpenseList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        axios
-            .post("/account/expenseListBody.do", {
-                ...searchKeyword,
-                pageSize: 5,
-                currentPage,
-            })
-            .then((res: AxiosResponse<IExpenseResponseBody>) => {
-                setExpenseList(res.data.expense);
-                setExpenseListCnt(res.data.expenseCnt);
-                setCPage(currentPage);
-            });
-    };
 
-    const approvalCode = (value: string) => {
-        switch (value) {
-            case "W":
-                return "검토 대기";
-            case "N":
-                return "반려";
-            case "F":
-                return "승인 대기";
-            case "S":
-                return "승인";
+        const result = await accountSearchApi<IExpenseResponseBody>(ExpenseList.searchExpenseList, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
+        if (result) {
+            setExpenseList(result.expense);
+            setExpenseListCnt(result.expenseCnt);
+            setCPage(currentPage);
         }
     };
 

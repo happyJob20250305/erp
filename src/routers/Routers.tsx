@@ -19,6 +19,10 @@ import { ReceivablesList } from "../pages/sales/ReceivablesList";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { Employee } from "../pages/personnel/Employee";
+import { Promotion } from "../pages/personnel/Promotion";
+import { SalesPlanList } from "../pages/business/SalesPlanList";
+import { SalesResultList } from "../pages/business/SalesResultList";
+import { ClientList } from "../pages/business/ClientList";
 import { OrderList } from "../pages/business/OrderList";
 
 const routers: RouteObject[] = [
@@ -32,6 +36,7 @@ const routers: RouteObject[] = [
                 path: "personnel",
                 children: [
                     { path: "employee", element: <Employee /> },
+                    { path: "promotion", element: <Promotion /> },
                     { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
                     { path: "attendance-list", element: <AttendanceList /> },
@@ -46,6 +51,7 @@ const routers: RouteObject[] = [
                     { path: "expense-list", element: <ExpenseList /> },
                     { path: "expense-review", element: <ExpenseReview /> },
                     { path: "expense-approval", element: <ExpenseReview /> },
+                    { path: "voucher-list", element: <VoucherList /> },
                 ],
             },
             {
@@ -58,6 +64,15 @@ const routers: RouteObject[] = [
                 ],
             },
             {
+                path: "business",
+                children: [
+                    { path: "sales-plan", element: <SalesPlanList /> },
+                    { path: "sales-list", element: <SalesResultList /> },
+                    { path: "client-list", element: <ClientList /> },
+                    { path: "order-information-list", element: <OrderList /> },
+                ],
+            },
+            {
                 path: "system",
                 children: [
                     { path: "notice", element: <Notice /> },
@@ -65,10 +80,6 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
-            },
-            {
-                path: "business",
-                children: [{ path: "order-information-list", element: <OrderList /> }],
             },
         ],
     },

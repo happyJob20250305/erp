@@ -6,11 +6,13 @@ import { AccountManageContext } from "../../../../../api/Provider/AccountManageP
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IAccountGroupListBody, IDetailGroupListBody } from "../../../../../models/interface/account/manage/IAccount";
-
 import { Manage } from "../../../../../api/api";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { setSelectOption } from "../../../../../common/setSelectOption";
+import {
+    IAccountGroupListBody,
+    IDetailGroupListBody,
+} from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -46,7 +48,9 @@ export const ManageSearch = () => {
     const searchAccountGroupList = async () => {
         const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
         if (result) {
-            setAccountGroupList(setSelectOption(result.accountGroupList, "group_name", "group_code"));
+            setAccountGroupList(
+                setSelectOption(result.accountGroupList, "group_name", "group_code", { label: "전체", value: "" })
+            );
         }
     };
 
@@ -55,7 +59,9 @@ export const ManageSearch = () => {
             group_code: selectedGroup,
         });
         if (result) {
-            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+            setAccountDetailList(
+                setSelectOption(result.searchAccount, "detail_name", "detail_code", { label: "전체", value: "" })
+            );
         }
     };
 

@@ -32,6 +32,8 @@ export const AttendanceListModalStyled = styled.div`
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
         width: 400px;
+        max-height: 500px;
+        overflow-y: auto;
     }
 
     img {
@@ -60,7 +62,7 @@ export const AttendanceListModalStyled = styled.div`
     }
 
     .button-container {
-        text-align: right;
+        text-align: center;
         margin-top: 10px;
     }
     button {

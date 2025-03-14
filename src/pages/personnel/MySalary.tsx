@@ -3,7 +3,6 @@ import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 
 import { SalaryMain } from "../../components/page/Personnel/salaryList/SalaryListMain/SalaryMain";
 import { SalaryListSearch } from "../../components/page/Personnel/salaryList/SalaryListSearch/SalaryListSearch";
-import { PageNavigate } from "../../components/common/pageNavigation/PageNavigate";
 
 export const MySalary = () => {
     const [searchPaymentMonth, setSearchPaymentMonth] = useState<string>("");
