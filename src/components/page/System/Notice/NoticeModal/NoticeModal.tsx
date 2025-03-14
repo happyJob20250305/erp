@@ -9,7 +9,7 @@ import { Notice } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { postApi } from "../../../../../api/SystemApi/postApi";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
-import { INoticeDetail } from "../../../../../models/interface/system/Notice/INoticeDetail";
+import { INoticeDetail } from "../../../../../models/interface/system/notice/INoticeDetail";
 
 interface INoticeModalProps {
     notiSeq: number;
