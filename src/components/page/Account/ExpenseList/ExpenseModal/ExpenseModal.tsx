@@ -5,24 +5,20 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ExpenseListModalStyle } from "./styled";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import moment from "moment";
 import { loginInfoState } from "../../../../../stores/userInfo";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-import {
-    IClientListBody,
-    IExpense,
-    ILoginInfoBody,
-} from "../../../../../models/interface/account/expenseList/IExpenseList";
+import { IExpense, ILoginInfoBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { approvalCode } from "../../../../../common/approvalStatus";
+import { IClientListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 interface IExpenseModalProps {
     expenseDetail?: IExpense;

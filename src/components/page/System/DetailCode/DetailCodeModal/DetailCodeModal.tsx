@@ -4,13 +4,14 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { DetailModalStyled } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import { IDetailCode } from "../DetailCodeMain/DetailCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useLocation } from "react-router-dom";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
 import { postApi } from "../../../../../api/SystemApi/postApi";
+import { IDetailCodeDetail } from "../../../../../models/interface/system/commoncode/IDetailCodeDetail";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 
 interface IDetailCodeProps {
     detailCode: string,
@@ -18,17 +19,8 @@ interface IDetailCodeProps {
     postSuccess: () => void;
 }
 
-interface IDetailCodeDetail extends IDetailCode {
-    useYn: "Y" | "N",
-    higherCode: string
-}
 interface IDetailCodeDetailResponse {
     detail: IDetailCodeDetail
-}
-
-interface IPostResponse {
-    result: string
-    message?: string
 }
 
 export const DetailCodeModal: FC<IDetailCodeProps> = ({ detailCode, setDetailCode, postSuccess }) => {

@@ -1,14 +1,5 @@
 import { ILoginInfo } from "../../store/userInfo";
 
-export interface IExpenseDetailGroup {
-    detail_name: string;
-    detail_code: string;
-}
-
-export interface IExpenseDetailGroupListBody {
-    searchAccount: IExpenseDetailGroup[];
-}
-
 export interface IExpense {
     id: string;
     req_date: string;
@@ -36,11 +27,4 @@ export interface IExpenseResponseBody {
 
 export interface ILoginInfoBody {
     lgnInfo: ILoginInfo;
-}
-export interface IClientListBody extends IExpenseDetailGroupListBody {
-    clientList: IClient[];
-}
-export interface IClient {
-    id: number;
-    clientName: string;
 }
