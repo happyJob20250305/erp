@@ -33,21 +33,25 @@ export const AttendanceApprovalSearch = () => {
 
     return (
         <AttendanceApprovalSearchStyled>
-            <span>기간</span>
-            <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }} />
-            <span>~</span>
-            <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }} />
-            <span>사번</span>
-            <StyledInput type='text' width={100} onChange={(e) => { setNumber(e.target.value) }} />
-            <span>사원명</span>
-            <StyledInput type='text' onChange={(e) => { setName(e.target.value) }} />
-            <span>승인상태</span>
-            <StyledSelectBox
-                options={optionsReqStatus}
-                value={selectReqStatusValue}
-                onChange={setSelectReqStatusValue}
-            />
-            <StyledButton variant='secondary' onClick={handlerSearch}>검색</StyledButton>
+            <div className="search-bar">
+                <span>기간</span>
+                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }} />
+                <span>~</span>
+                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }} />
+                <span>사번</span>
+                <StyledInput type='text' width={100} onChange={(e) => { setNumber(e.target.value) }} />
+                <span>사원명</span>
+                <StyledInput type='text' onChange={(e) => { setName(e.target.value) }} />
+                <span>승인상태</span>
+                <StyledSelectBox
+                    options={optionsReqStatus}
+                    value={selectReqStatusValue}
+                    onChange={setSelectReqStatusValue}
+                />
+            </div>
+            <div className=".button-container ">
+                <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>
+            </div>
         </AttendanceApprovalSearchStyled>
     )
 }
