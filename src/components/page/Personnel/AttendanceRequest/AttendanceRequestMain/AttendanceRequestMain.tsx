@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { AttendanceRequestMainStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -10,34 +9,10 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { AttendanceRequestModal } from "../AttendanceRequestModal/AttendanceRequestModal";
 import { AttendanceRequestRejectModal } from "../AttendanceRequestRejectModal/AttendanceRequestRejectModal";
-
-
-export interface IAttendance {
-    id: number,
-    attId: number,
-    attAppId: number,
-    empId: number,
-    number: number,
-    reqType: string,
-    reqSt: string,
-    reqEd: string,
-    reqStatus: string,
-    name: string,
-    appType: string | null,
-    appReason: string | null,
-}
-
-export interface IAttendanceCnt {
-    useAttCnt: number,
-    attCnt: number,
-    leftAttCnt: number
-}
-
-export interface IloginInfo {
-    detail_name: string, //부서
-    usr_nm: string,
-    usr_idx: number, //사번
-}
+import { IAttendanceCnt, ILoginUserInfo } from "../../../../../models/interface/personnel/Attendance/IAttendanceCnt";
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceRequest } from "../../../../../api/api";
+import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],
@@ -46,7 +21,7 @@ interface IAttendanceListResponse {
 
 interface IAttendanceCntResponse {
     attendanceCnt: IAttendanceCnt[]
-    loginInfo: IloginInfo
+    loginInfo: ILoginUserInfo
 }
 
 export const AttendanceRequestMain = () => {
@@ -56,7 +31,7 @@ export const AttendanceRequestMain = () => {
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [attendanceCnt, setAttendanceCnt] = useState<IAttendanceCnt[]>([]);
-    const [loginInfo, setloginInfo] = useState<IloginInfo>();
+    const [loginInfo, setloginInfo] = useState<ILoginUserInfo>();
 
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
@@ -88,27 +63,31 @@ export const AttendanceRequestMain = () => {
         searchAttendanceList();
     }, [searchKeyword])
 
-    const searchAttendanceList = (currentPage?: number) => {
+    const searchAttendanceList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/personnel/attendanceCntBody.do", {
+        const result1 = await searchApi<IAttendanceCntResponse>(AttendanceRequest.searchAttendanceListCnt, {
             userIdx: loginEmpId
-        }).then((res: AxiosResponse<IAttendanceCntResponse>) => {
-            setAttendanceCnt(res.data.attendanceCnt);
-            setloginInfo(res.data.loginInfo);
         })
 
-        axios.post("/personnel/attendanceListBody.do", {
+        if (result1) {
+            setAttendanceCnt(result1.attendanceCnt);
+            setloginInfo(result1.loginInfo);
+        }
+
+        const result2 = await searchApi<IAttendanceListResponse>(AttendanceRequest.searchAttendanceList, {
             ...searchKeyword,
             userIdx: loginEmpId,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<IAttendanceListResponse>) => {
-            setAttendanceList(res.data.attendanceList);
-            setAttendanceRequestCnt(res.data.attendanceRequestCnt);
-            setCPage(currentPage);
-            setAttId(res.data.attendanceList[0].attId);
         })
+
+        if (result2) {
+            setAttendanceList(result2.attendanceList);
+            setAttendanceRequestCnt(result2.attendanceRequestCnt);
+            setCPage(currentPage);
+            setAttId(result2.attendanceList[0].attId);
+        }
     }
 
     const handlerDetailModal = (id: number) => {
@@ -142,13 +121,11 @@ export const AttendanceRequestMain = () => {
                 hoverable={true}
                 fullWidth={true}
                 renderAction={(row) =>
-                    row.reqStatus === "반려" ?
-                        (
-                            <StyledButton size="small" onClick={(e) => { handlerrejectReasonModal(row.id, e) }}>
-                                반려사유
-                            </StyledButton>
-                        )
-                        : (<>-</>)
+                    row.reqStatus === "반려" && (
+                        <StyledButton size="small" onClick={(e) => { handlerrejectReasonModal(row.id, e) }}>
+                            반려사유
+                        </StyledButton>
+                    )
                 }
                 onCellClick={(row, columns) => {
                     handlerDetailModal(row.id);
@@ -174,7 +151,6 @@ export const AttendanceRequestMain = () => {
                                     <AttendanceRequestRejectModal id={id} setId={setId} setModalType={setModalType} />
                                 )
                         }
-
                     </Portal>
                 )
             }
