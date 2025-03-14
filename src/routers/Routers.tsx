@@ -18,8 +18,7 @@ import { Annual } from "../pages/sales/Annual";
 import { ReceivablesList } from "../pages/sales/ReceivablesList";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
-import { VoucherList } from "../pages/account/VoucherList";
-import { OrderList } from "../pages/Business/OrderList";
+import { OrderList } from "../pages/business/OrderList";
 import { Employee } from "../pages/personnel/Employee";
 
 const routers: RouteObject[] = [
@@ -70,10 +69,6 @@ const routers: RouteObject[] = [
             {
                 path: "business",
                 children: [{ path: "order-information-list", element: <OrderList /> }],
-            },
-            {
-                path: "account",
-                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },

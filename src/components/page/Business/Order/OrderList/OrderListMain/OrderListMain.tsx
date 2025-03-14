@@ -2,37 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { OrderListMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
-import { OrderInfoContext } from "../../../../../../api/Provider/OrderInfoProvider";
+import { OrderListContext } from "../../../../../../api/Provider/OrderListProvider";
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
-export interface IOrder {
-    // id: number;
-    // client_id: number;
-    // order_emp_name: string;
-    // client_name: string;
-    // product_name: string;
-    // order_date: string;
-    // delivery_date: string;
-    // total_delivery_count: number;
-    // total_supply_price: number;
-    // total_tax: number;
-    // sales_area: string;
-
-    // clientId: 19;
-    // clientName: "포도기업";
-    // deliveryDate: "2025-03-20";
-    // departmentCode: null;
-    // empId: 0;
-    // estimateId: null;
-    // id: 80;
-    // orderDate: "2025-03-10";
-    // orderEmpName: "김영업";
-    // productName: "삼성 마우스";
-    // salesArea: "SCM";
-    // totalDeliveryCount: 10;
-    // totalSupplyPrice: 100000;
-    // totalTax: 10000;
-
+export interface IOrderList {
     clientId: number;
     clientName: string;
     deliveryDate: string;
@@ -49,16 +22,16 @@ export interface IOrder {
     totalTax: number;
 }
 
-interface IOrderResponse {
-    orderList: IOrder[];
+interface IOrderListResponse {
+    orderList: IOrderList[];
     orderCnt: number;
 }
 
 export const OrderListMain = () => {
-    const [orderList, setOrderList] = useState<IOrder[]>([]);
-    const { searchKeyword } = useContext(OrderInfoContext);
+    const [orderList, setOrderList] = useState<IOrderList[]>([]);
     const [orderCount, setOrderCount] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const { searchKeyword } = useContext(OrderListContext);
 
     useEffect(() => {
         searchOrderList();
@@ -75,7 +48,7 @@ export const OrderListMain = () => {
         { key: "totalTax", title: "총세액" },
         { key: "salesArea", title: "영역구분(scm/영업)" },
         { key: "orderDetail", title: "수주상세조회" },
-    ] as Column<IOrder>[];
+    ] as Column<IOrderList>[];
 
     const searchOrderList = (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -85,7 +58,7 @@ export const OrderListMain = () => {
                 currentPage,
                 pageSize: 5,
             })
-            .then((res: AxiosResponse<IOrderResponse>) => {
+            .then((res: AxiosResponse<IOrderListResponse>) => {
                 setOrderList(res.data.orderList);
                 setOrderCount(res.data.orderCnt);
                 setCPage(currentPage);

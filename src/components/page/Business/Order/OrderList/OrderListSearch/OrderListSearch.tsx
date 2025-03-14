@@ -4,7 +4,7 @@ import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSel
 import { OrderListSearchstyled } from "./styled";
 import { useContext, useEffect, useState } from "react";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
-import { OrderInfoContext } from "../../../../../../api/Provider/OrderInfoProvider";
+import { OrderListContext } from "../../../../../../api/Provider/OrderListProvider";
 
 interface IClient {
     name: string;
@@ -29,12 +29,12 @@ interface IProductResponse {
 export const OrderListSearch = () => {
     const [selectorderDate, setSelectOrderDate] = useState<string>("");
     const [selectdeliveryDate, setSelectDeliveryDate] = useState<string>("");
-    const [clientNameList, setClientNameList] = useState<IClient[]>([]);
-    const [productNameList, setProductNameList] = useState<IProduct[]>([]);
+    const [clientList, setClientList] = useState<IClient[]>([]);
+    const [productList, setProductList] = useState<IProduct[]>([]);
     const [selectClientId, setSelectClientId] = useState<string>("");
     const [selectProductId, setSelectProductId] = useState<string>("");
 
-    const { setSearchKeyword } = useContext(OrderInfoContext);
+    const { setSearchKeyword } = useContext(OrderListContext);
 
     useEffect(() => {
         getClientName();
@@ -45,7 +45,7 @@ export const OrderListSearch = () => {
             .post("/business/order-information-list/clientNamesBody.do")
             .then((res: AxiosResponse<IClientResponse>) => {
                 console.log("res.data.clientNamesList:" + res.data.clientNameList);
-                setClientNameList(res.data.clientNameList);
+                setClientList(res.data.clientNameList);
             });
     };
 
@@ -54,14 +54,14 @@ export const OrderListSearch = () => {
             .post("/business/order-information-list/productNamesBody.do")
             .then((res: AxiosResponse<IProductResponse>) => {
                 console.log("res.data.productNamesList:" + res.data.productNameList);
-                setProductNameList(res.data.productNameList);
+                setProductList(res.data.productNameList);
             });
     };
 
     const clientNameOptions = [
         { value: "", label: "선택" },
-        ...(clientNameList?.length > 0
-            ? clientNameList.map((clientNamesValue: IClient) => ({
+        ...(clientList?.length > 0
+            ? clientList.map((clientNamesValue: IClient) => ({
                   value: clientNamesValue.id,
                   label: clientNamesValue.name,
               }))
@@ -70,8 +70,8 @@ export const OrderListSearch = () => {
 
     const productNamesOptions = [
         { value: "", label: "선택" },
-        ...(productNameList?.length > 0
-            ? productNameList.map((productNamesValue: IProduct) => ({
+        ...(productList?.length > 0
+            ? productList.map((productNamesValue: IProduct) => ({
                   value: productNamesValue.id,
                   label: productNamesValue.name,
               }))

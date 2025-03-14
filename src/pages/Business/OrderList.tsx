@@ -1,4 +1,4 @@
-import { OrderInfoContext, OrderInfoProvider } from "../../api/Provider/OrderInfoProvider";
+import { OrderListProvider } from "../../api/Provider/OrderListProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { OrderListMain } from "../../components/page/Business/Order/OrderList/OrderListMain/OrderListMain";
 import { OrderListSearch } from "../../components/page/Business/Order/OrderList/OrderListSearch/OrderListSearch";
@@ -6,13 +6,13 @@ import { OrderListSearch } from "../../components/page/Business/Order/OrderList/
 export const OrderList = () => {
     return (
         <>
-            <OrderInfoProvider>
+            <OrderListProvider>
                 <ContentBox variant='primary' fontSize='large'>
-                    수주 조회/작성
+                    수주 조회/작성 수주 조회/작성
                 </ContentBox>
                 <OrderListSearch />
                 <OrderListMain />
-            </OrderInfoProvider>
+            </OrderListProvider>
         </>
     );
 };
