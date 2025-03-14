@@ -18,6 +18,7 @@ import { Annual } from "../pages/sales/Annual";
 import { ReceivablesList } from "../pages/sales/ReceivablesList";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
+import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
 import { Promotion } from "../pages/personnel/Promotion";
 import { SalesPlanList } from "../pages/business/SalesPlanList";
