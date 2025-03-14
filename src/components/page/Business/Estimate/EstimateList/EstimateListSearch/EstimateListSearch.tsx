@@ -6,31 +6,31 @@ import { EstimateListSearchStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { EstimateListContext } from "../../../../../../api/Provider/EstimateListProvider";
 
-interface IClientList {
+interface IClient {
     name: string;
     id: number;
 }
 
-interface IClientListResponse {
-    clientNameList: IClientList[];
+interface IClientResponse {
+    clientNameList: IClient[];
     clientNamseCnt: number;
 }
 
-interface IProductList {
+interface IProduct {
     name: string;
     id: number;
 }
 
-interface IProductListResponse {
-    productNameList: IProductList[];
+interface IProductResponse {
+    productNameList: IProduct[];
     productNamseCnt: number;
 }
 
 export const EstimateListSearch = () => {
     const [selectEstimateDate, setSelectEstimateDate] = useState<string>("");
     const [selectdeliveryDate, setSelectDeliveryDate] = useState<string>("");
-    const [clientList, setClientList] = useState<IClientList[]>([]);
-    const [productList, setProductList] = useState<IProductList[]>([]);
+    const [clientList, setClientList] = useState<IClient[]>([]);
+    const [productList, setProductList] = useState<IProduct[]>([]);
     const [selectClientId, setSelectClientId] = useState<string>("");
     const [selectProductId, setSelectProductId] = useState<string>("");
 
@@ -41,14 +41,14 @@ export const EstimateListSearch = () => {
         getProductName();
     }, []);
     const getClientName = () => {
-        axios.post("/business/estimate-list/clientNamesBody.do").then((res: AxiosResponse<IClientListResponse>) => {
+        axios.post("/business/estimate-list/clientNamesBody.do").then((res: AxiosResponse<IClientResponse>) => {
             console.log("res.data.clientNamesList:" + res.data.clientNameList);
             setClientList(res.data.clientNameList);
         });
     };
 
     const getProductName = () => {
-        axios.post("/business/estimate-list/productNamesBody.do").then((res: AxiosResponse<IProductListResponse>) => {
+        axios.post("/business/estimate-list/productNamesBody.do").then((res: AxiosResponse<IProductResponse>) => {
             console.log("res.data.productNamesList:" + res.data.productNameList);
             setProductList(res.data.productNameList);
         });
@@ -57,7 +57,7 @@ export const EstimateListSearch = () => {
     const clientOptions = [
         { value: "", label: "선택" },
         ...(clientList?.length > 0
-            ? clientList.map((clientNamesValue: IClientList) => ({
+            ? clientList.map((clientNamesValue: IClient) => ({
                   value: clientNamesValue.id,
                   label: clientNamesValue.name,
               }))
@@ -67,7 +67,7 @@ export const EstimateListSearch = () => {
     const productOptions = [
         { value: "", label: "선택" },
         ...(productList?.length > 0
-            ? productList.map((productNamesValue: IProductList) => ({
+            ? productList.map((productNamesValue: IProduct) => ({
                   value: productNamesValue.id,
                   label: productNamesValue.name,
               }))
