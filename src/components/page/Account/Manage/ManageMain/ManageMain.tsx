@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
