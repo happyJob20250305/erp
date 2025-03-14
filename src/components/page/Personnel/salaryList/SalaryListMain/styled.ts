@@ -1,7 +1,12 @@
 import styled from "styled-components";
 
-export const PromotionDetailStyled = styled.div`
-    margin-top: 100px;
+export const SalalyListMainStyled = styled.div`
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 5px;
+
     .info {
         padding: 16px;
         margin: 10px 0;

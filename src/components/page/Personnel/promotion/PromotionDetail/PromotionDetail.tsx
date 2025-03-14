@@ -33,14 +33,16 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
     return (
         <>
             <PromotionDetailStyled>
-                <label>사번</label>
-                <StyledInput value={promotionDetailList[0]?.employeeNumber} />
-                <label>사원명</label>
-                <StyledInput value={promotionDetailList[0]?.employeeName} />
-                <label>부서명</label>
-                <StyledInput value={promotionDetailList[0]?.departmentDetailName} />
-                <label>현재 직급</label>
-                <StyledInput value={promotionDetailList[0]?.recentJobGrade} />
+                <div className='info'>
+                    <label>사번</label>
+                    <StyledInput value={promotionDetailList[0]?.employeeNumber} />
+                    <label>사원명</label>
+                    <StyledInput value={promotionDetailList[0]?.employeeName} />
+                    <label>부서명</label>
+                    <StyledInput value={promotionDetailList[0]?.departmentDetailName} />
+                    <label>현재 직급</label>
+                    <StyledInput value={promotionDetailList[0]?.recentJobGrade} />
+                </div>
                 <StyledTable data={promotionDetailList} columns={columns} fullWidth={true} />
             </PromotionDetailStyled>
         </>
