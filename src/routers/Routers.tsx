@@ -20,6 +20,7 @@ import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
+import { EstimateList } from "../pages/business/EstimateList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -66,6 +67,10 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
+            },
+            {
+                path: "business",
+                children: [{ path: "estimate-list", element: <EstimateList /> }],
             },
         ],
     },
