@@ -8,6 +8,7 @@ import { Promotion } from "../../../../../api/api";
 import { useContext, useEffect, useState } from "react";
 import { PromotionMainStyled } from "./PromotionMainStyled";
 import { PromotionSearchContext } from "../../../../../api/Provider/PromitionProvider/PromotionSearhProvider";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 
 interface PromotionMainProps {
     onSelectEmployee: (employeeNumber: number) => void;
@@ -15,7 +16,7 @@ interface PromotionMainProps {
 
 export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     const [promotionList, setPromotionList] = useState<IPromotionList[]>([]);
-
+    const [promitionCnt, setPromitionCnt] = useState<number>();
     // context 상태 및 업데이트 함수 가져오기
     const {
         searchEmployeeNumber,
@@ -64,6 +65,7 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
 
         if (result) {
             setPromotionList(result.promotionList);
+            setPromitionCnt(result.promotionCnt);
             console.log(result);
         } else {
             setPromotionList([]);
@@ -83,6 +85,13 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
                     onCellClick={(row, columns) => {
                         onSelectEmployee(row.employeeNumber);
                     }}
+                />
+
+                <PageNavigate
+                    totalItemsCount={promitionCnt}
+                    onChange={setCPage}
+                    activePage={cPage}
+                    itemsCountPerPage={5}
                 />
             </PromotionMainStyled>
         </>
