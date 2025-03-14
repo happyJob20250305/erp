@@ -3,13 +3,13 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { CommonCodeModalStyle } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { IGroupCode } from "../CommonCodeMain/CommonCodeMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
 import { postApi } from "../../../../../api/SystemApi/postApi";
-
+import { IGroupCode } from "../../../../../models/interface/system/commoncode/IGroupCode";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 
 interface IGroupCodeProps {
     groupCode: string,
@@ -19,11 +19,6 @@ interface IGroupCodeProps {
 
 interface IGroupCodeDetailResponse {
     detail: IGroupCode
-}
-
-interface IPostResponse {
-    result: string
-    message?: string
 }
 
 export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, postSuccess }) => {

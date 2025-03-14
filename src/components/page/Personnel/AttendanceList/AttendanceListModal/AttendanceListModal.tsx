@@ -3,7 +3,7 @@ import { AttendanceListModalStyled } from "./styled";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
+import { IAttendance } from "../../../../../models/interface/personnel/attendance/IAttendance";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceList } from "../../../../../api/api";
 

@@ -12,9 +12,3 @@ export interface IAccountBodyResponse {
     account: IAccount[];
     accountCnt: number;
 }
-
-export interface IManageModalProps {
-    detailCode?: IAccount;
-    postSuccess: () => void;
-    setDetailCode: (detailCode?: IAccount) => void;
-}

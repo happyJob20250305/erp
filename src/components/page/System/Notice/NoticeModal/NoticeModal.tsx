@@ -4,30 +4,21 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { NoticeModalStyled } from "./styled";
 import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
-import { INotice } from "../NoticeMain/NoticeMain";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { Notice } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { postApi } from "../../../../../api/SystemApi/postApi";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { INoticeDetail } from "../../../../../models/interface/system/notice/INoticeDetail";
 
 interface INoticeModalProps {
     notiSeq: number;
     setNotiSeq: React.Dispatch<React.SetStateAction<number>>;
     postSuccess: () => void;
 }
-interface INoticeDetail extends INotice {
-    fileName: string | null,
-    physicalPath: string | null,
-    logicalPath: string | null,
-    fileSize: number | null,
-    fileExt: string | null
-}
+
 interface INoticeDetailResponse {
     detail: INoticeDetail;
-}
-
-interface IPostResponse {
-    result: string
 }
 
 export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSuccess }) => {
@@ -42,8 +33,8 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
 
         return () => {
             setNotiSeq(0);
-        }
-    }, [])
+        };
+    }, []);
 
     const searchDetail = async () => {
         const result = await searchApi<INoticeDetailResponse>(Notice.searchDetail, { noticeSeq: notiSeq });
@@ -54,22 +45,26 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
 
             if (fileExt) {
                 const fileExtLowerCase = fileExt.toLowerCase();
-                if (fileExtLowerCase === 'jpg' || fileExtLowerCase === 'png' || fileExtLowerCase === 'gif') {
+                if (fileExtLowerCase === "jpg" || fileExtLowerCase === "png" || fileExtLowerCase === "gif") {
                     setImageUrl(logicalPath);
                 } else {
                     setImageUrl("");
                 }
             }
         }
-    }
+    };
 
     const saveNotice = async () => {
         const formData = new FormData(formRef.current);
 
-        if (!nullCheck([
-            { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
-            { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
-        ])) { return false; }
+        if (
+            !nullCheck([
+                { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
+                { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." },
+            ])
+        ) {
+            return false;
+        }
 
         const result = await postApi<IPostResponse>(Notice.saveNotice, formData);
 
@@ -77,16 +72,20 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             alert("저장되었습니다.");
             postSuccess();
         }
-    }
+    };
 
     const updateNotice = async () => {
         const formData = new FormData(formRef.current);
         formData.append("noticeSeq", notiSeq.toString());
 
-        if (!nullCheck([
-            { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
-            { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." }
-        ])) { return false; }
+        if (
+            !nullCheck([
+                { inval: formData.get("fileTitle").toString(), msg: "제목을 입력해주세요." },
+                { inval: formData.get("fileContent").toString(), msg: "내용을 입력해주세요." },
+            ])
+        ) {
+            return false;
+        }
 
         const result = await postApi<IPostResponse>(Notice.updateNotice, formData);
 
@@ -94,7 +93,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             alert("수정되었습니다.");
             postSuccess();
         }
-    }
+    };
 
     const deleteNotice = async () => {
         const result = await postApi<IPostResponse>(Notice.deleteNotice, { noticeSeq: notiSeq });
@@ -103,7 +102,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             alert("삭제되었습니다.");
             postSuccess();
         }
-    }
+    };
 
     const fileDownload = async () => {
         const param = new URLSearchParams();
@@ -124,7 +123,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             //삭제
             window.URL.revokeObjectURL(url);
         }
-    }
+    };
 
     const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
         const fileInfo = e.target.files;
@@ -132,7 +131,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
             const fileSplit = fileInfo[0].name.split(".");
             const fileExt = fileSplit[1].toLowerCase();
 
-            if (fileExt === 'jpg' || fileExt === 'png' || fileExt === 'gif') {
+            if (fileExt === "jpg" || fileExt === "png" || fileExt === "gif") {
                 setImageUrl(URL.createObjectURL(fileInfo[0]));
             }
             setFileName(fileInfo[0].name);
@@ -149,41 +148,53 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                     <label>
                         내용 : <StyledInput type='text' name='fileContent' defaultValue={detail?.notiContent} />
                     </label>
-                    파일 :<StyledInput type='file' id='fileInput' name='file' style={{ display: "none" }} onChange={handlerFile} />
+                    파일 :
+                    <StyledInput
+                        type='file'
+                        id='fileInput'
+                        name='file'
+                        style={{ display: "none" }}
+                        onChange={handlerFile}
+                    />
                     <label className='img-label' htmlFor='fileInput'>
                         파일 첨부하기
                     </label>
                     <div>
-                        {
-                            imageUrl ?
-                                (
-                                    <div onClick={fileDownload}>
-                                        <label>미리보기</label>
-                                        <img src={imageUrl} />
-                                        {fileName || detail.fileName}
-                                    </div>
-                                )
-                                :
-                                (<>{fileName}</>)
-                        }
+                        {imageUrl ? (
+                            <div onClick={fileDownload}>
+                                <label>미리보기</label>
+                                <img src={imageUrl} />
+                                {fileName || detail.fileName}
+                            </div>
+                        ) : (
+                            <>{fileName}</>
+                        )}
                     </div>
                     <div className={"button-container"}>
-                        {
-                            notiSeq ?
-                                (
-                                    <>
-                                        <StyledButton type='button' onClick={updateNotice}>수정</StyledButton>
-                                        <StyledButton type='button' onClick={deleteNotice}>삭제</StyledButton>
-                                    </>
-                                )
-                                :
-                                (
-                                    <>
-                                        <StyledButton type='button' onClick={saveNotice}>저장</StyledButton>
-                                    </>
-                                )
-                        }
-                        <StyledButton type='button' onClick={() => { setModal(!modal) }}>나가기</StyledButton>
+                        {notiSeq ? (
+                            <>
+                                <StyledButton type='button' onClick={updateNotice}>
+                                    수정
+                                </StyledButton>
+                                <StyledButton type='button' onClick={deleteNotice}>
+                                    삭제
+                                </StyledButton>
+                            </>
+                        ) : (
+                            <>
+                                <StyledButton type='button' onClick={saveNotice}>
+                                    저장
+                                </StyledButton>
+                            </>
+                        )}
+                        <StyledButton
+                            type='button'
+                            onClick={() => {
+                                setModal(!modal);
+                            }}
+                        >
+                            나가기
+                        </StyledButton>
                     </div>
                 </form>
             </div>
