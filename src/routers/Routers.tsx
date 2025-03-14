@@ -18,8 +18,8 @@ import { Annual } from "../pages/sales/Annual";
 import { ReceivablesList } from "../pages/sales/ReceivablesList";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
-import { OrderList } from "../pages/business/OrderList";
 import { Employee } from "../pages/personnel/Employee";
+import { OrderList } from "../pages/business/OrderList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
