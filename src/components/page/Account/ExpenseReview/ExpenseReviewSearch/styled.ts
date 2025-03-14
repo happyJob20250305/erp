@@ -7,7 +7,7 @@ export const ExpenseReviewSearchStyled = styled.div`
     justify-content: flex-end;
     margin-top: 5px;
 
-    .searchBar {
+    .search-bar {
         display: flex;
         align-items: center;
         gap: 5px;

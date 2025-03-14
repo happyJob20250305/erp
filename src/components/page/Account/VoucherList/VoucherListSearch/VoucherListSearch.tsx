@@ -1,22 +1,14 @@
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { VoucherListContext } from "../../../../../api/Provider/VoucherListProvider";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import axios, { AxiosResponse } from "axios";
-import { SearchTable, TableCell, TableRow, VoucherListSearchStyled } from "./styled";
-
-interface IClient {
-    id: number;
-    clientName: string;
-}
-
-interface IClientListBody {
-    clientList: IClient[];
-}
+import { VoucherListSearchStyled } from "./styled";
+import { VoucherList } from "../../../../../api/api";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { IClientListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const VoucherListSearch = () => {
     const { setSearchKeyword } = useContext(VoucherListContext);
@@ -37,17 +29,11 @@ export const VoucherListSearch = () => {
         console.log("searchType changed:", searchType);
     }, [searchType]);
 
-    const voucherClientListSearch = () => {
-        axios.post("/account/voucherClientListSearch.do", {}).then((res: AxiosResponse<IClientListBody>) => {
-            const getClientList: ISetListOption[] = [
-                { label: "전체", value: "" },
-                ...res.data.clientList.map((detail: IClient) => ({
-                    label: detail.clientName,
-                    value: detail.clientName,
-                })),
-            ];
-            setClientList(getClientList);
-        });
+    const voucherClientListSearch = async () => {
+        const result = await accountSearchApi<IClientListBody>(VoucherList.searchClientList, {});
+        if (result) {
+            setClientList(setSelectOption(result.clientList, "clientName", "id", { label: "전체", value: "" }));
+        }
     };
 
     const handlerSearch = () => {
@@ -64,39 +50,30 @@ export const VoucherListSearch = () => {
     };
     return (
         <VoucherListSearchStyled>
-            <SearchTable>
-                <TableRow>
-                    <TableCell>
-                        <span>신청일자</span>
-                        <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} />
-                        <span>~</span>
-                        <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} />
-                    </TableCell>
-                    <TableCell>
-                        <span>구분</span>
-                        <StyledSelectBox options={searchTypeList} value={searchType} onChange={setSearchType} />
-                    </TableCell>
-                    <TableCell>
-                        <span>거래처명</span>
-                        <StyledSelectBox options={clientList} value={selectedClient} onChange={setSelectedClient} />
-                    </TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>
-                        <span>차변 계정과목명</span>
-                        <StyledInput ref={searchDebitName} />
-                    </TableCell>
-                    <TableCell>
-                        <span>대변 계정과목명</span>
-                        <StyledInput ref={searchCrebitName} />
-                    </TableCell>
-                    <TableCell className='search-button'>
-                        <StyledButton variant='secondary' onClick={handlerSearch}>
-                            검색
-                        </StyledButton>
-                    </TableCell>
-                </TableRow>
-            </SearchTable>
+            <div className='search-group'>
+                <div className='search-bar'>
+                    <span>신청일자</span>
+                    <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} />
+                    <span>~</span>
+                    <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} />
+                    <span>거래처명</span>
+                    <StyledSelectBox options={clientList} value={selectedClient} onChange={setSelectedClient} />
+                </div>
+
+                <div className='search-bar'>
+                    <span>차변 계정과목명</span>
+                    <StyledInput ref={searchDebitName} />
+                    <span>대변 계정과목명</span>
+                    <StyledInput ref={searchCrebitName} />
+                    <span>구분</span>
+                    <StyledSelectBox options={searchTypeList} value={searchType} onChange={setSearchType} />
+                </div>
+                <div className='button-container'>
+                    <StyledButton variant='secondary' onClick={handlerSearch}>
+                        조회
+                    </StyledButton>
+                </div>
+            </div>
         </VoucherListSearchStyled>
     );
 };

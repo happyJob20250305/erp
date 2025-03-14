@@ -9,12 +9,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { DepartmentModal } from "../DepartmentModal/DepartmentModal";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Department } from "../../../../../api/api";
-
-
-export interface IDepartment {
-    detailCode: string,
-    detailName: string
-}
+import { IDepartment } from "../../../../../models/interface/system/department/IDepartment";
 
 interface IDepartmentListBodyResponse {
     departmentList: IDepartment[],

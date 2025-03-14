@@ -9,18 +9,11 @@ import { NoticeMainStyled } from "./styled";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Notice } from "../../../../../api/api";
-
-export interface INotice {
-    notiSeq: number,
-    notiTitle: string,
-    loginId: string,
-    notiContent: string,
-    notiDate: string,
-}
+import { INotice } from "../../../../../models/interface/system/notice/INotice";
 
 interface INoticeListBodyResponse {
-    noticeList: INotice[],
-    noticeCnt: number
+    noticeList: INotice[];
+    noticeCnt: number;
 }
 
 export const NoticeMain = () => {
@@ -40,7 +33,7 @@ export const NoticeMain = () => {
 
     useEffect(() => {
         searchNoticeList();
-    }, [searchKeyword])
+    }, [searchKeyword]);
 
     const searchNoticeList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -49,7 +42,7 @@ export const NoticeMain = () => {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
-        })
+        });
 
         if (result) {
             setNoticeList(result.noticeList);
@@ -61,12 +54,12 @@ export const NoticeMain = () => {
     const handlerModal = (id: number) => {
         setModal(!modal);
         setNotiSeq(id);
-    }
+    };
 
     const postSuccess = () => {
         setModal(!modal);
         searchNoticeList();
-    }
+    };
 
     return (
         <NoticeMainStyled>
@@ -86,13 +79,11 @@ export const NoticeMain = () => {
                 itemsCountPerPage={5}
                 onChange={searchNoticeList}
             />
-            {
-                modal && (
-                    <Portal>
-                        <NoticeModal notiSeq={notiSeq} setNotiSeq={setNotiSeq} postSuccess={postSuccess} />
-                    </Portal>
-                )
-            }
+            {modal && (
+                <Portal>
+                    <NoticeModal notiSeq={notiSeq} setNotiSeq={setNotiSeq} postSuccess={postSuccess} />
+                </Portal>
+            )}
         </NoticeMainStyled>
     );
 };

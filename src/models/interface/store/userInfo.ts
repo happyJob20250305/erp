@@ -6,6 +6,9 @@ export interface ILoginInfo {
     userType?: string;
     serverName?: string;
     result?: string;
+    detail_name?: string;
+    usr_nm?: string;
+    usr_idx?: number;
 }
 
 export interface ISubmenuState {

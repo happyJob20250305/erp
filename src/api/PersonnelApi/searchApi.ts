@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-export const searchApi = async <T>(api: string, param: object): Promise<T | undefined> => {
+export const searchApi = async <T>(api: string, param?: object): Promise<T | undefined> => {
     try {
         const result: AxiosResponse<T> = await axios.post(api, param);
 

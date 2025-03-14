@@ -3,8 +3,9 @@ import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useState } from "react";
 import { AttendanceRequestRejectModalStyle } from "./styled";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import axios, { AxiosResponse } from "axios";
-import { IAttendance } from "../AttendanceRequestMain/AttendanceRequestMain";
+import { IAttendance } from "../../../../../models/interface/personnel/attendance/IAttendance";
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceRequest } from "../../../../../api/api";
 
 interface AttendanceRequestProps {
     id: number,
@@ -29,11 +30,12 @@ export const AttendanceRequestRejectModal: FC<AttendanceRequestProps> = ({ id, s
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/personnel/attendanceDetailBody.do", { id })
-            .then((res: AxiosResponse<AttendanceRequestRejectResponse>) => {
-                setAttendanceRequestDetail(res.data.detail);
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<AttendanceRequestRejectResponse>(AttendanceRequest.searchRejectDetail, { id });
+
+        if (result) {
+            setAttendanceRequestDetail(result.detail);
+        }
     }
 
     return (
