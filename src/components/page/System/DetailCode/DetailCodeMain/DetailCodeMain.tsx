@@ -10,14 +10,7 @@ import { modalState } from "../../../../../stores/modalState";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
 import { DetailCodeModal } from "../DetailCodeModal/DetailCodeModal";
-
-
-export interface IDetailCode {
-    groupCode: string,
-    detailCode: string,
-    detailName: string,
-    note: string,
-}
+import { IDetailCode } from "../../../../../models/interface/system/commoncode/IDetailCode";
 
 interface IDetailCodeListResponse {
     detailList: IDetailCode[],
