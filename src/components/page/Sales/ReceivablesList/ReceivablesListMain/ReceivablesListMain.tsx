@@ -2,8 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useEffect, useState } from "react";
-import { IReceivablesList, IReceivablesListResponse } from "../../../../../models/interface/IReceivablesList";
-import { searchApi } from "../../../../../api/ReceivablesListApi.ts/searchApi";
+import { IReceivablesList, IReceivablesListResponse } from "../../../../../models/interface/sales/IReceivablesList";
+import { searchApi } from "../../../../../api/SalesApi/ReceivablesListApi/searchApi";
 import { ReceivablesList } from "../../../../../api/api";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -73,7 +73,7 @@ export const ReceivablesListMain = () => {
                                     <StyledTd>{receivable.productName}</StyledTd>
                                     <StyledTd>{receivable.orderDate}</StyledTd>
                                     <StyledTd>{receivable.deliveryDate}</StyledTd>
-                                    <StyledTd>{receivable.receivableAmount.toString()}</StyledTd>
+                                    <StyledTd>{receivable.receivableAmount}</StyledTd>
                                     <StyledTd>{receivable.receivableStatus}</StyledTd>
                                     <StyledTd>{receivable.managerName}</StyledTd>
                                 </tr>

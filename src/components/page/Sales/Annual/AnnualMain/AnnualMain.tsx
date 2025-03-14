@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { IAnnual, IAnnualListBodyResponse } from "../../../../../models/interface/IAnnual";
+import { IAnnual, IAnnualListBodyResponse } from "../../../../../models/interface/sales/IAnnual";
 import { useRecoilState } from "recoil";
-import { searchApi } from "../../../../../api/AnnualApi/searchApi";
+import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Annual } from "../../../../../api/api";
 import { modalState } from "../../../../../stores/modalState";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";

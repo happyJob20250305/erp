@@ -1,23 +1,16 @@
 //css 를 자바스크립트처럼 사용가능
 
 import styled from "styled-components";
-
 export const ReceivablesModalStyled = styled.div`
-    width: 100%;
-    height: 100%;
-    position: fixed;
     display: flex;
-    flex-flow: row wrep;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-    font-weight: bold;
-
-    label {
-        display: flex;
-        flex-direction: column;
-    }
 
     .container {
         background: white;
@@ -25,13 +18,29 @@ export const ReceivablesModalStyled = styled.div`
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
-        width: 400px;
+        width: 90%;
+        max-width: 800px; /* 최대 너비 설정 */
+        max-height: 90vh; /* 화면 높이를 초과하지 않도록 설정 */
+        overflow-y: auto; /* 내용이 넘칠 경우 스크롤 가능하게 설정 */
+    }
+
+    td {
+        padding: 12px;
+    }
+    tr {
+        padding: 12px;
+    }
+
+    .client-info {
+        display: flex;
+        flex-direction: column; /* 세로로 정렬된 각 항목들을 그 안에서 가로로 나열 */
     }
 
     .button-container {
         text-align: center;
         margin-top: 10px;
     }
+
     button {
         background-color: #3bb2ea;
         border: none;

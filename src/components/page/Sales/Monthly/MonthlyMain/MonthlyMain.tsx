@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { IMonthly, IMonthlyListBodyResponse } from "../../../../../models/interface/IMonthly";
-import { searchApi } from "../../../../../api/MonthlyApi/searchApi";
+import { searchApi } from "../../../../../api/SalesApi/MonthlyApi/searchApi";
 import { Monthly } from "../../../../../api/api";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { MonthlyChart } from "../MonthlyChart/MonthlyChart";
@@ -11,6 +10,7 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { MonthlyModal } from "../MonthlyModal/MonthlyModal";
 import { MonthlyStatistics } from "../MonthlyStatistics/MonthlyStatistics";
+import { IMonthly, IMonthlyListBodyResponse } from "../../../../../models/interface/sales/IMonthly";
 
 export const MonthlyMain = () => {
     const { search } = useLocation();

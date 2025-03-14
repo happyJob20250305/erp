@@ -47,6 +47,8 @@ export const Monthly = {
 
 export const ReceivablesList = {
     search: "/sales/receivableList.do",
+    detail: "/sales/receivableDetail.do",
+    
 };
 
 export const Annual = {

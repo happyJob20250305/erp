@@ -1,4 +1,4 @@
-import { IMonthly } from "../../../../../models/interface/IMonthly";
+import { IMonthly } from "../../../../../models/interface/sales/IMonthly";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 
 interface MonthlyStatisticsProps {
