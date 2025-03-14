@@ -141,16 +141,6 @@ export const SalesPlanListSearch = () => {
 
     return (
         <SalesPlanListSearchStyled>
-            {/* <SalesSearch
-                setSelectManuFacturer={setSelectManuFacturer}
-                selectManuFacturer={selectManuFacturer}
-                setSelectSubcategory={setSelectSubcategory}
-                selectSubcategory={selectSubcategory}
-                setSelectDate={setSelectDate}
-                selectDate={selectDate}
-                setSelectProduct={setSelectProduct}
-                selectProduct={selectProduct}
-            /> */}
             <label>
                 제조업체
                 <StyledSelectBox
