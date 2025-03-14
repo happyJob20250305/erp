@@ -3,7 +3,6 @@ import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useState } from "react";
 import { AttendanceRequestRejectModalStyle } from "./styled";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import axios, { AxiosResponse } from "axios";
 import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceRequest } from "../../../../../api/api";

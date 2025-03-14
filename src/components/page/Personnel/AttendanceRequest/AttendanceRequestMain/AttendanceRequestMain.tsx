@@ -32,12 +32,10 @@ export const AttendanceRequestMain = () => {
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [attendanceCnt, setAttendanceCnt] = useState<IAttendanceCnt[]>([]);
     const [loginInfo, setloginInfo] = useState<ILoginUserInfo>();
-
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(AttendanceContext);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [modalType, setModalType] = useState<string>("detail");
-
     const [id, setId] = useState<number>(0);
     const [attId, setAttId] = useState<number>(0);
 

@@ -2,7 +2,6 @@ import { useRecoilState } from "recoil";
 import { AttendanceRequestModalStyle } from "./styled"
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
