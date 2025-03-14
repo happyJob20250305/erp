@@ -7,7 +7,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-import { IAccountGroupListBody, IManageModalProps } from "../../../../../models/interface/Account/Manage/IAccount";
+import { IAccountGroupListBody, IManageModalProps } from "../../../../../models/interface/account/manage/IAccount";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";

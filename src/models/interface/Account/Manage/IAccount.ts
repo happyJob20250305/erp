@@ -2,23 +2,18 @@ export interface IAccountGroup {
     group_name: string;
     group_code: string;
 }
-export interface IAccountGroupListBody {
-    accountGroupList: IAccountGroup[];
-}
 
 export interface IDetailGroup {
     detail_name: string;
     detail_code: string;
 }
 
-export interface IDetailGroupListBody {
-    searchAccount: IDetailGroup[];
+export interface IAccountGroupListBody {
+    accountGroupList: IAccountGroup[];
 }
 
-export interface IManageModalProps {
-    detailCode?: IAccount;
-    postSuccess: () => void;
-    setDetailCode: (detailCode?: IAccount) => void;
+export interface IDetailGroupListBody {
+    searchAccount: IDetailGroup[];
 }
 
 export interface IAccount {
@@ -34,4 +29,10 @@ export interface IAccount {
 export interface IAccountBodyResponse {
     account: IAccount[];
     accountCnt: number;
+}
+
+export interface IManageModalProps {
+    detailCode?: IAccount;
+    postSuccess: () => void;
+    setDetailCode: (detailCode?: IAccount) => void;
 }
