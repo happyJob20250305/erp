@@ -70,6 +70,10 @@ export const ExpenseList = {
     expensefileDownload: "/account/expenseDownload.do",
 };
 
+export const ExpenseReview = {
+    searchAccountDetailList: "/account/expenseSearchDetailBody.do",
+};
+
 export const Daily = {
     search: "/sales/dailyList.do",
 };

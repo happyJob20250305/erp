@@ -41,6 +41,7 @@ export const ExpenseListSearch = () => {
         } else {
             setAccountDetailList([{ label: "전체", value: "" }]);
         }
+        setSelectedDetail("");
     }, [selectedGroup]);
 
     const searchAccountDetailList = async (selectedGroup: string) => {
@@ -48,7 +49,9 @@ export const ExpenseListSearch = () => {
             group_code: selectedGroup,
         });
         if (result) {
-            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+            setAccountDetailList(
+                setSelectOption(result.searchAccount, "detail_name", "detail_code", { label: "전체", value: "" })
+            );
         }
     };
 
@@ -56,8 +59,8 @@ export const ExpenseListSearch = () => {
         setSearchKeyword({
             searchStDate: searchStDate,
             searchEdDate: searchEdDate,
-            searchGroup: selectedGroup,
-            searchDetail: selectedDetail,
+            searchGroup: selectedGroup || "",
+            searchDetail: selectedDetail || "",
             searchApproval: selectedApprove,
             currentPage: 1,
             pageSize: 5,
