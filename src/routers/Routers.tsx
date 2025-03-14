@@ -46,6 +46,7 @@ const routers: RouteObject[] = [
                     { path: "expense-list", element: <ExpenseList /> },
                     { path: "expense-review", element: <ExpenseReview /> },
                     { path: "expense-approval", element: <ExpenseReview /> },
+                    { path: "voucher-list", element: <VoucherList /> },
                 ],
             },
             {
@@ -65,10 +66,6 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
-            },
-            {
-                path: "account",
-                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },

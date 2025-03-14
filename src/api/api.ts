@@ -35,6 +35,16 @@ export const Manage = {
     delete: "/account/accountDelete.do",
 };
 
+export const ExpenseList = {
+    searchDetailList: "/account/accountSearchDetailBody.do",
+    searchExpenseList: "/account/expenseListBody.do",
+    searchAccountDetailList: "/account/expenseSearchDetailBody.do",
+    getLoginInfo: "/account/expenseLoginInfoBody.do",
+    expenseSave: "/account/expenseFileSave.do",
+    expenseDelete: "/account/expenseDelete.do",
+    expensefileDownload: "/account/expenseDownload.do",
+};
+
 export const Daily = {
     search: "/sales/dailyList.do",
 };

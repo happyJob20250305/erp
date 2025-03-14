@@ -46,7 +46,9 @@ export const ManageSearch = () => {
     const searchAccountGroupList = async () => {
         const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
         if (result) {
-            setAccountGroupList(setSelectOption(result.accountGroupList, "group_name", "group_code"));
+            setAccountGroupList(
+                setSelectOption(result.accountGroupList, "group_name", "group_code", { label: "전체", value: "" })
+            );
         }
     };
 
@@ -55,7 +57,9 @@ export const ManageSearch = () => {
             group_code: selectedGroup,
         });
         if (result) {
-            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+            setAccountDetailList(
+                setSelectOption(result.searchAccount, "detail_name", "detail_code", { label: "전체", value: "" })
+            );
         }
     };
 
