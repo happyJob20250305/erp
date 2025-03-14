@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 
 import axios, { AxiosResponse } from "axios";
-import { ISales, ISalesResponse } from "../../../../../../models/interface/personnel/Sales/ISales";
+import { ISales, ISalesResponse } from "../../../../../../models/interface/business/sales/ISales";
 import { SalesResultMainListStyled } from "./styled";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
 

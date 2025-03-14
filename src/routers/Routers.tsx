@@ -73,10 +73,9 @@ const routers: RouteObject[] = [
             },
             {
                 path: "business",
-                children: [{ path: "sales-list", element: <SalesResultList /> }],
                 children: [
                     { path: "sales-plan", element: <SalesPlanList /> },
-                    { path: "sales-list", element: <SalesResultList /> }
+                    { path: "sales-list", element: <SalesResultList /> },
                 ],
             },
         ],

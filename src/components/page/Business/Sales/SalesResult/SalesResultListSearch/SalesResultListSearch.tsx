@@ -12,7 +12,7 @@ import {
     IProductResponse,
     ISubcategory,
     ISubcategoryResponse,
-} from "../../../../../../models/interface/personnel/Sales/ISales";
+} from "../../../../../../models/interface/business/sales/ISales";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
 import { SalesResultListSearchStyled } from "./styled";
 
