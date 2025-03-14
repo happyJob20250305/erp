@@ -5,7 +5,7 @@ import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTab
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 import { EstimateListContext } from "../../../../../../api/Provider/EstimateListProvider";
 
-export interface IEstimate {
+export interface IEstimateList {
     id: number;
     clientId: number;
     empId: number;
@@ -21,13 +21,13 @@ export interface IEstimate {
     salesArea: string;
 }
 
-export interface IEstimateResponse {
-    estimateList: IEstimate[];
+export interface IEstimateListResponse {
+    estimateList: IEstimateList[];
     estimateCnt: number;
 }
 
 export const EstimateListMain = () => {
-    const [estimateList, setEstimateList] = useState<IEstimate[]>([]);
+    const [estimateList, setEstimateList] = useState<IEstimateList[]>([]);
     const [estimateCount, setEstimateCount] = useState<number>(0);
     const [cPage, setCpage] = useState<number>(0);
 
@@ -48,21 +48,17 @@ export const EstimateListMain = () => {
         { key: "salesArea", title: "총 세액" },
         { key: "clientName", title: "영역구분(scm/영업)" },
         { key: "estimateDetail", title: "견적서상세조회" },
-    ] as Column<IEstimate>[];
+    ] as Column<IEstimateList>[];
 
     const searchEstimateList = (currentPage?: number) => {
         currentPage = currentPage || 1;
         axios
             .post("/business/estimate-list/estimateListBody.do", {
                 ...searchKeyword,
-                // searchEstimateDate: "",
-                // searchDeliveryDate: "",
-                // searchClientId: "",
-                // searchProductId: "",
                 currentPage,
                 pageSize: 5,
             })
-            .then((res: AxiosResponse<IEstimateResponse>) => {
+            .then((res: AxiosResponse<IEstimateListResponse>) => {
                 console.log("res.data:" + res.data.estimateList);
                 setEstimateList(res.data.estimateList);
                 setEstimateCount(res.data.estimateCnt);
