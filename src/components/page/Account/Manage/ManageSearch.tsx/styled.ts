@@ -7,7 +7,7 @@ export const ManageSearchStyled = styled.div`
     justify-content: flex-end;
     margin-top: 5px;
 
-    .searchBar {
+    .search-bar {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -16,5 +16,6 @@ export const ManageSearchStyled = styled.div`
 
     .button-container {
         display: flex;
+        gap: 5px;
     }
 `;

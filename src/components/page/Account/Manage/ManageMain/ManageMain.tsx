@@ -2,27 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { ManageModal } from "../ManageModal/ManageModal";
-
-export interface IAccount {
-    group_name: string;
-    group_code: string;
-    detail_code: string;
-    detail_name: string;
-    use_yn: string;
-    content: string;
-    code_type: string;
-}
-
-interface IAccountBodyResponse {
-    account: IAccount[];
-    accountCnt: number;
-}
+import { IAccount, IAccountBodyResponse } from "../../../../../models/interface/account/manage/IAccount";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
 
 export const ManageMain = () => {
     const { searchKeyword } = useContext(AccountManageContext);
@@ -45,19 +32,20 @@ export const ManageMain = () => {
         searchAccountList();
     }, [searchKeyword]);
 
-    const searchAccountList = (currentPage?: number) => {
+    const searchAccountList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        axios
-            .post("/account/accountListBody.do", {
-                ...searchKeyword,
-                pageSize: 5,
-                currentPage,
-            })
-            .then((res: AxiosResponse<IAccountBodyResponse>) => {
-                setAccountList(res.data.account);
-                setAccountCnt(res.data.accountCnt);
-                setCPage(currentPage);
-            });
+
+        const result = await accountSearchApi<IAccountBodyResponse>(Manage.searchAccountList, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
+
+        if (result) {
+            setAccountList(result.account);
+            setAccountCnt(result.accountCnt);
+            setCPage(currentPage);
+        }
     };
 
     const handlerModal = (row: IAccount) => {

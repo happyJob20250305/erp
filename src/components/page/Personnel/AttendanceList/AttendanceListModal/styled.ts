@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const DetailModalStyled = styled.div`
+export const AttendanceListModalStyled = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
@@ -10,9 +10,9 @@ export const DetailModalStyled = styled.div`
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    font-weight: bold;
 
     label {
-        font-weight: bold;
         display: flex;
         flex-direction: column;
     }
@@ -32,6 +32,31 @@ export const DetailModalStyled = styled.div`
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
         width: 400px;
+    }
+
+    img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .img-label {
+        margin-top: 10px;
+        padding: 6px 25px;
+        background-color: #ccc;
+        border-radius: 4px;
+        color: rgba(0, 0, 0, 0.9);
+        cursor: pointer;
+
+        &:hover {
+            background-color: #45a049;
+            color: white;
+        }
+
+        &:active {
+            background-color: #3e8e41;
+            box-shadow: 0 2px #666;
+            transform: translateY(2px);
+        }
     }
 
     .button-container {
@@ -61,15 +86,6 @@ export const DetailModalStyled = styled.div`
             background-color: #3e8e41;
             box-shadow: 0 2px #666;
             transform: translateY(2px);
-        }
-    }
-
-    .radio-group {
-        display: flex;
-
-        label {
-            font-weight: initial;
-            display: block;
         }
     }
 `;

@@ -112,7 +112,7 @@ export const ExpenseReviewSearch = () => {
             </div>
             <div className='button-container'>
                 <StyledButton variant='secondary' onClick={handlerSearch}>
-                    검색
+                    조회
                 </StyledButton>
             </div>
         </ExpenseReviewSearchStyled>
