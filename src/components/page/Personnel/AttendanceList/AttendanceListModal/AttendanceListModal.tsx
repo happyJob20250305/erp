@@ -1,10 +1,11 @@
 import { FC, useEffect, useState } from "react"
 import { AttendanceListModalStyled } from "./styled";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-import { IAttendance } from "../AttendanceListMain/AttendanceListMain";
-import axios, { AxiosResponse } from "axios";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
+import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceList } from "../../../../../api/api";
 
 interface AttendanceRequestProps {
     reqStatus: string,
@@ -29,13 +30,15 @@ export const AttendanceListModal: FC<AttendanceRequestProps> = ({ reqStatus, sea
         reqStatus && searchDetail();
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/personnel/approveDetailListBody.do", {
+    const searchDetail = async () => {
+        const result = await searchApi<AttendanceRequestDetailResponse>(AttendanceList.searchDetail, {
             searchStDate: searchStDate,
             req_status: reqStatus
-        }).then((res: AxiosResponse<AttendanceRequestDetailResponse>) => {
-            setAttendanceDetail(res.data.attendanceList);
         })
+
+        if (result) {
+            setAttendanceDetail(result.attendanceList);
+        }
     }
 
     return (

@@ -30,6 +30,11 @@ export const AttendanceRequest = {
     searchRejectDetail: "/personnel/attendanceDetailBody.do",
 };
 
+export const AttendanceList = {
+    attendanceCalendar: "/personnel/attendanceCalendar.do",
+    searchDetail: "/personnel/approveDetailListBody.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
