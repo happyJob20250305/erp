@@ -3,6 +3,7 @@ import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTab
 import { OrderListMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { OrderInfoContext } from "../../../../../../api/Provider/OrderInfoProvider";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 export interface IOrder {
     // id: number;
@@ -56,15 +57,18 @@ interface IOrderResponse {
 export const OrderListMain = () => {
     const [orderList, setOrderList] = useState<IOrder[]>([]);
     const { searchKeyword } = useContext(OrderInfoContext);
+    const [orderCount, setOrderCount] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
 
     useEffect(() => {
         searchOrderList();
     }, [searchKeyword]);
+
     const columns = [
         { key: "id", title: "수주직원" },
         { key: "orderDate", title: "수주날짜" },
         { key: "clientName", title: "거래처 이름" },
-        { key: "productName", title: "제품명" },    
+        { key: "productName", title: "제품명" },
         { key: "deliveryDate", title: "납기날짜" },
         { key: "totalDeliveryCount", title: "총 납품 개수" },
         { key: "totalSupplyPrice", title: "총 공급 가액" },
@@ -82,14 +86,21 @@ export const OrderListMain = () => {
                 pageSize: 5,
             })
             .then((res: AxiosResponse<IOrderResponse>) => {
-                console.log("res.data.orderList:" + res.data.orderList);
                 setOrderList(res.data.orderList);
+                setOrderCount(res.data.orderCnt);
+                setCPage(currentPage);
             });
     };
 
     return (
         <OrderListMainStyled>
             <StyledTable data={orderList} columns={columns} hoverable={true} fullWidth={true} />
+            <PageNavigate
+                totalItemsCount={orderCount}
+                onChange={searchOrderList}
+                itemsCountPerPage={5}
+                activePage={cPage}
+            />
         </OrderListMainStyled>
     );
 };
