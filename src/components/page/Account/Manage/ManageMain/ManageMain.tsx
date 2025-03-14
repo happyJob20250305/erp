@@ -2,13 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ManageMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { ManageModal } from "../ManageModal/ManageModal";
-import { IAccount, IAccountBodyResponse } from "../../../../../models/interface/Account/Manage/IAccount";
+import { IAccount, IAccountBodyResponse } from "../../../../../models/interface/account/manage/IAccount";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { Manage } from "../../../../../api/api";
 

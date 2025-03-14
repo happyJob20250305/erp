@@ -11,7 +11,7 @@ import axios, { AxiosResponse } from "axios";
 import {
     IExpenseDetailGroup,
     IExpenseDetailGroupListBody,
-} from "../../ExpenseList/ExpenseListSearch/ExpenseListSearch";
+} from "../../../../../models/interface/account/expenseList/IExpenseList";
 
 export const ExpenseReviewSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);

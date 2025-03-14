@@ -9,14 +9,7 @@ import { NoticeMainStyled } from "./styled";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Notice } from "../../../../../api/api";
-
-export interface INotice {
-    notiSeq: number,
-    notiTitle: string,
-    loginId: string,
-    notiContent: string,
-    notiDate: string,
-}
+import { INotice } from "../../../../../models/interface/system/Notice/INotice";
 
 interface INoticeListBodyResponse {
     noticeList: INotice[],
