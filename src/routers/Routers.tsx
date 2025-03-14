@@ -24,6 +24,7 @@ import { Promotion } from "../pages/personnel/Promotion";
 import { SalesPlanList } from "../pages/business/SalesPlanList";
 import { SalesResultList } from "../pages/business/SalesResultList";
 import { ClientList } from "../pages/business/ClientList";
+import { OrderList } from "../pages/business/OrderList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -69,6 +70,7 @@ const routers: RouteObject[] = [
                     { path: "sales-plan", element: <SalesPlanList /> },
                     { path: "sales-list", element: <SalesResultList /> },
                     { path: "client-list", element: <ClientList /> },
+                    { path: "order-information-list", element: <OrderList /> },
                 ],
             },
             {
