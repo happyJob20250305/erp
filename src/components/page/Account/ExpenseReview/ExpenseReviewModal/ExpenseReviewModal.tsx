@@ -5,28 +5,22 @@ import { ExpenseReviewModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { IExpenseReview } from "../ExpenseReviewMain/ExpenseReviewMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
+import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { ICrebitList, IExpenseReviewBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { ExpenseReview } from "../../../../../api/api";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
+import { approvalCode } from "../../../../../common/approvalStatus";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
     postSuccess: () => void;
     setExpenseDetail: (expenseDetail?: IExpenseReview) => void;
-}
-
-interface ICrebitList {
-    detail_code: string;
-    detail_name: string;
-}
-
-interface IExpenseReviewBody {
-    crebitList: ICrebitList[];
-}
-
-interface IPostResponse {
-    result: string;
 }
 export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -42,63 +36,40 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
         };
     }, [expenseDetail]);
 
-    const getCrebitList = () => {
-        axios.post("/account/expense-reviewBody.do", {}).then((res: AxiosResponse<IExpenseReviewBody>) => {
-            const searchCrebitList: ISetListOption[] = [
-                ...res.data.crebitList.map((detail: ICrebitList) => ({
-                    label: detail.detail_name,
-                    value: detail.detail_code,
-                })),
-            ];
-            setCrebitList(searchCrebitList);
-        });
+    const getCrebitList = async () => {
+        const result = await accountSearchApi<IExpenseReviewBody>(ExpenseReview.getCrebitList, {});
+        if (result) {
+            setCrebitList(setSelectOption(result.crebitList, "detail_name", "detail_code"));
+        }
     };
 
-    const expenseUpdate = () => {
+    const expenseUpdate = async () => {
         const formData = new FormData(formRef.current);
-        formData.forEach((value, key) => {
-            console.log(key, value);
-        });
         formData.append("exp_id", expenseDetail.id.toString());
-        axios.post("/account/expenseUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("저장되었습니다.");
-                postSuccess();
-            }
-        });
+        const result = await accountPostApi<IPostResponse>(ExpenseReview.expenseUpdate, formData);
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        }
     };
 
-    const expensefileDownload = () => {
+    const expensefileDownload = async () => {
         const param = new URLSearchParams();
         param.append("expenseSeq", expenseDetail?.id.toString());
-        axios.post("/account/expenseDownload.do", param, { responseType: "blob" }).then((res: AxiosResponse<Blob>) => {
-            const url = window.URL.createObjectURL(res.data);
+        const result = await accountPostApi<Blob>(ExpenseReview.expensefileDownload, param, { responseType: "blob" });
+        if (result) {
+            const url = window.URL.createObjectURL(result);
             const link = document.createElement("a");
             link.href = url;
             console.log(expenseDetail);
             link.setAttribute("download", expenseDetail.file_name as string);
             document.body.appendChild(link);
             link.click();
-
-            //브라우저에서 a태그 삭제
             document.body.removeChild(link);
-            //삭제
             window.URL.revokeObjectURL(url);
-        });
-    };
-
-    const approvalCode = (status: string) => {
-        switch (status) {
-            case "W":
-                return "검토 대기";
-            case "N":
-                return "반려";
-            case "F":
-                return "승인 대기";
-            case "S":
-                return "승인";
         }
     };
+
     return (
         <ExpenseReviewModalStyle>
             <div className='container'>

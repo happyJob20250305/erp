@@ -72,6 +72,10 @@ export const ExpenseList = {
 
 export const ExpenseReview = {
     searchAccountDetailList: "/account/expenseSearchDetailBody.do",
+    searchExpenseReviewList: "/account/expenseListBody.do",
+    getCrebitList: "/account/expense-reviewBody.do",
+    expenseUpdate: "/account/expenseUpdate.do",
+    expensefileDownload: "/account/expenseDownload.do",
 };
 
 export const Daily = {

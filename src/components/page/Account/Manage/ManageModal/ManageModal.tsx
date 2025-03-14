@@ -7,13 +7,14 @@ import { FC, useEffect, useRef, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-import { IAccountGroupListBody, IManageModalProps } from "../../../../../models/interface/account/manage/IAccount";
+import { IManageModalProps } from "../../../../../models/interface/account/manage/IAccount";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { Manage } from "../../../../../api/api";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { setSelectOption } from "../../../../../common/setSelectOption";
+import { IAccountGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");

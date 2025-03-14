@@ -1,21 +1,3 @@
-export interface IAccountGroup {
-    group_name: string;
-    group_code: string;
-}
-
-export interface IDetailGroup {
-    detail_name: string;
-    detail_code: string;
-}
-
-export interface IAccountGroupListBody {
-    accountGroupList: IAccountGroup[];
-}
-
-export interface IDetailGroupListBody {
-    searchAccount: IDetailGroup[];
-}
-
 export interface IAccount {
     group_name: string;
     group_code: string;

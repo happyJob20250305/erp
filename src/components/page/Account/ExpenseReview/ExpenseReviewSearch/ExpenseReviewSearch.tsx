@@ -5,11 +5,11 @@ import { ExpenseReviewSearchStyled } from "./styled";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseReviewContext } from "../../../../../api/Provider/ExpenseReviewProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IExpenseDetailGroupListBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseReview } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { dateCheck } from "../../../../../common/dateCheck";
+import { IDetailGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const ExpenseReviewSearch = () => {
     const { setSearchKeyword } = useContext(ExpenseReviewContext);
@@ -42,7 +42,7 @@ export const ExpenseReviewSearch = () => {
     }, [selectedGroup]);
 
     const searchAccountDetailList = async (selectedGroup: string) => {
-        const result = await accountSearchApi<IExpenseDetailGroupListBody>(ExpenseReview.searchAccountDetailList, {
+        const result = await accountSearchApi<IDetailGroupListBody>(ExpenseReview.searchAccountDetailList, {
             group_code: selectedGroup,
         });
         if (result) {

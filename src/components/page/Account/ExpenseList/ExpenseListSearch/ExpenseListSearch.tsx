@@ -7,11 +7,11 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IExpenseDetailGroupListBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { dateCheck } from "../../../../../common/dateCheck";
+import { IDetailGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const ExpenseListSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -45,7 +45,7 @@ export const ExpenseListSearch = () => {
     }, [selectedGroup]);
 
     const searchAccountDetailList = async (selectedGroup: string) => {
-        const result = await accountSearchApi<IExpenseDetailGroupListBody>(ExpenseList.searchDetailList, {
+        const result = await accountSearchApi<IDetailGroupListBody>(ExpenseList.searchDetailList, {
             group_code: selectedGroup,
         });
         if (result) {
