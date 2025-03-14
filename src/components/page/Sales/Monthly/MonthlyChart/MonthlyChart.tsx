@@ -1,16 +1,5 @@
-import React from "react";
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    LabelList,
-} from "recharts";
-import { IMonthly } from "../../../../../models/interface/IMonthly";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { IMonthly } from "../../../../../models/interface/sales/IMonthly";
 
 interface MonthlyChartProps {
     monthlyListChart: IMonthly[];

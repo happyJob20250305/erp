@@ -1,4 +1,3 @@
-import { MonthlyStatistics } from "./../../components/page/Sales/Monthly/MonthlyStatistics/MonthlyStatistics";
 export interface IMonthly {
     orderDate: string;
     orderCount: bigint;

@@ -104,7 +104,8 @@ export const Monthly = {
 };
 
 export const ReceivablesList = {
-    search: "/sales/receivableList.do",
+    search: "/sales/receivableListBody.do",
+    detail: "/sales/receivableDetailBody.do",
 };
 
 export const Annual = {

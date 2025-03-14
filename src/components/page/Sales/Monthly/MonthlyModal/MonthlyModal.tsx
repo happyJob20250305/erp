@@ -1,21 +1,20 @@
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { MonthlyModalStyled } from "./styled";
+import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { useLocation } from "react-router-dom";
+import { searchApi } from "../../../../../api/SalesApi/MonthlyApi/searchApi";
+import { Monthly } from "../../../../../api/api";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import {
     IMonthlyClientDetail,
     IMonthlyModalDetail,
     IMonthlyProductDetail,
-} from "../../../../../models/interface/IMonthly";
-import { MonthlyModalStyled } from "./styled";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import axios, { AxiosResponse } from "axios";
-import { useLocation } from "react-router-dom";
-import { searchApi } from "../../../../../api/MonthlyApi/searchApi";
-import { Monthly } from "../../../../../api/api";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Modal } from "react-bootstrap";
+} from "../../../../../models/interface/sales/IMonthly";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

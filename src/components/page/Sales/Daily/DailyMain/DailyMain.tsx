@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Daily } from "../../../../../api/api";
-import { searchApi } from "../../../../../api/DailyApi/searchApi";
+import { searchApi } from "../../../../../api/SalesApi/DailyApi/searchApi";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { DailyChart } from "../DailyChart/DailyChart";
 import { Chart, registerables } from "chart.js";
 import { DailyStatistics } from "../DailyStatistics/DailyStatistics";
-import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/IDaily";
+import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/sales/IDaily";
 Chart.register(...registerables);
 
 export const DailyMain = () => {

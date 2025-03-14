@@ -1,3 +1,4 @@
+import { DetailCode } from "../../../pages/system/DetailCode";
 export interface IReceivablesList {
     orderId: number;
     departmentName: string;
@@ -5,13 +6,14 @@ export interface IReceivablesList {
     productName: string;
     orderDate: string;
     deliveryDate: string;
-    receivableAmount: bigint;
+    receivableAmount: number;
     receivableStatus: string;
     managerName: string;
 }
 
 export interface IReceivablesListDetail extends IReceivablesList {
     orderDate: string;
+    orderId: number;
     deliveryDate: string;
     voucherNo: string;
     departmentName: string;
@@ -38,6 +40,7 @@ export interface IReceivablesListResponse {
 }
 
 export interface IReceivablesDetail {
-    detailList: IReceivablesListDetail;
+    detail: IReceivablesListDetail;
+    detailList: IReceivablesListDetail[];
     detailListCnt: number;
 }

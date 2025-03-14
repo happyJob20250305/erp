@@ -1,4 +1,4 @@
-import { IAnnual } from "../../../../../models/interface/IAnnual";
+import { IAnnual } from "../../../../../models/interface/sales/IAnnual";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 
 interface AnnualStatisticsProps {

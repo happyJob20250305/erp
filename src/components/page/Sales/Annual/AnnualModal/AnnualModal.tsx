@@ -2,9 +2,13 @@ import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useEffect, useState } from "react";
-import { IAnnualClientDetail, IAnnualModalDetail, IAnnualProductDetail } from "../../../../../models/interface/IAnnual";
+import {
+    IAnnualClientDetail,
+    IAnnualModalDetail,
+    IAnnualProductDetail,
+} from "../../../../../models/interface/sales/IAnnual";
 import { Annual } from "../../../../../api/api";
-import { searchApi } from "../../../../../api/AnnualApi/searchApi";
+import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";

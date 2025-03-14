@@ -10,7 +10,7 @@ import {
     ResponsiveContainer,
     LabelList,
 } from "recharts";
-import { IAnnual } from "../../../../../models/interface/IAnnual";
+import { IAnnual } from "../../../../../models/interface/sales/IAnnual";
 
 interface AnnualChartProps {
     annualListChart: IAnnual[];
