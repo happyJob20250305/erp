@@ -2,10 +2,13 @@ import { useRecoilState } from "recoil";
 import { AttendanceApprovalModalStyle } from "./styled"
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
-import { IAttendance } from "../AttendanceApprovalMain/AttendanceApprovalMain";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceApproval } from "../../../../../api/api";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { IAttendanceDetail } from "../../../../../models/interface/personnel/Attendance/IAttendanceDetail";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
 
 interface AttendanceApprovalProps {
     id: number,
@@ -13,20 +16,8 @@ interface AttendanceApprovalProps {
     postSuccess: () => void
 }
 
-interface IAttendanceDetail extends IAttendance {
-    reqReason: string,
-    deptName: string | null,
-    reqTel: string
-    reqdate: string,
-}
-
 interface AttendanceApprovalDetailResponse {
     detail: IAttendanceDetail
-}
-
-interface IPostResponse {
-    result: string
-    message?: string
 }
 
 export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess }) => {
@@ -46,73 +37,75 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/personnel/attendanceDetailBody.do", { id })
-            .then((res: AxiosResponse<AttendanceApprovalDetailResponse>) => {
-                setAttendanceApprovalDetail(res.data.detail);
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<AttendanceApprovalDetailResponse>(AttendanceApproval.searchDetail, { id });
+
+        if (result) {
+            setAttendanceApprovalDetail(result.detail);
+        }
     }
 
-    const rejectAttendance = () => {
+    const rejectAttendance = async () => {
         const formData = new FormData(formRef.current);
 
         if (!nullCheck([
             { inval: formData.get("appReason").toString(), msg: "반려 사유를 입력해주세요." }
         ])) { return false; }
 
-        axios.post("/personnel/attendanceRejectBody.do", {
+        const result = await postApi<IPostResponse>(AttendanceApproval.rejectAttendance, {
             reqId: id,
             userIdx: loginUserEmpid,
             appReason: formData.get("appReason").toString()
-        }).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("반려되었습니다.");
-                postSuccess();
-            }
         })
+
+        if (result.result === "success") {
+            alert("반려되었습니다.");
+            postSuccess();
+        }
     }
 
-    const firstApproveAttendance = () => {
-        axios.post("/personnel/attendanceFirstApproveBody.do", {
+    const firstApproveAttendance = async () => {
+        const result = await postApi<IPostResponse>(AttendanceApproval.firstApproveAttendance, {
             reqId: id,
             userIdx: loginUserEmpid,
-        }).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("승인되었습니다.");
-                postSuccess();
-            }
         })
+
+        if (result.result === "success") {
+            alert("승인되었습니다.");
+            postSuccess();
+        }
     }
 
-    const approveRejectAttendance = () => {
+    const approveRejectAttendance = async (attAppId: number) => {
         const formData = new FormData(formRef.current);
 
         if (!nullCheck([
             { inval: formData.get("appReason").toString(), msg: "반려 사유를 입력해주세요." }
         ])) { return false; }
 
-        axios.post("/personnel/attendanceApproveRejectBody.do", {
+        const result = await postApi<IPostResponse>(AttendanceApproval.approveRejectAttendance, {
+            id: attAppId,
             reqId: id,
             userIdx: loginUserEmpid,
             appReason: formData.get("appReason").toString()
-        }).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("반려되었습니다.");
-                postSuccess();
-            }
         })
+
+        if (result.result === "success") {
+            alert("반려되었습니다.");
+            postSuccess();
+        }
     }
 
-    const secondApproveAttendance = () => {
-        axios.post("/personnel/attendanceSecondApproveBody.do", {
+    const secondApproveAttendance = async () => {
+        const result = await postApi<IPostResponse>(AttendanceApproval.secondApproveAttendance, {
             reqId: id,
             userIdx: loginUserEmpid,
-        }).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("승인되었습니다.");
-                postSuccess();
-            }
         })
+
+        if (result.result === "success") {
+            alert("승인되었습니다.");
+            postSuccess();
+        }
     }
 
     return (
@@ -175,7 +168,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                         {
                             ((loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
                                 || (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기")))
-                            && <button type='button' onClick={approveRejectAttendance}>반려</button>
+                            && <button type='button' onClick={() => { approveRejectAttendance(attendanceApprovalDetail?.attAppId) }}>반려</button>
                         }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>

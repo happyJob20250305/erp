@@ -2,6 +2,15 @@ export const Login = {
     login: "/loginProc.do",
 };
 
+export const AttendanceApproval = {
+    searchAttendanceList: "/personnel/attendanceListBody.do",
+    searchDetail: "/personnel/attendanceDetailBody.do",
+    rejectAttendance: "/personnel/attendanceRejectBody.do",
+    firstApproveAttendance: "/personnel/attendanceFirstApproveBody.do",
+    approveRejectAttendance: "/personnel/attendanceApproveRejectBody.do",
+    secondApproveAttendance: "/personnel/attendanceSecondApproveBody.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
@@ -16,6 +25,15 @@ export const MySalaryDetail = {
 
 export const SalaryOptionList = {
     optionList: "/personnel/salary-manage-body",
+};
+
+export const ManageApi = {
+    searchGroupList: "/account/accountGroupList.do",
+    searchDetailList: "/account/accountSearchDetailBody.do",
+    searchAccountList: "/account/accountListBody.do",
+    save: "/account/accountSave.do",
+    update: "/account/accountUpdate.do",
+    delete: "/account/accountDelete.do",
 };
 
 export const CommonCode = {
@@ -43,13 +61,4 @@ export const Department = {
     searchDetail: "/system/departmentDetailBody",
     saveDepartment: "/system/departmentSave",
     updateDepartment: "/system/departmentUpdate",
-};
-
-export const ManageApi = {
-    searchGroupList: "/account/accountGroupList.do",
-    searchDetailList: "/account/accountSearchDetailBody.do",
-    searchAccountList: "/account/accountListBody.do",
-    save: "/account/accountSave.do",
-    update: "/account/accountUpdate.do",
-    delete: "/account/accountDelete.do",
 };
