@@ -21,12 +21,16 @@ export const CommonCodeSearch = () => {
 
     return (
         <CommonCodeSearchStyled>
-            <span>공통코드명</span>
-            <StyledInput ref={title} />
-            <span>비고</span>
-            <StyledInput ref={note} />
-            <StyledButton onClick={handlerSearch}>검색</StyledButton>
-            <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            <div className="search-bar">
+                <span>공통코드명</span>
+                <StyledInput ref={title} />
+                <span>비고</span>
+                <StyledInput ref={note} />
+            </div>
+            <div className="button-container">
+                <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>
+                <StyledButton onClick={() => { setModal(!modal) }}>등록</StyledButton>
+            </div>
         </CommonCodeSearchStyled>
     );
 };

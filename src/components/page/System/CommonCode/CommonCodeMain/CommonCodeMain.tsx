@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { CommonCodeMainStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -10,6 +9,8 @@ import { Portal } from "../../../../common/potal/Portal";
 import { CommonCodeModal } from "../CommonCodeModal/CommonCodeModal";
 import { useNavigate } from "react-router-dom";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { CommonCode } from "../../../../../api/api";
 
 
 export interface IGroupCode {
@@ -44,18 +45,20 @@ export const CommonCodeMain = () => {
         searchGroupCodeList();
     }, [searchKeyword])
 
-    const searchGroupCodeList = (currentPage?: number) => {
+    const searchGroupCodeList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/system/groupListBody", {
+        const result = await searchApi<IGroupCodeListResponse>(CommonCode.searchGroupCodeList, {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<IGroupCodeListResponse>) => {
-            setGroupCodeList(res.data.groupList);
-            setGroupCnt(res.data.groupCnt);
-            setCPage(currentPage);
         })
+
+        if (result) {
+            setGroupCodeList(result.groupList);
+            setGroupCnt(result.groupCnt);
+            setCPage(currentPage);
+        }
     }
 
     const handlerModal = (id: string, e: React.MouseEvent<HTMLButtonElement>) => {

@@ -7,7 +7,7 @@ export const ExpenseListSearchStyled = styled.div`
     justify-content: flex-end;
     margin-top: 5px;
 
-    .searchBar {
+    .search-bar {
         display: flex;
         align-items: center;
         gap: 5px;
@@ -16,5 +16,6 @@ export const ExpenseListSearchStyled = styled.div`
 
     .button-container {
         display: flex;
+        gap: 5px;
     }
 `;

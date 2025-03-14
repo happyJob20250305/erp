@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { DetailCodeMainStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { DetailModal } from "../DetailModal/DetailModal";
 import { Portal } from "../../../../common/potal/Portal";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { CommonCode } from "../../../../../api/api";
+import { DetailCodeModal } from "../DetailCodeModal/DetailCodeModal";
 
 
 export interface IDetailCode {
@@ -32,7 +33,6 @@ export const DetailCodeMain = () => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [detailCode, setDetailCode] = useState<string>("");
 
-
     const columns = [
         { key: "groupCode", title: "공통코드" },
         { key: "detailCode", title: "상세코드" },
@@ -45,18 +45,20 @@ export const DetailCodeMain = () => {
         searchDetailCodeList();
     }, [])
 
-    const searchDetailCodeList = (currentPage?: number) => {
+    const searchDetailCodeList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/system/detailListBody", {
+        const result = await searchApi<IDetailCodeListResponse>(CommonCode.searchDetailCodeList, {
             groupCode: state.groupCode,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<IDetailCodeListResponse>) => {
-            setDetailList(res.data.detailList);
-            setDetailCnt(res.data.detailCnt);
-            setCPage(currentPage);
         })
+
+        if (result) {
+            setDetailList(result.detailList);
+            setDetailCnt(result.detailCnt);
+            setCPage(currentPage);
+        }
     }
 
     const handlerModal = (id: string) => {
@@ -90,7 +92,7 @@ export const DetailCodeMain = () => {
             {
                 modal && (
                     <Portal>
-                        <DetailModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
+                        <DetailCodeModal detailCode={detailCode} setDetailCode={setDetailCode} postSuccess={postSuccess} />
                     </Portal>
                 )
             }

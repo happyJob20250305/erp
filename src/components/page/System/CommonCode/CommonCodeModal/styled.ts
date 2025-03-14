@@ -35,7 +35,7 @@ export const CommonCodeModalStyle = styled.div`
     }
 
     .button-container {
-        text-align: right;
+        text-align: center;
         margin-top: 10px;
     }
     button {
