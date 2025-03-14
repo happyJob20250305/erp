@@ -11,18 +11,18 @@ import {
     IManufacturerResponse,
     IProduct,
     IProductResponse,
-    ISalesPlan,
+    ISales,
     ISubcategory,
     ISubcategoryResponse,
-} from "../../../../../../models/interface/personnel/Sales/ISales";
+} from "../../../../../../models/interface/business/sales/ISales";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
 import { SalesPlanListSearchStyled } from "../SalesPlanSearch/styled";
 
 interface ISalesModalProps {
-    planNum?: ISalesPlan;
+    planNum?: ISales;
     // setPlanNum: (planNum?: ISalesPlan) => void;
-    setPlanNum: React.Dispatch<React.SetStateAction<ISalesPlan>>;
+    setPlanNum: React.Dispatch<React.SetStateAction<ISales>>;
     postSucces: () => void;
 }
 
@@ -51,7 +51,7 @@ interface IPostResponse {
 export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucces }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const [salesPlan, setSalesPlan] = useState<ISalesPlan>(initSalesPlan);
+    const [salesPlan, setSalesPlan] = useState<ISales>(initSalesPlan);
 
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);

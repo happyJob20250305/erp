@@ -1,4 +1,4 @@
-export interface ISalesPlan {
+export interface ISales {
     client_id: number;
     client_name: string;
     detail_code: string;
@@ -17,8 +17,8 @@ export interface ISalesPlan {
     target_date: string;
 }
 
-export interface ISalesPlanResponse {
-    searchPlanList: ISalesPlan[];
+export interface ISalesResponse {
+    searchPlanList: ISales[];
     salesCnt: number;
 }
 
