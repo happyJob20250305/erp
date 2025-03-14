@@ -7,7 +7,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-import { IManageModalProps } from "../../../../../models/interface/account/manage/IAccount";
+
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
@@ -15,6 +15,13 @@ import { Manage } from "../../../../../api/api";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { IAccountGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
+import { IAccount } from "../../../../../models/interface/account/manage/IAccount";
+
+interface IManageModalProps {
+    detailCode: IAccount;
+    postSuccess: () => void;
+    setDetailCode: (detailCode?: IAccount) => void;
+}
 
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");

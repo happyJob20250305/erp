@@ -83,7 +83,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='exp_id'
                                         defaultValue={expenseDetail?.id}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>신청일자</th>
@@ -92,7 +92,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='date'
                                         name='request_date'
                                         defaultValue={expenseDetail?.req_date}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>사용일자</th>
@@ -101,7 +101,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='date'
                                         name='use_date'
                                         defaultValue={expenseDetail?.use_date}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -112,7 +112,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='emp_no'
                                         defaultValue={expenseDetail?.emp_no}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>사원명</th>
@@ -121,7 +121,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='emp_name'
                                         defaultValue={expenseDetail?.name}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>사용부서</th>
@@ -130,7 +130,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='use_dept'
                                         defaultValue={expenseDetail?.use_department}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -141,7 +141,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='accountGroup'
                                         defaultValue={expenseDetail?.group_name}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>계정과목 </th>
@@ -150,7 +150,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='accountDetail'
                                         defaultValue={expenseDetail?.detail_name}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>거래처명</th>
@@ -159,7 +159,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='clientId'
                                         defaultValue={expenseDetail?.client_name}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -170,7 +170,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='exp_pay'
                                         defaultValue={expenseDetail?.expense_payment}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                                 <th>승인여부</th>
@@ -199,7 +199,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                             type='text'
                                             name='isApproval'
                                             defaultValue={approvalCode(expenseDetail?.is_approval)}
-                                            disabled
+                                            readOnly
                                         ></StyledInput>
                                     )}
                                 </td>
@@ -209,7 +209,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         type='text'
                                         name='approval_date'
                                         defaultValue={expenseDetail?.approval_date}
-                                        disabled
+                                        readOnly
                                     ></StyledInput>
                                 </td>
                             </tr>
@@ -246,7 +246,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                                 type='text'
                                                 name='crebit_name'
                                                 defaultValue={expenseDetail?.crebit_name}
-                                                disabled
+                                                readOnly
                                             ></StyledInput>
                                         </td>
                                     </>
@@ -259,7 +259,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
                                         name='expenseContent'
                                         id='content'
                                         defaultValue={expenseDetail?.expense_content}
-                                        disabled
+                                        readOnly
                                     ></textarea>
                                 </td>
                             </tr>
