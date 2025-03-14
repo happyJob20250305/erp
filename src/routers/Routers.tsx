@@ -25,6 +25,7 @@ import { SalesPlanList } from "../pages/business/SalesPlanList";
 import { SalesResultList } from "../pages/business/SalesResultList";
 import { ClientList } from "../pages/business/ClientList";
 import { OrderList } from "../pages/business/OrderList";
+import { EstimateList } from "../pages/business/EstimateList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -71,6 +72,7 @@ const routers: RouteObject[] = [
                     { path: "sales-list", element: <SalesResultList /> },
                     { path: "client-list", element: <ClientList /> },
                     { path: "order-information-list", element: <OrderList /> },
+                    { path: "estimate-list", element: <EstimateList /> },
                 ],
             },
             {
