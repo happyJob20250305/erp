@@ -1,19 +1,19 @@
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
-import { SalesPlanMainStyled } from "./styled";
 import { ISalesPlan, ISalesPlanResponse } from "../../../../../../models/interface/personnel/Sales/ISales";
-import { SalesPlanContext } from "../../../../../../api/Provider/SalesPlanProvider";
+import { SalesPlanListContext } from "../../../../../../api/Provider/SalesPlanProvider";
 import { useRecoilState } from "recoil";
 import { Portal } from "../../../../../common/potal/Portal";
 import { modalState } from "../../../../../../stores/modalState";
-import { SalesModal } from "../SalesPlanModal/SalesPlanModal";
+import { SalesPlanListMainStyled } from "./styled";
+import { SalesPlanListModal } from "../SalesPlanModal/SalesPlanListModal";
 
-export const SalesPlanMain = () => {
+export const SalesPlanListMain = () => {
     const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
     const [planNum, setPlanNum] = useState<ISalesPlan>();
 
-    const { searchKeyword } = useContext(SalesPlanContext);
+    const { searchKeyword } = useContext(SalesPlanListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export const SalesPlanMain = () => {
     };
 
     return (
-        <SalesPlanMainStyled>
+        <SalesPlanListMainStyled>
             <StyledTable
                 data={salesPlanList}
                 columns={columns}
@@ -65,9 +65,9 @@ export const SalesPlanMain = () => {
 
             {modal && (
                 <Portal>
-                    <SalesModal planNum={planNum} setPlanNum={setPlanNum} postSucces={postSucces} />
+                    <SalesPlanListModal planNum={planNum} setPlanNum={setPlanNum} postSucces={postSucces} />
                 </Portal>
             )}
-        </SalesPlanMainStyled>
+        </SalesPlanListMainStyled>
     );
 };

@@ -10,15 +10,15 @@ import {
     ISubcategory,
     ISubcategoryResponse,
 } from "../../../../../../models/interface/personnel/Sales/ISales";
-import { SalesPlanSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
-import { SalesPlanContext } from "../../../../../../api/Provider/SalesPlanProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
+import { SalesPlanListSearchStyled } from "./styled";
+import { SalesPlanListContext } from "../../../../../../api/Provider/SalesPlanProvider";
 
-export const SalesPlanSearch = () => {
+export const SalesPlanListSearch = () => {
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
@@ -31,7 +31,7 @@ export const SalesPlanSearch = () => {
 
     const [selectDate, setSelectDate] = useState<string>("");
 
-    const { setSearchKeyword } = useContext(SalesPlanContext);
+    const { setSearchKeyword } = useContext(SalesPlanListContext);
 
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
@@ -140,7 +140,7 @@ export const SalesPlanSearch = () => {
     };
 
     return (
-        <SalesPlanSearchStyled>
+        <SalesPlanListSearchStyled>
             {/* <SalesSearch
                 setSelectManuFacturer={setSelectManuFacturer}
                 selectManuFacturer={selectManuFacturer}
@@ -201,6 +201,6 @@ export const SalesPlanSearch = () => {
             </label>
             <StyledButton onClick={handlerSearch}>조회</StyledButton>
             <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
-        </SalesPlanSearchStyled>
+        </SalesPlanListSearchStyled>
     );
 };

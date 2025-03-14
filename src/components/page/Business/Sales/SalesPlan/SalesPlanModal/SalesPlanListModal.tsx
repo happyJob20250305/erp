@@ -15,10 +15,10 @@ import {
     ISubcategory,
     ISubcategoryResponse,
 } from "../../../../../../models/interface/personnel/Sales/ISales";
-import { SalesModalStyle } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
 import { SalesSearch } from "../SalesPlanSearch/SalesSearch";
+import { SalesPlanListSearchStyled } from "../SalesPlanSearch/styled";
 
 interface ISalesModalProps {
     planNum?: ISalesPlan;
@@ -49,7 +49,7 @@ const initSalesPlan = {
 interface IPostResponse {
     result: "success" | "fail";
 }
-export const SalesModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucces }) => {
+export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucces }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [salesPlan, setSalesPlan] = useState<ISalesPlan>(initSalesPlan);
@@ -174,7 +174,7 @@ export const SalesModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucc
     };
 
     return (
-        <SalesModalStyle>
+        <SalesPlanListSearchStyled>
             <div className='container'>
                 <form ref={formRef}>
                     <label>
@@ -273,6 +273,6 @@ export const SalesModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucc
                     <input type='hidden' name='plan_num' value='' />
                 </form>
             </div>
-        </SalesModalStyle>
+        </SalesPlanListSearchStyled>
     );
 };
