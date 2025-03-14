@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react"
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { AttendanceApprovalMainStyled } from "./styled";
@@ -8,21 +7,9 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { AttendanceApprovalModal } from "../AttendanceApprovalModal/AttendanceApprovalModal";
-
-export interface IAttendance {
-    id: number,
-    attId: number,
-    attAppId: number,
-    empId: number,
-    number: number,
-    reqType: string,
-    reqSt: string,
-    reqEd: string,
-    reqStatus: string,
-    name: string,
-    appType: string | null,
-    appReason: string | null,
-}
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceApproval } from "../../../../../api/api";
+import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],
@@ -52,17 +39,20 @@ export const AttendanceApprovalMain = () => {
         searchAttendanceList();
     }, [searchKeyword])
 
-    const searchAttendanceList = (currentPage?: number) => {
+    const searchAttendanceList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        axios.post("/personnel/attendanceListBody.do", {
+
+        const result = await searchApi<IAttendanceListResponse>(AttendanceApproval.searchAttendanceList, {
             ...searchKeyword,
             pageSize: 5,
             currentPage,
-        }).then((res: AxiosResponse<IAttendanceListResponse>) => {
-            setAttendanceList(res.data.attendanceList);
-            setAttendanceRequestCnt(res.data.attendanceRequestCnt);
-            setCPage(currentPage);
         })
+
+        if (result) {
+            setAttendanceList(result.attendanceList);
+            setAttendanceRequestCnt(result.attendanceRequestCnt);
+            setCPage(currentPage);
+        }
     }
 
     const handlerModal = (id: number) => {

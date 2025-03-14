@@ -4,6 +4,8 @@ import { DashBoard } from "../components/layout/DashBoard/DashBoard";
 import { NotFound } from "../components/common/NotFound/NotFound";
 import { Manage } from "../pages/account/Manage";
 import { Notice } from "../pages/system/Notice";
+import { Daily } from "../pages/sales/Daily";
+import { Monthly } from "../pages/sales/Monthly";
 import { MySalary } from "../pages/personnel/MySalary";
 import { SalaryManager } from "../pages/personnel/SalaryManager";
 import { CommonCode } from "../pages/system/CommonCode";
@@ -12,10 +14,13 @@ import { Department } from "../pages/system/Department";
 import { AttendanceRequest } from "../pages/personnel/AttendanceRequest";
 import { ExpenseList } from "../pages/account/ExpenseList";
 import { ExpenseReview } from "../pages/account/ExpenseReview";
+import { Annual } from "../pages/sales/Annual";
+import { ReceivablesList } from "../pages/sales/ReceivablesList";
 import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 import { OrderList } from "../pages/Business/OrderList";
+import { Employee } from "../pages/personnel/Employee";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -27,6 +32,7 @@ const routers: RouteObject[] = [
             {
                 path: "personnel",
                 children: [
+                    { path: "employee", element: <Employee /> },
                     { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
                     { path: "attendance-list", element: <AttendanceList /> },
@@ -41,7 +47,15 @@ const routers: RouteObject[] = [
                     { path: "expense-list", element: <ExpenseList /> },
                     { path: "expense-review", element: <ExpenseReview /> },
                     { path: "expense-approval", element: <ExpenseReview /> },
-                    { path: "voucher-list", element: <VoucherList /> },
+                ],
+            },
+            {
+                path: "sales",
+                children: [
+                    { path: "daily", element: <Daily /> },
+                    { path: "monthly", element: <Monthly /> },
+                    { path: "annual", element: <Annual /> },
+                    { path: "receivables-list", element: <ReceivablesList /> },
                 ],
             },
             {
@@ -56,6 +70,10 @@ const routers: RouteObject[] = [
             {
                 path: "business",
                 children: [{ path: "order-information-list", element: <OrderList /> }],
+            },
+            {
+                path: "account",
+                children: [{ path: "manage", element: <Manage /> }],
             },
         ],
     },

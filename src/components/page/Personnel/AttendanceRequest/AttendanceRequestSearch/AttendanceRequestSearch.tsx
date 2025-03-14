@@ -41,24 +41,28 @@ export const AttendanceRequestSearch = () => {
 
     return (
         <AttendanceRequestSearchStyled>
-            <span>기간</span>
-            <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}></StyledInput>
-            <span>~</span>
-            <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}></StyledInput>
-            <span>연차타입</span>
-            <StyledSelectBox
-                options={optionsReqType}
-                value={selectReqTypeValue}
-                onChange={setSelectReqTypeValue}
-            />
-            <span>승인상태</span>
-            <StyledSelectBox
-                options={optionsReqStatus}
-                value={selectReqStatusValue}
-                onChange={setSelectReqStatusValue}
-            />
-            <StyledButton variant='secondary' onClick={handlerSearch}>검색</StyledButton>
-            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <div className="search-bar">
+                <span>기간</span>
+                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}></StyledInput>
+                <span>~</span>
+                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}></StyledInput>
+                <span>연차타입</span>
+                <StyledSelectBox
+                    options={optionsReqType}
+                    value={selectReqTypeValue}
+                    onChange={setSelectReqTypeValue}
+                />
+                <span>승인상태</span>
+                <StyledSelectBox
+                    options={optionsReqStatus}
+                    value={selectReqStatusValue}
+                    onChange={setSelectReqStatusValue}
+                />
+            </div>
+            <div className="button-container">
+                <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>
+                <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            </div>
         </AttendanceRequestSearchStyled>
     )
 }
