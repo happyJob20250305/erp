@@ -6,7 +6,7 @@ import { AccountManageContext } from "../../../../../api/Provider/AccountManageP
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IAccountGroupListBody, IDetailGroupListBody } from "../../../../../models/interface/account/manage/IAccount";
+import { IAccountGroupListBody, IDetailGroupListBody } from "../../../../../models/interface/exc/Manageeee/IAccount";
 
 import { Manage } from "../../../../../api/api";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";

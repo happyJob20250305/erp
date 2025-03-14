@@ -7,7 +7,7 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IExpenseDetailGroupListBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
+import { IExpenseDetailGroupListBody } from "../../../../../models/interface/exc/expenseList/IExpenseList";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
