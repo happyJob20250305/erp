@@ -9,7 +9,7 @@ import {
     IProductResponse,
     ISubcategory,
     ISubcategoryResponse,
-} from "../../../../../../models/interface/personnel/Sales/ISales";
+} from "../../../../../../models/interface/business/sales/ISales";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";

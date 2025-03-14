@@ -1,17 +1,17 @@
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
-import { ISalesPlan, ISalesPlanResponse } from "../../../../../../models/interface/personnel/Sales/ISales";
 import { SalesPlanListContext } from "../../../../../../api/Provider/SalesPlanProvider";
 import { useRecoilState } from "recoil";
 import { Portal } from "../../../../../common/potal/Portal";
 import { modalState } from "../../../../../../stores/modalState";
 import { SalesPlanListMainStyled } from "./styled";
 import { SalesPlanListModal } from "../SalesPlanModal/SalesPlanListModal";
+import { ISales, ISalesResponse } from "../../../../../../models/interface/business/sales/ISales";
 
 export const SalesPlanListMain = () => {
-    const [salesPlanList, setSalesPlanList] = useState<ISalesPlan[]>([]);
-    const [planNum, setPlanNum] = useState<ISalesPlan>();
+    const [salesPlanList, setSalesPlanList] = useState<ISales[]>([]);
+    const [planNum, setPlanNum] = useState<ISales>();
 
     const { searchKeyword } = useContext(SalesPlanListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -29,19 +29,19 @@ export const SalesPlanListMain = () => {
         { key: "product_name", title: "제품명" },
         { key: "goal_quanti", title: "목표수량" },
         { key: "plan_memo", title: "비고" },
-    ] as Column<ISalesPlan>[];
+    ] as Column<ISales>[];
 
     const searchSalesPlanList = () => {
         axios
             .post("/business/sales-plan/searchPlanListBody.do", {
                 ...searchKeyword,
             })
-            .then((res: AxiosResponse<ISalesPlanResponse>) => {
+            .then((res: AxiosResponse<ISalesResponse>) => {
                 setSalesPlanList(res.data.searchPlanList);
             });
     };
 
-    const handlerSalesPlanModal = (row: ISalesPlan) => {
+    const handlerSalesPlanModal = (row: ISales) => {
         setModal(!modal);
         setPlanNum(row);
     };
