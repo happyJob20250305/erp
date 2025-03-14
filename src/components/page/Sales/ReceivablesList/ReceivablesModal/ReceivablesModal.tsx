@@ -19,9 +19,8 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [detail, setDetail] = useState<IReceivablesListDetail>();
     const [detailList, setDetailList] = useState<IReceivablesListDetail[]>([]);
-    const [cPage, setCPage] = useState<number>(0);
     const formRef = useRef<HTMLFormElement>(null);
-
+    const [cPage, setCPage] = useState<number>(0);
     useEffect(() => {
         orderId && receivablesModal();
 
@@ -32,11 +31,11 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
 
     const receivablesModal = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        const searchParam = new URLSearchParams();
-        searchParam.append("orderId", orderId.toString());
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
-        const result = await searchApi<IReceivablesDetail, URLSearchParams>(ReceivablesList.detail, searchParam);
+        const result = await searchApi<IReceivablesDetail>(ReceivablesList.detail, {
+            orderId: orderId,
+            currentPage,
+            pageSize: 5,
+        });
         if (result) {
             setDetail(result.detail);
             setDetailList(result.detailList);

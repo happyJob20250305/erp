@@ -3,15 +3,8 @@ import styled from "styled-components";
 
 export const ReceivablesListSearchStyled = styled.div`
     display: flex;
-    gap: 10px;
-    flex-direction: column;
+    gap: 5px;
     align-items: center;
-    margin-bottom: 20px;
-
-    .input-group {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-top: 20px;
-    }
+    justify-content: flex-end;
+    margin-top: 5px;
 `;
