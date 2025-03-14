@@ -83,6 +83,11 @@ export const ExpenseReview = {
     expensefileDownload: "/account/expenseDownload.do",
 };
 
+export const ExpenseApproval = {
+    expenseLastUpdate: "/account/expenseLastUpdate.do",
+    expensefileDownload: "/account/expenseDownload.do",
+};
+
 export const Daily = {
     search: "/sales/dailyList.do",
 };
