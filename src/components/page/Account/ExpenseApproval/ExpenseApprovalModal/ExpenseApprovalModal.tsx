@@ -1,22 +1,23 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { ExpenseApprovalModalStyle } from "./styled";
-import { IExpenseReview } from "../../ExpenseReview/ExpenseReviewMain/ExpenseReviewMain";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
+import { ButtonArea } from "../../VoucherList/VoucherListModal/styled";
 import { useReactToPrint } from "react-to-print";
 import { ExpenseApprovalPrint } from "../ExpenseApprovalPrint/ExpenseApprovalPrint";
+import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
+import { ExpenseApproval } from "../../../../../api/api";
+import { approvalCode } from "../../../../../common/approvalStatus";
 
 interface IExpenseApprovalModalProps {
     expenseDetail?: IExpenseReview;
     postSuccess: () => void;
     setExpenseDetail: (expenseDetail?: IExpenseReview) => void;
-}
-interface IPostResponse {
-    result: string;
 }
 
 export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
@@ -36,46 +37,32 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
         };
     }, [expenseDetail]);
 
-    const expenseLastUpdate = () => {
+    const expenseLastUpdate = async () => {
         const formData = new FormData(formRef.current);
         formData.append("exp_id", expenseDetail.id.toString());
-        axios.post("/account/expenseLastUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("저장되었습니다.");
-                postSuccess();
-            }
-        });
+
+        const result = await accountPostApi<IPostResponse>(ExpenseApproval.expenseLastUpdate, formData);
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        }
     };
 
-    const expensefileDownload = () => {
+    const expensefileDownload = async () => {
         const param = new URLSearchParams();
         param.append("expenseSeq", expenseDetail?.id.toString());
-        axios.post("/account/expenseDownload.do", param, { responseType: "blob" }).then((res: AxiosResponse<Blob>) => {
-            const url = window.URL.createObjectURL(res.data);
+
+        const result = await accountPostApi<Blob>(ExpenseApproval.expensefileDownload, param, { responseType: "blob" });
+        if (result) {
+            const url = window.URL.createObjectURL(result);
             const link = document.createElement("a");
             link.href = url;
             console.log(expenseDetail);
             link.setAttribute("download", expenseDetail.file_name as string);
             document.body.appendChild(link);
             link.click();
-
-            //브라우저에서 a태그 삭제
             document.body.removeChild(link);
-            //삭제
             window.URL.revokeObjectURL(url);
-        });
-    };
-
-    const approvalCode = (status: string) => {
-        switch (status) {
-            case "W":
-                return "검토 대기";
-            case "N":
-                return "반려";
-            case "F":
-                return "승인 대기";
-            case "S":
-                return "승인";
         }
     };
 

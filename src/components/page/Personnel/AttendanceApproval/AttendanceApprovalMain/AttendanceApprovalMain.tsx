@@ -9,7 +9,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { AttendanceApprovalModal } from "../AttendanceApprovalModal/AttendanceApprovalModal";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceApproval } from "../../../../../api/api";
-import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
+import { IAttendance } from "../../../../../models/interface/personnel/attendance/IAttendance";
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],

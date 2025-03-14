@@ -7,11 +7,11 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import { IExpenseDetailGroupListBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { dateCheck } from "../../../../../common/dateCheck";
+import { IDetailGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 export const ExpenseListSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -41,14 +41,17 @@ export const ExpenseListSearch = () => {
         } else {
             setAccountDetailList([{ label: "전체", value: "" }]);
         }
+        setSelectedDetail("");
     }, [selectedGroup]);
 
     const searchAccountDetailList = async (selectedGroup: string) => {
-        const result = await accountSearchApi<IExpenseDetailGroupListBody>(ExpenseList.searchDetailList, {
+        const result = await accountSearchApi<IDetailGroupListBody>(ExpenseList.searchDetailList, {
             group_code: selectedGroup,
         });
         if (result) {
-            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+            setAccountDetailList(
+                setSelectOption(result.searchAccount, "detail_name", "detail_code", { label: "전체", value: "" })
+            );
         }
     };
 
@@ -56,8 +59,8 @@ export const ExpenseListSearch = () => {
         setSearchKeyword({
             searchStDate: searchStDate,
             searchEdDate: searchEdDate,
-            searchGroup: selectedGroup,
-            searchDetail: selectedDetail,
+            searchGroup: selectedGroup || "",
+            searchDetail: selectedDetail || "",
             searchApproval: selectedApprove,
             currentPage: 1,
             pageSize: 5,

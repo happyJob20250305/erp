@@ -1,6 +1,5 @@
-import { forwardRef, useEffect, useRef } from "react";
-import { ExpenseApprovalPrintStyle, ExpensePrintTable } from "./styled";
-import { ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
+import { forwardRef } from "react";
+import { ExpenseApprovalPrintStyle, ExpensePrintTable, Sign } from "./styled";
 
 export const ExpenseApprovalPrint = forwardRef<HTMLDivElement, { expenseDetail: any }>(({ expenseDetail }, ref) => {
     return (
@@ -42,7 +41,7 @@ export const ExpenseApprovalPrint = forwardRef<HTMLDivElement, { expenseDetail: 
                             </tbody>
                         </ExpensePrintTable>
 
-                        <div className='btn_areaC mt30'>
+                        <Sign>
                             <p>
                                 <span>위 금액을 영수(청구)합니다.</span>
                             </p>
@@ -51,7 +50,7 @@ export const ExpenseApprovalPrint = forwardRef<HTMLDivElement, { expenseDetail: 
                                     영수자 <span id='sign_name'></span> (인)
                                 </span>
                             </p>
-                        </div>
+                        </Sign>
                     </>
                 ) : (
                     <p>선택된 데이터가 없습니다.</p>
