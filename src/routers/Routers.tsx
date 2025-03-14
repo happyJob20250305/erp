@@ -20,6 +20,7 @@ import { AttendanceApproval } from "../pages/personnel/AttendanceApproval";
 import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
+import { Promotion } from "../pages/personnel/Promotion";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -32,6 +33,7 @@ const routers: RouteObject[] = [
                 path: "personnel",
                 children: [
                     { path: "employee", element: <Employee /> },
+                    { path: "promotion", element: <Promotion /> },
                     { path: "attendance-approval", element: <AttendanceApproval /> },
                     { path: "attendance-request", element: <AttendanceRequest /> },
                     { path: "attendance-list", element: <AttendanceList /> },
