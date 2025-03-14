@@ -10,7 +10,7 @@ import { ExpenseModal } from "../ExpenseModal/ExpenseModal";
 import { approvalCode } from "../../../../../common/approvalStatus";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
-import { IExpense, IExpenseResponseBody } from "../../../../../models/interface/exc/expenseList/IExpenseList";
+import { IExpense, IExpenseResponseBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 
 export const ExpenseListMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);

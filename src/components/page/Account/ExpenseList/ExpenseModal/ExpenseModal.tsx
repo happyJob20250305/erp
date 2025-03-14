@@ -16,7 +16,7 @@ import {
     IClientListBody,
     IExpense,
     ILoginInfoBody,
-} from "../../../../../models/interface/exc/expenseList/IExpenseList";
+} from "../../../../../models/interface/account/expenseList/IExpenseList";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
