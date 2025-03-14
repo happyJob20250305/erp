@@ -9,37 +9,27 @@ import axios, { AxiosResponse } from "axios";
 import moment from "moment";
 import { loginInfoState } from "../../../../../stores/userInfo";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { IExpense } from "../ExpenseListMain/ExpenseListMain";
-import { IExpenseDetailGroup, IExpenseDetailGroupListBody } from "../ExpenseListSearch/ExpenseListSearch";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-
-interface ILoginUserInfo {
-    usr_idx: number;
-    detail_name: string;
-    usr_nm: string;
-}
-
-interface IPostResponse {
-    result: string;
-}
+import {
+    IClientListBody,
+    IExpense,
+    ILoginInfoBody,
+} from "../../../../../models/interface/account/expenseList/IExpenseList";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { ExpenseList } from "../../../../../api/api";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
+import { approvalCode } from "../../../../../common/approvalStatus";
 
 interface IExpenseModalProps {
     expenseDetail?: IExpense;
     postSuccess: () => void;
     setExpenseDetail: (expenseDetail?: IExpense) => void;
 }
-export interface ILoginInfoBody {
-    lgnInfo: ILoginUserInfo;
-}
-export interface IClientListBody extends IExpenseDetailGroupListBody {
-    clientList: IClient[];
-}
-export interface IClient {
-    id: number;
-    clientName: string;
-}
+
 export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSuccess, setExpenseDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [selectedGroup, setSelectedGroup] = useState<string>(expenseDetail?.group_code || "AC03");
@@ -47,7 +37,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
     const [clientList, setClientList] = useState<ISetListOption[]>([]);
     const [flag, setFlag] = useState<boolean>(false);
     const loginInfo = useRecoilValue<ILoginInfo>(loginInfoState);
-    const [loginUserInfo, setLoginUserInfo] = useState<ILoginUserInfo>();
+    const [loginUserInfo, setLoginUserInfo] = useState<ILoginInfo>();
     const formRef = useRef<HTMLFormElement>(null);
     const accountGroupList = [
         { label: "온라인지출", value: "AC03" },
@@ -70,44 +60,32 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
     useEffect(() => {
         return () => {
             setExpenseDetail();
+            getLoginInfo();
         };
     }, [expenseDetail]);
+
     const formatDate = moment().format("YYYY-MM-DD");
-    const searchAccountDetailList = (selectedGroup: string) => {
-        axios
-            .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
-            .then((res: AxiosResponse<IClientListBody>) => {
-                const selectDetailList: ISetListOption[] = [
-                    ...res.data.searchAccount.map((detail: IExpenseDetailGroup) => ({
-                        label: detail.detail_name,
-                        value: detail.detail_code,
-                    })),
-                ];
-                const getClientList: ISetListOption[] = [
-                    { label: "", value: "" },
-                    ...res.data.clientList.map((detail: IClient) => ({
-                        label: detail.clientName,
-                        value: detail.id,
-                    })),
-                ];
-                setAccountDetailList(selectDetailList);
-                setClientList(getClientList);
-
-                if (res.data) {
-                    setFlag(true);
-                }
-            });
+    const searchAccountDetailList = async (selectedGroup: string) => {
+        const result = await accountSearchApi<IClientListBody>(ExpenseList.searchAccountDetailList, {
+            group_code: selectedGroup,
+        });
+        if (result) {
+            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+            setClientList(setSelectOption(result.clientList, "clientName", "id", { label: "", value: "" }));
+            if (result) {
+                setFlag(true);
+            }
+        }
     };
 
-    const getLoginInfo = () => {
-        axios
-            .post("/account/expenseLoginInfoBody.do", { loginId: loginInfo.loginId })
-            .then((res: AxiosResponse<ILoginInfoBody>) => {
-                setLoginUserInfo(res.data.lgnInfo);
-            });
+    const getLoginInfo = async () => {
+        const result = await accountSearchApi<ILoginInfoBody>(ExpenseList.getLoginInfo, { loginId: loginInfo.loginId });
+        if (result) {
+            setLoginUserInfo(result.lgnInfo);
+        }
     };
 
-    const expenseSave = () => {
+    const expenseSave = async () => {
         const formData = new FormData(formRef.current);
         const file = formData.get("fileInput") as File | null;
         if (
@@ -121,37 +99,33 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
             alert("파일을 첨부해주세요");
             return;
         }
-        axios.post("/account/expenseFileSave.do", formRef.current).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("저장되었습니다.");
-                postSuccess();
-            }
-        });
-    };
-
-    const expenseDelete = () => {
-        if (expenseDetail?.is_approval !== "W") {
-            alert("검토 대기 상태에서만 삭제할 수 있습니다.");
-            return;
+        const result = await accountPostApi<IPostResponse>(ExpenseList.expenseSave, formRef.current);
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
         }
-        axios
-            .post("/account/expenseDelete.do", new URLSearchParams({ exp_id: expenseDetail?.id }))
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("삭제되었습니다.");
-                    postSuccess();
-                }
-            });
     };
 
-    const expensefileDownload = () => {
+    const expenseDelete = async () => {
+        const result = await accountPostApi<IPostResponse>(
+            ExpenseList.expenseDelete,
+            new URLSearchParams({ exp_id: expenseDetail?.id })
+        );
+        if (result.result === "success") {
+            alert("삭제되었습니다.");
+            postSuccess();
+        }
+    };
+
+    const expensefileDownload = async () => {
         const param = new URLSearchParams();
         param.append("expenseSeq", expenseDetail?.id.toString());
-        axios.post("/account/expenseDownload.do", param, { responseType: "blob" }).then((res: AxiosResponse<Blob>) => {
-            const url = window.URL.createObjectURL(res.data);
+
+        const result = await accountPostApi<Blob>(ExpenseList.expensefileDownload, param, { responseType: "blob" });
+        if (result) {
+            const url = window.URL.createObjectURL(result);
             const link = document.createElement("a");
             link.href = url;
-            console.log(expenseDetail);
             link.setAttribute("download", expenseDetail.file_name as string);
             document.body.appendChild(link);
             link.click();
@@ -160,19 +134,6 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
             document.body.removeChild(link);
             //삭제
             window.URL.revokeObjectURL(url);
-        });
-    };
-
-    const approvalCode = (status: string) => {
-        switch (status) {
-            case "W":
-                return "검토 대기";
-            case "N":
-                return "반려";
-            case "F":
-                return "승인 대기";
-            case "S":
-                return "승인";
         }
     };
 
@@ -190,7 +151,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='text'
                                             name='exp_id'
                                             defaultValue={expenseDetail?.id || "(신청시 자동생성됩니다)"}
-                                            disabled
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                     <th>신청일자</th>
@@ -199,7 +160,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='date'
                                             name='request_date'
                                             defaultValue={expenseDetail ? expenseDetail.req_date : formatDate}
-                                            disabled
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                     <th>
@@ -210,6 +171,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='date'
                                             name='use_date'
                                             defaultValue={expenseDetail?.use_date}
+                                            readOnly={!!expenseDetail}
                                         ></StyledInput>
                                     </td>
                                 </tr>
@@ -220,6 +182,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='text'
                                             name='emp_no'
                                             defaultValue={expenseDetail ? expenseDetail.emp_no : loginUserInfo?.usr_idx}
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                     <th scope='row'>사원명</th>
@@ -228,6 +191,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='text'
                                             name='emp_name'
                                             defaultValue={expenseDetail ? expenseDetail.name : loginUserInfo?.usr_nm}
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                     <th>사용부서</th>
@@ -240,6 +204,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                                     ? expenseDetail.use_department
                                                     : loginUserInfo?.detail_name
                                             }
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                 </tr>
@@ -253,6 +218,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             options={accountGroupList}
                                             value={selectedGroup}
                                             onChange={setSelectedGroup}
+                                            disabled={!!expenseDetail}
                                         />
                                     </td>
                                     {flag && (
@@ -265,6 +231,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                                     name='accountDetail'
                                                     options={accountDetailList}
                                                     defaultValue={expenseDetail?.debit_code}
+                                                    disabled={!!expenseDetail}
                                                 />
                                             </td>
                                             <th>
@@ -275,6 +242,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                                     name='clientId'
                                                     options={clientList}
                                                     defaultValue={expenseDetail?.client_id || ""}
+                                                    disabled={!!expenseDetail}
                                                 />
                                             </td>
                                         </>
@@ -289,6 +257,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='number'
                                             name='exp_pay'
                                             defaultValue={expenseDetail?.expense_payment}
+                                            readOnly={!!expenseDetail}
                                         ></StyledInput>
                                     </td>
                                     <th scope='row'>승인여부</th>
@@ -297,7 +266,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='text'
                                             name='isApproval'
                                             defaultValue={approvalCode(expenseDetail?.is_approval)}
-                                            disabled
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                     <th scope='row'>승인일자</th>
@@ -306,7 +275,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             type='text'
                                             name='approval_date'
                                             defaultValue={expenseDetail?.approval_date}
-                                            disabled
+                                            readOnly
                                         ></StyledInput>
                                     </td>
                                 </tr>
@@ -338,7 +307,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                             name='expenseContent'
                                             id='content'
                                             defaultValue={expenseDetail?.expense_content}
-                                            disabled={!!expenseDetail}
+                                            readOnly={!!expenseDetail}
                                         ></textarea>
                                     </td>
                                 </tr>
@@ -348,7 +317,7 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                         <ButtonArea>
                             {!expenseDetail && (
                                 <StyledButton type='button' onClick={expenseSave}>
-                                    저장
+                                    신청
                                 </StyledButton>
                             )}
                             {expenseDetail && expenseDetail.is_approval == "W" && (

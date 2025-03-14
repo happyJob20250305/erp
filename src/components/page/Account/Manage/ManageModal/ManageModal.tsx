@@ -5,21 +5,15 @@ import { ManageModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import axios, { AxiosResponse } from "axios";
-import { IAccountGroup, IAccountGroupListBody, ISetListOption } from "../ManageSearch.tsx/ManageSearch";
-import { IAccount } from "../ManageMain/ManageMain";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
-
-interface IPostResponse {
-    result: string;
-}
-
-interface IManageModalProps {
-    detailCode?: IAccount;
-    postSuccess: () => void;
-    setDetailCode: (detailCode?: IAccount) => void;
-}
+import { IAccountGroupListBody, IManageModalProps } from "../../../../../models/interface/account/manage/IAccount";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
+import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, setDetailCode }) => {
     const [selectedGroup, setSelectedGroup] = useState<string>(detailCode?.group_code || "");
@@ -48,57 +42,53 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
         };
     }, [detailCode]);
 
-    const searchAccountGroupList = () => {
-        axios.post("/account/accountGroupList.do", {}).then((res: AxiosResponse<IAccountGroupListBody>) => {
-            const selectGroupList: ISetListOption[] = [
-                { label: "전체", value: "" },
-                ...res.data.accountGroupList.map((account: IAccountGroup) => ({
-                    label: account.group_name,
-                    value: account.group_code,
-                })),
-            ];
-            setAccountGroupList(selectGroupList);
-        });
+    const searchAccountGroupList = async () => {
+        const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
+        if (result) {
+            setAccountGroupList(setSelectOption(result.accountGroupList, "group_name", "group_code"));
+        }
     };
 
-    const accountSave = () => {
+    const accountSave = async () => {
         const formData = new FormData(formRef.current);
         if (
-            nullCheck([
+            !nullCheck([
                 { inval: formData.get("group_code").toString(), msg: "계정대분류를 선택해주세요." },
                 { inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." },
             ])
-        )
-            axios.post("/account/accountSave.do", formRef.current).then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("저장되었습니다.");
-                    postSuccess();
-                }
-            });
+        ) {
+            return false;
+        }
+        const result = await accountPostApi<IPostResponse>(Manage.save, formRef.current);
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        }
     };
 
-    const accountUpdate = () => {
+    const accountUpdate = async () => {
         const formData = new FormData(formRef.current);
-        console.log(formData.values());
-        if (nullCheck([{ inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." }]))
-            formData.append("detail_code", detailCode.detail_code);
-        axios.post("/account/accountUpdate.do", formData).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("수정되었습니다.");
-                postSuccess();
-            }
-        });
+
+        if (!nullCheck([{ inval: formData.get("detail_name").toString(), msg: "계정세부명을 입력해주세요." }])) {
+            return false;
+        }
+        formData.append("detail_code", detailCode.detail_code);
+        const result = await accountPostApi<IPostResponse>(Manage.update, formData);
+        if (result.result === "success") {
+            alert("수정되었습니다.");
+            postSuccess();
+        }
     };
 
-    const accountDelete = () => {
-        axios
-            .post("/account/accountDelete.do", new URLSearchParams({ detail_code: detailCode.detail_code }))
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("삭제되었습니다.");
-                    postSuccess();
-                }
-            });
+    const accountDelete = async () => {
+        const result = await accountPostApi<IPostResponse>(
+            Manage.delete,
+            new URLSearchParams({ detail_code: detailCode.detail_code })
+        );
+        if (result.result === "success") {
+            alert("삭제되었습니다.");
+            postSuccess();
+        }
     };
 
     return (
@@ -115,7 +105,9 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                                             flexDirection: "row",
                                         }}
                                     >
-                                        계정대분류명 <span style={{ color: "red" }}>*</span>
+                                        계정
+                                        <br />
+                                        대분류명 <span style={{ color: "red" }}>*</span>
                                     </label>
                                 </th>
                                 <td colSpan={3}>
@@ -131,7 +123,10 @@ export const ManageModal: FC<IManageModalProps> = ({ detailCode, postSuccess, se
                             <tr>
                                 <th>
                                     <label style={{ display: "flex", flexDirection: "row" }}>
-                                        계정세부명<span style={{ color: "red" }}> * </span>
+                                        계정
+                                        <br />
+                                        세부명
+                                        <span style={{ color: "red" }}> * </span>
                                     </label>
                                 </th>
                                 <td colSpan={3}>

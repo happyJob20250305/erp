@@ -2,34 +2,27 @@ import { useRecoilState } from "recoil";
 import { AttendanceRequestModalStyle } from "./styled"
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
-import { IAttendance, IAttendanceCnt, IloginInfo } from "../AttendanceRequestMain/AttendanceRequestMain";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { nullCheck } from "../../../../../common/nullCheck";
+import { IAttendanceCnt, ILoginUserInfo } from "../../../../../models/interface/personnel/Attendance/IAttendanceCnt";
+import { IAttendanceDetail } from "../../../../../models/interface/personnel/Attendance/IAttendanceDetail";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
+import { AttendanceRequest } from "../../../../../api/api";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
 
 interface AttendanceRequestProps {
     id: number,
     setId: React.Dispatch<React.SetStateAction<number>>,
-    loginInfo: IloginInfo,
+    loginInfo: ILoginUserInfo,
     attId: number,
     attendanceCnt: IAttendanceCnt[],
     postSuccess: () => void
 }
-interface IAttendanceDetail extends IAttendance {
-    reqReason: string,
-    deptName: string | null,
-    reqTel: string
-    reqdate: string,
-}
 
 interface AttendanceRequestDetailResponse {
     detail: IAttendanceDetail
-}
-
-interface IPostResponse {
-    result: string
-    message?: string
 }
 
 export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, loginInfo, attId, attendanceCnt, postSuccess }) => {
@@ -60,14 +53,16 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
         }
     }, [])
 
-    const searchDetail = () => {
-        axios.post("/personnel/attendanceDetailBody.do", { id })
-            .then((res: AxiosResponse<AttendanceRequestDetailResponse>) => {
-                setAttendanceRequestDetail(res.data.detail);
-            })
+    const searchDetail = async () => {
+        const result = await searchApi<AttendanceRequestDetailResponse>(AttendanceRequest.searchDetail, { id });
+
+        if (result) {
+            setAttendanceRequestDetail(result.detail);
+        }
+
     }
 
-    const saveAttendanceRequest = () => {
+    const saveAttendanceRequest = async () => {
         const formData = new FormData(formRef.current);
         formData.append("attId", attId.toString());
         formData.append("empId", loginEmpid);
@@ -77,17 +72,17 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
 
         if (!checkValidateAttendanceRequest(reqDay)) { return false; }
 
-        axios.post("/personnel/attendanceRequest.do", formData).then((res: AxiosResponse<IPostResponse>) => {
-            if (res.data.result === "success") {
-                alert("저장되었습니다.");
-                postSuccess();
-            } else if (res.data.result === "fail") {
-                alert("이미 신청된 날짜입니다");
-            }
-        })
+        const result = await postApi<IPostResponse>(AttendanceRequest.saveAttendanceRequest, formData);
+
+        if (result.result === "success") {
+            alert("저장되었습니다.");
+            postSuccess();
+        } else if (result.result === "fail") {
+            alert("이미 신청된 날짜입니다");
+        }
     }
 
-    const updateAttendanceRequest = () => {
+    const updateAttendanceRequest = async () => {
         const formData = new FormData(formRef.current);
         formData.append("reqId", id.toString());
 
@@ -96,23 +91,21 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
 
         if (!checkValidateAttendanceRequest(reqDay)) { return false; }
 
-        axios.post("/personnel//attendanceUpdate.do", formData)
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("수정되었습니다.");
-                    postSuccess();
-                }
-            })
+        const result = await postApi<IPostResponse>(AttendanceRequest.updateAttendanceRequest, formData);
+
+        if (result.result === "success") {
+            alert("수정되었습니다.");
+            postSuccess();
+        }
     }
 
-    const cancleAttendanceRequest = () => {
-        axios.post("/personnel/attendanceCancleBody.do", { reqId: id })
-            .then((res: AxiosResponse<IPostResponse>) => {
-                if (res.data.result === "success") {
-                    alert("취소되었습니다.");
-                    postSuccess();
-                }
-            })
+    const cancleAttendanceRequest = async () => {
+        const result = await postApi<IPostResponse>(AttendanceRequest.cancleAttendanceRequest, { reqId: id });
+
+        if (result.result === "success") {
+            alert("취소되었습니다.");
+            postSuccess();
+        }
     }
 
     const calReqday = () => {
@@ -200,18 +193,18 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                         연/반차*
                         {
                             id ?
-                                (<>
+                                (
                                     <StyledInput type='text' name="reqType" defaultValue={attendanceRequestDetail?.reqType} readOnly />
-                                </>)
+                                )
                                 :
-                                (<>
+                                (
                                     <StyledSelectBox
                                         name="reqType"
                                         options={optionsReqType}
                                         value={selectReqTypeValue}
                                         onChange={setSelectReqTypeValue}
                                     />
-                                </>)
+                                )
                         }
                     </label>
                     <label>
@@ -249,9 +242,9 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                                     }
                                 </>)
                                 :
-                                (<>
+                                (
                                     <button type='button' onClick={saveAttendanceRequest}>신청</button>
-                                </>)
+                                )
                         }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>
                     </div>

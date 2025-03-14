@@ -5,29 +5,12 @@ import { ManageSearchStyled } from "./styled";
 import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
+import { ISetListOption } from "../../../../../models/interface/ISetListOption";
+import { IAccountGroupListBody, IDetailGroupListBody } from "../../../../../models/interface/account/manage/IAccount";
 
-export interface IAccountGroup {
-    group_name: string;
-    group_code: string;
-}
-export interface IAccountGroupListBody {
-    accountGroupList: IAccountGroup[];
-}
-
-export interface IDetailGroup {
-    detail_name: string;
-    detail_code: string;
-}
-
-export interface IDetailGroupListBody {
-    searchAccount: IDetailGroup[];
-}
-
-export interface ISetListOption {
-    label: string;
-    value: string | number;
-}
+import { Manage } from "../../../../../api/api";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -60,36 +43,24 @@ export const ManageSearch = () => {
         }
     }, [selectedGroup]);
 
-    const convertToSelectOptions = (data: IAccountGroup[]): ISetListOption[] => {
-        return data.map((account) => ({
-            label: account.group_name,
-            value: account.group_code,
-        }));
+    const searchAccountGroupList = async () => {
+        const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
+        if (result) {
+            setAccountGroupList(
+                setSelectOption(result.accountGroupList, "group_name", "group_code", { label: "전체", value: "" })
+            );
+        }
     };
 
-    const searchAccountGroupList = () => {
-        axios.post("/account/accountGroupList.do", {}).then((res: AxiosResponse<IAccountGroupListBody>) => {
-            const selectGroupList: ISetListOption[] = [
-                { label: "전체", value: "" },
-                ...convertToSelectOptions(res.data.accountGroupList),
-            ];
-            setAccountGroupList(selectGroupList);
+    const searchAccountDetailList = async (selectedGroup: string) => {
+        const result = await accountSearchApi<IDetailGroupListBody>(Manage.searchDetailList, {
+            group_code: selectedGroup,
         });
-    };
-
-    const searchAccountDetailList = (selectedGroup: string) => {
-        axios
-            .post("/account/accountSearchDetailBody.do", { group_code: selectedGroup })
-            .then((res: AxiosResponse<IDetailGroupListBody>) => {
-                const selectDetailList: ISetListOption[] = [
-                    { label: "전체", value: "" },
-                    ...res.data.searchAccount.map((detail: IDetailGroup) => ({
-                        label: detail.detail_name,
-                        value: detail.detail_code,
-                    })),
-                ];
-                setAccountDetailList(selectDetailList);
-            });
+        if (result) {
+            setAccountDetailList(
+                setSelectOption(result.searchAccount, "detail_name", "detail_code", { label: "전체", value: "" })
+            );
+        }
     };
 
     const handlerSearch = () => {
@@ -103,7 +74,7 @@ export const ManageSearch = () => {
 
     return (
         <ManageSearchStyled>
-            <div className='searchBar'>
+            <div className='search-bar'>
                 계정대분류명:
                 <StyledSelectBox
                     width={150}
@@ -125,7 +96,7 @@ export const ManageSearch = () => {
             </div>
             <div className='button-container'>
                 <StyledButton variant='secondary' onClick={handlerSearch}>
-                    검색
+                    조회
                 </StyledButton>
                 <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
             </div>
