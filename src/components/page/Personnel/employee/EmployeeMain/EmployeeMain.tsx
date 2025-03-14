@@ -1,22 +1,24 @@
 import { useContext, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { Portal } from "../../../../common/potal/Portal";
+
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { Employee } from "../../../../../api/api";
-import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { Portal } from "../../../../common/potal/Portal";
+
 import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
 import { EmployeeDetailModal } from "../EmployeeDetailModal/EmployeeDetailModal";
-import {
-    EmployeeDetailModalContext,
-    EmployeeDetailProvider,
-} from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
+import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
+
+import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
-import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
+import { Column } from "../../../../common/StyledTable/StyledTable";
 
 export const EmplyoeeMain = () => {
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
@@ -24,44 +26,29 @@ export const EmplyoeeMain = () => {
     const [cPage, setCPage] = useState<number>(1);
     const [modalType, setModalType] = useState<string>("");
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const columns = [
+        { key: "employeeNumber", title: "사번" },
+        { key: "employeeName", title: "사원명" },
+        { key: "departmentCode", title: "부서코드" },
+        { key: "departmentDetailName", title: "부서명" },
+        { key: "jobGradeDetailName", title: "직급" },
+        { key: "regDate", title: "입사일자" },
+        { key: "emplStatus", title: "휴직" },
+        { key: "resignationDate", title: "퇴직일자" },
+        { key: "emplStatus", title: "퇴직처리" },
+    ] as unknown as Column<IEmployee>;
+
     const { employeeId, setEmployeeId, jobGradeCode, setJobGradeCode, departmentCode, setdepartmentCode } =
         useContext(EmployeeDetailModalContext);
-    //context 상태 및 업데이트 함수 가져오기
-    const {
-        searchId,
-        setSearchId,
-        searchName,
-        setSearchName,
-        searchRegDateStart,
-        setSearchRegDateStart,
-        searchRegDateEnd,
-        setSearchRegDateEnd,
-        jobGrade,
-        setJobGrade,
-        department,
-        setDepartment,
-        emplStatus,
-        setEmplStatus,
-    } = useContext(EmployeeSearchContext);
-
-    const {
-        retireEmployeeId,
-        setRetireEmployeeId,
-        retireEmployeeNumber,
-        setRetireEmployeeNumber,
-        retireEmployeeName,
-        setRetireEmployeeName,
-        regDate,
-        setRegDate,
-    } = useContext(EmployeeRetirementModalContext);
+    const { searchId, searchName, searchRegDateStart, searchRegDateEnd, jobGrade, department, emplStatus } =
+        useContext(EmployeeSearchContext);
+    const { setRetireEmployeeId, setRetireEmployeeNumber, setRetireEmployeeName, setRegDate } =
+        useContext(EmployeeRetirementModalContext);
 
     useEffect(() => {
         employeeBasicList(cPage);
     }, [cPage, searchId, searchName, searchRegDateEnd, searchRegDateStart, jobGrade, department, emplStatus]);
 
-    useEffect(() => {});
-
-    //리스트 출력
     const employeeBasicList = async (currentPage: number) => {
         const searchParam = new URLSearchParams();
         searchParam.append("currentPage", currentPage.toString());
@@ -87,36 +74,28 @@ export const EmplyoeeMain = () => {
         setModalType("registerModal");
     };
 
+    //상세 모달
     const handleEmployeDetail = (employeeId, jobGradeCode, departmentCode) => {
-        console.log("클릭한 사원 정보: ", { employeeId, jobGradeCode, departmentCode }); // ✅ 찍어보기
-
+        console.log("클릭한 사원 정보: ", { employeeId, jobGradeCode, departmentCode });
         setEmployeeId(employeeId);
         setJobGradeCode(jobGradeCode);
         setdepartmentCode(departmentCode);
-
         setModalType("detailModal");
         setModal(!modal);
     };
 
+    //퇴직 처리 모달
     const handleResign = (employeeId, employeeNumber, employeeName, regDate) => {
         const confirmResign = window.confirm(`${employeeNumber}님을 퇴직 처리하시겠습니까?`);
-        if (!confirmResign) return; // 아니오 클릭 시 아무 일 없음
+        if (!confirmResign) return;
 
-        // 예 클릭 시 퇴직 모달 열기
         setRetireEmployeeId(employeeId);
         setRetireEmployeeNumber(employeeNumber);
         setRetireEmployeeName(employeeName);
         setRegDate(regDate);
-
         setModalType("retireModal");
-        setModal(true); // ✅ 무조건 열기 (토글 금지)
+        setModal(true);
     };
-
-    // const closeModal = () => {
-    //     setModal(!modal);
-    //     setModalType("");
-    //     setEmployeeId(null);
-    // };
 
     return (
         <>
@@ -160,7 +139,7 @@ export const EmplyoeeMain = () => {
                                     {employee.emplStatus === "W" ? (
                                         <StyledButton
                                             onClick={(e) => {
-                                                e.stopPropagation(); // ✅ tr 클릭 방지
+                                                e.stopPropagation();
                                                 handleResign(
                                                     employee.employeeId,
                                                     employee.number,
@@ -179,7 +158,7 @@ export const EmplyoeeMain = () => {
                         ))
                     ) : (
                         <tr>
-                            <StyledTd colSpan={8}>데이터가 없습니다.</StyledTd>
+                            <StyledTd colSpan={9}>데이터가 없습니다.</StyledTd>
                         </tr>
                     )}
                 </tbody>

@@ -15,7 +15,9 @@ export const Promotion = () => {
     return (
         <>
             <PromotionSearchProvider>
-                <ContentBox>승진내역 관리</ContentBox>
+                <ContentBox variant='primary' fontSize='large'>
+                    승진내역 관리
+                </ContentBox>
                 <PromotionSearch></PromotionSearch>
                 <PromotionMain onSelectEmployee={handleSearch} />
                 <PromotionDetail data={selectedSearchEmployeeNumber} />

@@ -16,10 +16,11 @@ export const SalaryManager = () => {
     return (
         <>
             <SalarySearchProvider>
-                <ContentBox variant='light' fontSize='large'>
+                <ContentBox variant='primary' fontSize='large'>
                     급여 관리
-                    <SalaryManagerSearch />
                 </ContentBox>
+                <SalaryManagerSearch />
+
                 <SalaryManagerMain Pdata={petchData} />
                 <SalaryManagerDetail data={employeeNumber} />
             </SalarySearchProvider>

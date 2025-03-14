@@ -11,7 +11,9 @@ export const Employee = () => {
             <EmployeeSearchProvider>
                 <EmployeeDetailProvider>
                     <EmployeeRetirementModalProvider>
-                        <ContentBox>인사 관리</ContentBox>
+                        <ContentBox variant='primary' fontSize='large'>
+                            인사 관리
+                        </ContentBox>
                         <EmployeeSearch />
                         <EmplyoeeMain />
                     </EmployeeRetirementModalProvider>
