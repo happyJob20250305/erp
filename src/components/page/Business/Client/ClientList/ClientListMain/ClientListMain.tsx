@@ -28,6 +28,7 @@ export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
 
     const { searchKeyword } = useContext(ClientListContext);
+
     useEffect(() => {
         searchClientList();
     }, [searchKeyword]);
@@ -48,8 +49,6 @@ export const ClientListMain = () => {
         axios
             .post("/business/client-list/searchClientListBody.do", {
                 ...searchKeyword,
-                // client_name: "바나나2312",
-                // cust_update_date: "2025-02-20",
             })
             .then((res: AxiosResponse<IClientResponse>) => {
                 setClientList(res.data.clientList);
