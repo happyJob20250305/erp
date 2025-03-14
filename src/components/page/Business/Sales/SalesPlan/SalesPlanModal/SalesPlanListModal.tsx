@@ -17,7 +17,6 @@ import {
 } from "../../../../../../models/interface/personnel/Sales/ISales";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
-import { SalesSearch } from "../SalesPlanSearch/SalesSearch";
 import { SalesPlanListSearchStyled } from "../SalesPlanSearch/styled";
 
 interface ISalesModalProps {
