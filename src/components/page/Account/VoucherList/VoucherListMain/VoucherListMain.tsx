@@ -3,29 +3,13 @@ import { modalState } from "../../../../../stores/modalState";
 import { VoucherListContext } from "../../../../../api/Provider/VoucherListProvider";
 import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-import axios, { AxiosResponse } from "axios";
 import { VoucherListMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { VoucherListModal } from "../VoucherListModal/VoucherListModal";
-
-export interface IVoucher {
-    voucher_no: string;
-    voucher_date: string;
-    account_type: string;
-    client_name: string;
-    debit_name: string;
-    crebit_name: string;
-    voucher_amount: number;
-    order_id: number;
-    exp_id: number;
-    emp_name: string;
-}
-
-interface IVocherResponseBody {
-    voucher: IVoucher[];
-    voucherCnt: number;
-}
+import { IVocherResponseBody, IVoucher } from "../../../../../models/interface/account/voucherList/IVoucher";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { VoucherList } from "../../../../../api/api";
 
 export const VoucherListMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -45,22 +29,24 @@ export const VoucherListMain = () => {
     ] as Column<IVoucher>[];
 
     useEffect(() => {
+        // searchKeyword가 없을 때 500error 방지
         Object.keys(searchKeyword).length && searchVoucherList();
     }, [searchKeyword]);
 
-    const searchVoucherList = (currentPage?: number) => {
+    const searchVoucherList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        axios
-            .post("/account/voucherListBody.do", {
-                ...searchKeyword,
-                pageSize: 5,
-                currentPage,
-            })
-            .then((res: AxiosResponse<IVocherResponseBody>) => {
-                setVoucherList(res.data.voucher);
-                setVoucherListCnt(res.data.voucherCnt);
-                setCPage(currentPage);
-            });
+
+        const result = await accountSearchApi<IVocherResponseBody>(VoucherList.searchVoucherList, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
+
+        if (result) {
+            setVoucherList(result.voucher);
+            setVoucherListCnt(result.voucherCnt);
+            setCPage(currentPage);
+        }
     };
 
     const handlerModal = (row: IVoucher) => {
@@ -86,7 +72,7 @@ export const VoucherListMain = () => {
             />
             {modal && (
                 <Portal>
-                    <VoucherListModal voucherDetail={voucherDetail} setVoucherDetail={setVoucherDetail} />
+                    <VoucherListModal voucherDetail={voucherDetail} />
                 </Portal>
             )}
         </VoucherListMainStyled>

@@ -1,31 +1,28 @@
 import styled from "styled-components";
 
 export const VoucherListSearchStyled = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-    width: 100%;
-`;
-
-export const SearchTable = styled.div`
-    display: grid;
-    gap: 10px;
-    width: 100%;
-`;
-
-export const TableRow = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
-    gap: 15px;
-    align-items: center;
-`;
-
-export const TableCell = styled.div`
-    display: flex;
-    align-items: center;
     gap: 5px;
-    min-width: 200px;
-    &.search-button {
-        justify-content: flex-end; // 검색 버튼을 오른쪽 끝으로 정렬
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 5px;
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex: 1; /* 왼쪽 정렬 */
+        min-width: 1000px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .search-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
     }
 `;

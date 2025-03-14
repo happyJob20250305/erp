@@ -88,6 +88,11 @@ export const ExpenseApproval = {
     expensefileDownload: "/account/expenseDownload.do",
 };
 
+export const VoucherList = {
+    searchClientList: "/account/voucherClientListSearch.do",
+    searchVoucherList: "/account/voucherListBody.do",
+};
+
 export const Daily = {
     search: "/sales/dailyList.do",
 };

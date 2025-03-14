@@ -7,7 +7,7 @@ export const VoucherList = () => {
     return (
         <VoucherListProvider>
             <ContentBox variant='primary' fontSize='large'>
-                계정과목 관리
+                회계전표 조회
             </ContentBox>
             <VoucherListSearch />
             <VoucherListMain />

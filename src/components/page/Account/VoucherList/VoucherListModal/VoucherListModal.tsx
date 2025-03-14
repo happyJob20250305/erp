@@ -1,20 +1,19 @@
 import { FC, useRef } from "react";
-import { IVoucher } from "../VoucherListMain/VoucherListMain";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { ButtonArea, ModalOverlay, ModalStyledTable, VoucherListModalStyle } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { useReactToPrint } from "react-to-print";
+import { IVoucher } from "../../../../../models/interface/account/voucherList/IVoucher";
 
 interface IVoucherListModalProps {
     voucherDetail: IVoucher;
-    setVoucherDetail: (expenseDetail: IVoucher) => void;
 }
-export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail, setVoucherDetail }) => {
+export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const contentRef = useRef(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
+
     return (
         <>
             <ModalOverlay />

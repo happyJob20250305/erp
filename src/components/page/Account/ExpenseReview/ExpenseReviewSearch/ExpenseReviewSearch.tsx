@@ -65,7 +65,7 @@ export const ExpenseReviewSearch = () => {
     };
     return (
         <ExpenseReviewSearchStyled>
-            <div className='searchBar'>
+            <div className='search-bar'>
                 <span>신청일자</span>
                 <StyledInput
                     width={105}
