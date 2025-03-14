@@ -2,35 +2,17 @@ import { AttendanceListMainStyled } from './styled';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useEffect, useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../../stores/modalState';
 import { Portal } from '../../../../common/potal/Portal';
 import { AttendanceListModal } from '../AttendanceListModal/AttendanceListModal';
-
-export interface IAttendance {
-    id: number,
-    attId: number,
-    attAppId: number,
-    empId: number,
-    number: number,
-    reqType: string,
-    reqSt: string,
-    reqEd: string,
-    reqStatus: string,
-    name: string,
-    appType: string | null,
-    appReason: string | null,
-}
+import { searchApi } from '../../../../../api/PersonnelApi/searchApi';
+import { AttendanceList } from '../../../../../api/api';
+import { IAttendance } from '../../../../../models/interface/personnel/Attendance/IAttendance';
+import { IEvent } from '../../../../../models/interface/personnel/Attendance/IEvent';
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[]
-}
-
-interface IEvent {
-    title: string,
-    date: string,
-    color: string
 }
 
 export const AttendanceListMain = () => {
@@ -50,11 +32,12 @@ export const AttendanceListMain = () => {
         }
     }, [attendanceList]);
 
-    const attendanceCalendar = () => {
-        axios.post("/personnel/attendanceCalendar.do")
-            .then((res: AxiosResponse<IAttendanceListResponse>) => {
-                setAttendanceList(res.data.attendanceList);
-            })
+    const attendanceCalendar = async () => {
+        const result = await searchApi<IAttendanceListResponse>(AttendanceList.attendanceCalendar);
+
+        if (result) {
+            setAttendanceList(result.attendanceList);
+        }
     }
 
     const makeEvents = () => {
@@ -142,7 +125,7 @@ export const AttendanceListMain = () => {
         setModal(!modal);
     }
 
-    function renderEventContent(eventInfo) {
+    const renderEventContent = (eventInfo) => {
         return (
             <>
                 <b>{eventInfo.timeText}</b>
