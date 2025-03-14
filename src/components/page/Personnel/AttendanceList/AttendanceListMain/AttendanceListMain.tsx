@@ -8,8 +8,8 @@ import { Portal } from '../../../../common/potal/Portal';
 import { AttendanceListModal } from '../AttendanceListModal/AttendanceListModal';
 import { searchApi } from '../../../../../api/PersonnelApi/searchApi';
 import { AttendanceList } from '../../../../../api/api';
-import { IAttendance } from '../../../../../models/interface/personnel/Attendance/IAttendance';
-import { IEvent } from '../../../../../models/interface/personnel/Attendance/IEvent';
+import { IAttendance } from '../../../../../models/interface/personnel/attendance/IAttendance';
+import { IEvent } from '../../../../../models/interface/personnel/attendance/IEvent';
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[]

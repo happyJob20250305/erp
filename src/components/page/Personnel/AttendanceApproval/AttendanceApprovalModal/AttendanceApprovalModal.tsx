@@ -7,7 +7,7 @@ import { nullCheck } from "../../../../../common/nullCheck";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceApproval } from "../../../../../api/api";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
-import { IAttendanceDetail } from "../../../../../models/interface/personnel/Attendance/IAttendanceDetail";
+import { IAttendanceDetail } from "../../../../../models/interface/personnel/attendance/IAttendanceDetail";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 
 interface AttendanceApprovalProps {
