@@ -20,6 +20,16 @@ export const AttendanceApproval = {
     secondApproveAttendance: "/personnel/attendanceSecondApproveBody.do",
 };
 
+export const AttendanceRequest = {
+    searchAttendanceListCnt: "/personnel/attendanceCntBody.do",
+    searchAttendanceList: "/personnel/attendanceListBody.do",
+    searchDetail: "/personnel/attendanceDetailBody.do",
+    saveAttendanceRequest: "/personnel/attendanceRequest.do",
+    updateAttendanceRequest: "/personnel//attendanceUpdate.do",
+    cancleAttendanceRequest: "/personnel/attendanceCancleBody.do",
+    searchRejectDetail: "/personnel/attendanceDetailBody.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
