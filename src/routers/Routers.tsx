@@ -63,19 +63,19 @@ const routers: RouteObject[] = [
                 ],
             },
             {
+                path: "business",
+                children: [
+                    { path: "sales-plan", element: <SalesPlanList /> },
+                    { path: "sales-list", element: <SalesResultList /> },
+                ],
+            },
+            {
                 path: "system",
                 children: [
                     { path: "notice", element: <Notice /> },
                     { path: "code", element: <CommonCode /> },
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
-                ],
-            },
-            {
-                path: "business",
-                children: [
-                    { path: "sales-plan", element: <SalesPlanList /> },
-                    { path: "sales-list", element: <SalesResultList /> },
                 ],
             },
         ],
