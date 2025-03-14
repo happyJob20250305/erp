@@ -6,15 +6,11 @@ import { AccountManageContext } from "../../../../../api/Provider/AccountManageP
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
-import {
-    IAccountGroup,
-    IAccountGroupListBody,
-    IDetailGroup,
-    IDetailGroupListBody,
-} from "../../../../../models/interface/Account/Manage/IAccount";
+import { IAccountGroupListBody, IDetailGroupListBody } from "../../../../../models/interface/account/manage/IAccount";
 
-import { ManageApi } from "../../../../../api/api";
-import { accountSearchApi } from "../../../../../api/Account/ManageApi/accountSearchApi";
+import { Manage } from "../../../../../api/api";
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -48,32 +44,18 @@ export const ManageSearch = () => {
     }, [selectedGroup]);
 
     const searchAccountGroupList = async () => {
-        const result = await accountSearchApi<IAccountGroupListBody>(ManageApi.searchGroupList, {});
+        const result = await accountSearchApi<IAccountGroupListBody>(Manage.searchGroupList, {});
         if (result) {
-            const selectGroupList: ISetListOption[] = [
-                { label: "전체", value: "" },
-                ...result.accountGroupList.map((detail: IAccountGroup) => ({
-                    label: detail.group_name,
-                    value: detail.group_code,
-                })),
-            ];
-            setAccountGroupList(selectGroupList);
+            setAccountGroupList(setSelectOption(result.accountGroupList, "group_name", "group_code"));
         }
     };
 
     const searchAccountDetailList = async (selectedGroup: string) => {
-        const result = await accountSearchApi<IDetailGroupListBody>(ManageApi.searchDetailList, {
+        const result = await accountSearchApi<IDetailGroupListBody>(Manage.searchDetailList, {
             group_code: selectedGroup,
         });
         if (result) {
-            const selectDetailList: ISetListOption[] = [
-                { label: "전체", value: "" },
-                ...result.searchAccount.map((detail: IDetailGroup) => ({
-                    label: detail.detail_name,
-                    value: detail.detail_code,
-                })),
-            ];
-            setAccountDetailList(selectDetailList);
+            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
         }
     };
 
@@ -88,7 +70,7 @@ export const ManageSearch = () => {
 
     return (
         <ManageSearchStyled>
-            <div className='searchBar'>
+            <div className='search-bar'>
                 계정대분류명:
                 <StyledSelectBox
                     width={150}
@@ -110,7 +92,7 @@ export const ManageSearch = () => {
             </div>
             <div className='button-container'>
                 <StyledButton variant='secondary' onClick={handlerSearch}>
-                    검색
+                    조회
                 </StyledButton>
                 <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
             </div>
