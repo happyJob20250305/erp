@@ -8,7 +8,8 @@ import { nullCheck } from "../../../../../common/nullCheck";
 import { Notice } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { postApi } from "../../../../../api/SystemApi/postApi";
-import { INoticeDetail } from "../../../../../models/interface/system/Notice/INoticeDetail";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { INoticeDetail } from "../../../../../models/interface/system/notice/INoticeDetail";
 
 interface INoticeModalProps {
     notiSeq: number;
@@ -18,10 +19,6 @@ interface INoticeModalProps {
 
 interface INoticeDetailResponse {
     detail: INoticeDetail;
-}
-
-interface IPostResponse {
-    result: string
 }
 
 export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSuccess }) => {
