@@ -4,24 +4,18 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { NoticeModalStyled } from "./styled";
 import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { modalState } from "../../../../../stores/modalState";
-import { INotice } from "../NoticeMain/NoticeMain";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { Notice } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { postApi } from "../../../../../api/SystemApi/postApi";
+import { INoticeDetail } from "../../../../../models/interface/system/Notice/INoticeDetail";
 
 interface INoticeModalProps {
     notiSeq: number;
     setNotiSeq: React.Dispatch<React.SetStateAction<number>>;
     postSuccess: () => void;
 }
-interface INoticeDetail extends INotice {
-    fileName: string | null,
-    physicalPath: string | null,
-    logicalPath: string | null,
-    fileSize: number | null,
-    fileExt: string | null
-}
+
 interface INoticeDetailResponse {
     detail: INoticeDetail;
 }
@@ -162,9 +156,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                                         <img src={imageUrl} />
                                         {fileName || detail.fileName}
                                     </div>
-                                )
-                                :
-                                (<>{fileName}</>)
+                                ) : (<>{fileName}</>)
                         }
                     </div>
                     <div className={"button-container"}>
