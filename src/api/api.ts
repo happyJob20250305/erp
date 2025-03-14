@@ -11,6 +11,11 @@ export const Employee = {
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
 };
 
+export const Promotion = {
+    promitionList: "/personnel/promotionList.do",
+    promitionDetailList: "/personnel/promotionDetail.do",
+};
+
 export const AttendanceApproval = {
     searchAttendanceList: "/personnel/attendanceListBody.do",
     searchDetail: "/personnel/attendanceDetailBody.do",
@@ -28,6 +33,11 @@ export const AttendanceRequest = {
     updateAttendanceRequest: "/personnel//attendanceUpdate.do",
     cancleAttendanceRequest: "/personnel/attendanceCancleBody.do",
     searchRejectDetail: "/personnel/attendanceDetailBody.do",
+};
+
+export const AttendanceList = {
+    attendanceCalendar: "/personnel/attendanceCalendar.do",
+    searchDetail: "/personnel/approveDetailListBody.do",
 };
 
 export const SalaryManager = {
@@ -62,6 +72,14 @@ export const ExpenseList = {
     getLoginInfo: "/account/expenseLoginInfoBody.do",
     expenseSave: "/account/expenseFileSave.do",
     expenseDelete: "/account/expenseDelete.do",
+    expensefileDownload: "/account/expenseDownload.do",
+};
+
+export const ExpenseReview = {
+    searchAccountDetailList: "/account/expenseSearchDetailBody.do",
+    searchExpenseReviewList: "/account/expenseListBody.do",
+    getCrebitList: "/account/expense-reviewBody.do",
+    expenseUpdate: "/account/expenseUpdate.do",
     expensefileDownload: "/account/expenseDownload.do",
 };
 

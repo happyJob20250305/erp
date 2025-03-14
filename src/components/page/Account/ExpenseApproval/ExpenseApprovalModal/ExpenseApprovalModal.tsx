@@ -1,22 +1,20 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { ExpenseApprovalModalStyle } from "./styled";
-import { IExpenseReview } from "../../ExpenseReview/ExpenseReviewMain/ExpenseReviewMain";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
+import { ButtonArea } from "../../VoucherList/VoucherListModal/styled";
 import { useReactToPrint } from "react-to-print";
 import { ExpenseApprovalPrint } from "../ExpenseApprovalPrint/ExpenseApprovalPrint";
+import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 
 interface IExpenseApprovalModalProps {
     expenseDetail?: IExpenseReview;
     postSuccess: () => void;
     setExpenseDetail: (expenseDetail?: IExpenseReview) => void;
-}
-interface IPostResponse {
-    result: string;
 }
 
 export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
