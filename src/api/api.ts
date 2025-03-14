@@ -10,6 +10,12 @@ export const Employee = {
     employeeDetail: "/personnel/employeeDetail.do",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
 };
+
+export const Promotion = {
+    promitionList: "/personnel/promotionList.do",
+    promitionDetailList: "/personnel/promotionDetail.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
