@@ -22,6 +22,7 @@ import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
 import { Promotion } from "../pages/personnel/Promotion";
 import { SalesPlanList } from "../pages/business/SalesPlanList";
+import { SalesResultList } from "../pages/business/SalesResultList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -72,7 +73,11 @@ const routers: RouteObject[] = [
             },
             {
                 path: "business",
-                children: [{ path: "sales-plan", element: <SalesPlanList /> }],
+                children: [{ path: "sales-list", element: <SalesResultList /> }],
+                children: [
+                    { path: "sales-plan", element: <SalesPlanList /> },
+                    { path: "sales-list", element: <SalesResultList /> }
+                ],
             },
         ],
     },
