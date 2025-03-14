@@ -9,10 +9,10 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { AttendanceRequestModal } from "../AttendanceRequestModal/AttendanceRequestModal";
 import { AttendanceRequestRejectModal } from "../AttendanceRequestRejectModal/AttendanceRequestRejectModal";
-import { IAttendanceCnt, ILoginUserInfo } from "../../../../../models/interface/personnel/Attendance/IAttendanceCnt";
+import { IAttendanceCnt, ILoginUserInfo } from "../../../../../models/interface/personnel/attendance/IAttendanceCnt";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceRequest } from "../../../../../api/api";
-import { IAttendance } from "../../../../../models/interface/personnel/Attendance/IAttendance";
+import { IAttendance } from "../../../../../models/interface/personnel/attendance/IAttendance";
 
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],
