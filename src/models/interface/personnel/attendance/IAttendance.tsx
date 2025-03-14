@@ -11,5 +11,4 @@ export interface IAttendance {
     name: string,
     appType: string | null,
     appReason: string | null,
-}
-
+} 

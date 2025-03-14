@@ -11,14 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { SystemContext } from "../../../../../api/Provider/SystemProvider";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { CommonCode } from "../../../../../api/api";
-
-
-export interface IGroupCode {
-    groupCode: string,
-    groupName: string,
-    note: string,
-    useYn: "Y" | "N",
-}
+import { IGroupCode } from "../../../../../models/interface/system/commoncode/IGroupCode";
 
 interface IGroupCodeListResponse {
     groupList: IGroupCode[],
