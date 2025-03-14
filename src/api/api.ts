@@ -10,6 +10,16 @@ export const Employee = {
     employeeDetail: "/personnel/employeeDetail.do",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
 };
+
+export const AttendanceApproval = {
+    searchAttendanceList: "/personnel/attendanceListBody.do",
+    searchDetail: "/personnel/attendanceDetailBody.do",
+    rejectAttendance: "/personnel/attendanceRejectBody.do",
+    firstApproveAttendance: "/personnel/attendanceFirstApproveBody.do",
+    approveRejectAttendance: "/personnel/attendanceApproveRejectBody.do",
+    secondApproveAttendance: "/personnel/attendanceSecondApproveBody.do",
+};
+
 export const SalaryManager = {
     salaryList: "/personnel/salaryList.do",
     empnoSalaryList: "/personnel/salaryDetail.do",
