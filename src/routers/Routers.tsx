@@ -21,6 +21,7 @@ import { AttendanceList } from "../pages/personnel/AttendanceList";
 import { VoucherList } from "../pages/account/VoucherList";
 import { Employee } from "../pages/personnel/Employee";
 import { Promotion } from "../pages/personnel/Promotion";
+import { SalesPlanList } from "../pages/business/SalesPlanList";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -68,6 +69,10 @@ const routers: RouteObject[] = [
                     { path: "code/:groupCode", element: <DetailCode /> },
                     { path: "department", element: <Department /> },
                 ],
+            },
+            {
+                path: "business",
+                children: [{ path: "sales-plan", element: <SalesPlanList /> }],
             },
         ],
     },
