@@ -1,13 +1,14 @@
 import { FC, useEffect, useRef, useState } from "react"
 import { StyledInput } from "../../../../common/StyledInput/StyledInput"
 import { DepartmentModalStyle } from "./styled"
-import { IDepartment } from "../DepartmentMain/DepartmentMain";
 import { modalState } from "../../../../../stores/modalState";
 import { useRecoilState } from "recoil";
 import { nullCheck } from "../../../../../common/nullCheck";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Department } from "../../../../../api/api";
 import { postApi } from "../../../../../api/SystemApi/postApi";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { IDepartment } from "../../../../../models/interface/system/department/IDepartment";
 
 
 interface IDepartmentProps {
@@ -18,11 +19,6 @@ interface IDepartmentProps {
 
 interface IDepartmentDetailResponse {
     detail: IDepartment
-}
-
-interface IPostResponse {
-    result: string
-    message?: string
 }
 
 export const DepartmentModal: FC<IDepartmentProps> = ({ detailCode, setDetailCode, postSuccess }) => {

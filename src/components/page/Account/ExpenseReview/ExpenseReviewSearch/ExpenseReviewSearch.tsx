@@ -1,9 +1,7 @@
-import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ExpenseReviewSearchStyled } from "./styled";
-import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseReviewContext } from "../../../../../api/Provider/ExpenseReviewProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
@@ -11,10 +9,9 @@ import axios, { AxiosResponse } from "axios";
 import {
     IExpenseDetailGroup,
     IExpenseDetailGroupListBody,
-} from "../../ExpenseList/ExpenseListSearch/ExpenseListSearch";
+} from "../../../../../models/interface/account/expenstList/IExpenseList";
 
 export const ExpenseReviewSearch = () => {
-    const [modal, setModal] = useRecoilState<boolean>(modalState);
     const { setSearchKeyword } = useContext(ExpenseReviewContext);
     const [searchStDate, setSearchStDate] = useState<string>("");
     const [searchEdDate, setSearchEdDate] = useState<string>("");

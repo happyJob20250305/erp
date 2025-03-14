@@ -6,17 +6,13 @@ import { ExpenseListSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useContext, useEffect, useState } from "react";
 import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
-import axios, { AxiosResponse } from "axios";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 
-export interface IExpenseDetailGroup {
-    detail_name: string;
-    detail_code: string;
-}
-
-export interface IExpenseDetailGroupListBody {
-    searchAccount: IExpenseDetailGroup[];
-}
+import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
+import { ExpenseList } from "../../../../../api/api";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { dateCheck } from "../../../../../common/dateCheck";
+import { IExpenseDetailGroupListBody } from "../../../../../models/interface/account/expenstList/IExpenseList";
 
 export const ExpenseListSearch = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -48,19 +44,13 @@ export const ExpenseListSearch = () => {
         }
     }, [selectedGroup]);
 
-    const searchAccountDetailList = (selectedGroup: string) => {
-        axios
-            .post("/account/expenseSearchDetailBody.do", { group_code: selectedGroup })
-            .then((res: AxiosResponse<IExpenseDetailGroupListBody>) => {
-                const selectDetailList: ISetListOption[] = [
-                    { label: "전체", value: "" },
-                    ...res.data.searchAccount.map((detail: IExpenseDetailGroup) => ({
-                        label: detail.detail_name,
-                        value: detail.detail_code,
-                    })),
-                ];
-                setAccountDetailList(selectDetailList);
-            });
+    const searchAccountDetailList = async (selectedGroup: string) => {
+        const result = await accountSearchApi<IExpenseDetailGroupListBody>(ExpenseList.searchDetailList, {
+            group_code: selectedGroup,
+        });
+        if (result) {
+            setAccountDetailList(setSelectOption(result.searchAccount, "detail_name", "detail_code"));
+        }
     };
 
     const handlerSearch = () => {
@@ -76,22 +66,24 @@ export const ExpenseListSearch = () => {
     };
     return (
         <ExpenseListSearchStyled>
-            <div className='searchBar'>
+            <div className='search-bar'>
                 <span>신청일자</span>
                 <StyledInput
                     width={105}
                     type='date'
                     onChange={(e) => {
-                        setSearchStDate(e.target.value);
+                        dateCheck(e.target.value, searchEdDate, "start", setSearchStDate, setSearchEdDate);
                     }}
+                    max={searchEdDate}
                 ></StyledInput>
                 <span>~</span>
                 <StyledInput
                     width={105}
                     type='date'
                     onChange={(e) => {
-                        setSearchEdDate(e.target.value);
+                        dateCheck(searchStDate, e.target.value, "end", setSearchStDate, setSearchEdDate);
                     }}
+                    min={searchStDate}
                 ></StyledInput>
                 승인여부
                 <StyledSelectBox
@@ -117,9 +109,9 @@ export const ExpenseListSearch = () => {
             </div>
             <div className='button-container'>
                 <StyledButton variant='secondary' onClick={handlerSearch}>
-                    검색
+                    조회
                 </StyledButton>
-                <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+                <StyledButton onClick={() => setModal(!modal)}>신청</StyledButton>
             </div>
         </ExpenseListSearchStyled>
     );
