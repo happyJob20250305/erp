@@ -17,13 +17,14 @@ import {
 } from "../../../../../../models/interface/business/sales/ISales";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
-import { SalesPlanListSearchStyled } from "../SalesPlanSearch/styled";
+import { SalesPlanListModalStyle } from "./styled";
+import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
 
 interface ISalesModalProps {
-    planNum?: ISales;
+    planNum: number;
     // setPlanNum: (planNum?: ISalesPlan) => void;
-    setPlanNum: React.Dispatch<React.SetStateAction<ISales>>;
-    postSucces: () => void;
+    setPlanNum: React.Dispatch<React.SetStateAction<number>>;
+    postSuccess: () => void;
 }
 
 const initSalesPlan = {
@@ -48,7 +49,8 @@ const initSalesPlan = {
 interface IPostResponse {
     result: "success" | "fail";
 }
-export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSucces }) => {
+
+export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, postSuccess }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [salesPlan, setSalesPlan] = useState<ISales>(initSalesPlan);
@@ -58,7 +60,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectManuFacturer, setSelectManuFacturer] = useState<string>(planNum?.name || "");
+    const [selectManuFacturer, setSelectManuFacturer] = useState<string>("");
     const [selectMaincategory, setSelectMaincategory] = useState<string>("");
     const [selectSubcategory, setSelectSubcategory] = useState<string>("");
     const [selectProduct, setSelectProduct] = useState<string>("");
@@ -68,6 +70,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
     useEffect(() => {
+        console.log("planNum:" + planNum);
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();
@@ -158,39 +161,57 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
     };
 
     const insertSales = () => {
+        console.log("formRef.current:" + formRef.current);
+
+        const formData = new FormData(formRef.current);
+        console.log("formData:" + formData);
+
+        formData.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
+
         axios
-            .post("/business/sales-plan/insertPlanBody.do", formRef.current, {
-                headers: {
-                    "Content-Type": `application/json`,
-                },
+            .post("/business/sales-plan/insertPlanBody.do", formData, {
+                headers: { "Content-Type": "application/json" },
             })
+            // .post("/business/sales-plan/insertPlanBody.do", {
+            //     emp_id: "3",
+            //     client_id: "0",
+            //     manufacturer_id: "0",
+            //     industry_code: "MF001",
+            //     target_date: "2025-03-16",
+            //     goal_quanti: "10",
+            //     perform_qut: "0",
+            //     plan_memo: "250316_1",
+            //     detail_code: "MF00102",
+            //     product_name: "레고 캐슬",
+            //     plan_num: "",
+            // }
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
+                    console.log("Response:", res);
                     alert("저장되었습니다.");
-                    // postSuccess();
+                    postSuccess();
                 }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("서버 오류가 발생했습니다.");
             });
     };
 
     return (
-        <SalesPlanListSearchStyled>
+        <SalesPlanListModalStyle>
             <div className='container'>
                 <form ref={formRef}>
                     <label>
                         직원아이디
-                        <StyledInput
-                            type='text'
-                            defaultValue={planNum?.emp_id || userInfo.empId}
-                            name='emp_id'
-                        ></StyledInput>
+                        <StyledInput type='text' defaultValue={userInfo.empId} name='emp_id'></StyledInput>
                     </label>
                     <label>
                         직원이름
-                        <StyledInput
-                            type='text'
-                            defaultValue={planNum?.emp_name || userInfo.userNm}
-                            name='emp_name'
-                        ></StyledInput>
+                        {/* <StyledInput type='text' defaultValue={userInfo.userNm} name='emp_name'></StyledInput> */}
+                        <StyledInput type='text' defaultValue={userInfo.userNm}></StyledInput>
                     </label>
                     <label>
                         거래처
@@ -207,7 +228,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
                                 setSelectSubcategory("");
                                 setSelectProduct("");
                             }}
-                            name='manufacturer_id'
+                            name={"manufacturer_id"}
                         /> */}
                         <StyledInput type='text' name='manufacturer_id' />
                     </label>
@@ -221,7 +242,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
                                 setSelectSubcategory("");
                                 setSelectProduct("");
                             }}
-                            name='industry_code'
+                            name={"industry_code"}
                         /> */}
                         <StyledInput type='text' name='industry_code' />
                     </label>
@@ -234,7 +255,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
                                 setSelectSubcategory(value);
                                 setSelectProduct("");
                             }}
-                            name='detail_code'
+                            name={"detail_code"}
                         /> */}
                         <StyledInput type='text' name='detail_code' />
                     </label>
@@ -244,7 +265,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
                             options={productOptions}
                             value={selectProduct}
                             onChange={(value: string) => setSelectProduct(value)}
-                            name='product_name'                            
+                            name={"product_name"}
                         /> */}
                         <StyledInput type='text' name='product_name' />
                     </label>
@@ -268,10 +289,10 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ planNum, setPlanNum, 
                             나가기
                         </StyledButton>
                     </div>
-
                     <input type='hidden' name='plan_num' value='' />
+                    <input type='hidden' name='perform_qut' value='0' />
                 </form>
             </div>
-        </SalesPlanListSearchStyled>
+        </SalesPlanListModalStyle>
     );
 };

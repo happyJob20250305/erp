@@ -11,7 +11,7 @@ import { ISales, ISalesResponse } from "../../../../../../models/interface/busin
 
 export const SalesPlanListMain = () => {
     const [salesPlanList, setSalesPlanList] = useState<ISales[]>([]);
-    const [planNum, setPlanNum] = useState<ISales>();
+    const [selectPlanNum, setSelectPlanNum] = useState<number>(0);
 
     const { searchKeyword } = useContext(SalesPlanListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -41,9 +41,9 @@ export const SalesPlanListMain = () => {
             });
     };
 
-    const handlerSalesPlanModal = (row: ISales) => {
+    const handlerSalesPlanModal = (planNum: number) => {
         setModal(!modal);
-        setPlanNum(row);
+        setSelectPlanNum(planNum);
     };
 
     const postSucces = () => {
@@ -59,13 +59,17 @@ export const SalesPlanListMain = () => {
                 hoverable={true}
                 fullWidth={true}
                 onCellClick={(row) => {
-                    handlerSalesPlanModal(row);
+                    handlerSalesPlanModal(row.plan_num);
                 }}
             />
 
             {modal && (
                 <Portal>
-                    <SalesPlanListModal planNum={planNum} setPlanNum={setPlanNum} postSucces={postSucces} />
+                    <SalesPlanListModal
+                        planNum={selectPlanNum}
+                        setPlanNum={setSelectPlanNum}
+                        postSuccess={postSucces}
+                    />
                 </Portal>
             )}
         </SalesPlanListMainStyled>
