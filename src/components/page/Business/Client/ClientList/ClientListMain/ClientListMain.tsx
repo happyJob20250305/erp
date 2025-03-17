@@ -13,7 +13,7 @@ export interface IClient {
     ph: string;
     person_ph: string;
     detail_addr: string;
-    id: number;
+    client_id: number;
     addr: string;
     client_name: string;
     email: string;
