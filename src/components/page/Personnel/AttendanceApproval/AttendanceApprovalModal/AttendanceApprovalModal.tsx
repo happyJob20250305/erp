@@ -13,21 +13,19 @@ import { postApi } from "../../../../../api/PersonnelApi/postApi";
 interface AttendanceApprovalProps {
     id: number,
     setId: React.Dispatch<React.SetStateAction<number>>,
-    postSuccess: () => void
+    postSuccess: () => void,
+    loginUserType: string,
+    loginUserEmpid: string
 }
 
 interface AttendanceApprovalDetailResponse {
     detail: IAttendanceDetail
 }
 
-export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess }) => {
+export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess, loginUserType, loginUserEmpid }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [attendanceApprovalDetail, setAttendanceApprovalDetail] = useState<IAttendanceDetail>();
     const formRef = useRef<HTMLFormElement>(null);
-
-    const loginUserInfo = sessionStorage.getItem("userInfo");
-    const loginUserType = JSON.parse(loginUserInfo).userType;
-    const loginUserEmpid = JSON.parse(loginUserInfo).empId;
 
     useEffect(() => {
         id && searchDetail();
