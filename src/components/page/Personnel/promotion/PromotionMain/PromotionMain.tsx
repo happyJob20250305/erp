@@ -37,7 +37,7 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     const [cPage, setCPage] = useState<number>(1);
     const columns = [
         { key: "employeeNumber", title: "사번" },
-        { key: "employeeName", title: "사원명", clickable: true },
+        { key: "employeeName", title: "사원명" },
         { key: "departmentCode", title: "부서코드" },
         { key: "departmentDetailName", title: "부서명" },
         { key: "jobGrade", title: "직급" },
