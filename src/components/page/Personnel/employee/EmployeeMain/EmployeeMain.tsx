@@ -115,33 +115,34 @@ export const EmployeeMain = () => {
                 <div className='button-container'>
                     <StyledButton onClick={handleModal}>사원 등록</StyledButton>
                 </div>
-
-                <StyledTable
-                    columns={columns}
-                    data={employeeList}
-                    striped
-                    // bordered
-                    hoverable
-                    fullWidth
-                    onCellClick={(row) => handleEmployeDetail(row.employeeId, row.jobGradeCode, row.departmentCode)}
-                    renderAction={(row) =>
-                        row.emplStatus === "W" ? (
-                            <StyledButton
-                                size='small'
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleResign(row.employeeId, row.number, row.employeeName, row.regDate);
-                                }}
-                            >
-                                퇴직처리
-                            </StyledButton>
-                        ) : (
-                            <StyledButton size='small' disabled>
-                                퇴직처리불가
-                            </StyledButton>
-                        )
-                    }
-                />
+                <div className='table-container'>
+                    <StyledTable
+                        columns={columns}
+                        data={employeeList}
+                        striped
+                        // bordered
+                        hoverable
+                        fullWidth
+                        onCellClick={(row) => handleEmployeDetail(row.employeeId, row.jobGradeCode, row.departmentCode)}
+                        renderAction={(row) =>
+                            row.emplStatus === "W" ? (
+                                <StyledButton
+                                    size='small'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleResign(row.employeeId, row.number, row.employeeName, row.regDate);
+                                    }}
+                                >
+                                    퇴직처리
+                                </StyledButton>
+                            ) : (
+                                <StyledButton size='small' disabled>
+                                    퇴직처리불가
+                                </StyledButton>
+                            )
+                        }
+                    />
+                </div>
             </EmployeeMainStyled>
 
             {/*  페이지 네비 */}
