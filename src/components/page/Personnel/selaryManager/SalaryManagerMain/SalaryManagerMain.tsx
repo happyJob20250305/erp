@@ -212,7 +212,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                                 지급하기
                             </StyledButton>
                         ) : (
-                            <StyledButton size='small' disabled color='gray'>
+                            <StyledButton size='small' disabled variant='secondary'>
                                 지급 완료
                             </StyledButton>
                         )
