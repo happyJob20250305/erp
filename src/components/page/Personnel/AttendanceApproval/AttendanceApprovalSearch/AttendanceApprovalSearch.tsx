@@ -58,9 +58,9 @@ export const AttendanceApprovalSearch = ({ loginUserType }) => {
         <AttendanceApprovalSearchStyled>
             <div className="search-bar">
                 <span>기간</span>
-                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }} />
+                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }} onKeyDown={(e) => e.preventDefault()} max={endDate} />
                 <span>~</span>
-                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }} />
+                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }} onKeyDown={(e) => e.preventDefault()} min={startDate} />
                 <span>사번</span>
                 <StyledInput type='text' width={100} onChange={(e) => { setNumber(e.target.value) }} />
                 <span>사원명</span>
