@@ -1,4 +1,4 @@
-import { ExpenseListProvider } from "../../api/Provider/ExpenseListProvider";
+import { ExpenseListProvider } from "../../api/Provider/AccountProvider/ExpenseListProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { ExpenseListMain } from "../../components/page/Account/ExpenseList/ExpenseListMain/ExpenseListMain";
 import { ExpenseListSearch } from "../../components/page/Account/ExpenseList/ExpenseListSearch/ExpenseListSearch";

@@ -23,12 +23,13 @@ export const ExpensePrintTable = styled.div`
     table {
         width: 100%;
         border-collapse: collapse;
+        border: 1px solid #ddd;
     }
 
     th,
     td {
-        padding: 10px;
         border: 1px solid #ddd;
+        padding: 10px;
         width: 150px;
     }
 

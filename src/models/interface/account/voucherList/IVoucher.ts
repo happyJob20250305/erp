@@ -5,7 +5,7 @@ export interface IVoucher {
     client_name: string;
     debit_name: string;
     crebit_name: string;
-    voucher_amount: number;
+    voucher_amount: number | string;
     order_id: number;
     exp_id: number;
     emp_name: string;

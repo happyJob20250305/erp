@@ -27,9 +27,11 @@ export const NoticeSearch = () => {
                 <span>제목</span>
                 <StyledInput ref={title}></StyledInput>
                 <span>기간</span>
-                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}></StyledInput>
+                <StyledInput type='date' onChange={(e) => { setStartDate(e.target.value) }}
+                    onKeyDown={(e) => e.preventDefault()} max={endDate} />
                 <span>~</span>
-                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}></StyledInput>
+                <StyledInput type='date' onChange={(e) => { setEndDate(e.target.value) }}
+                    onKeyDown={(e) => e.preventDefault()} min={startDate} />
             </div>
             <div className="button-container">
                 <StyledButton variant='secondary' onClick={handlerSearch}>조회</StyledButton>

@@ -146,7 +146,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({ notiSeq, setNotiSeq, postSu
                         제목 :<StyledInput type='text' name='fileTitle' defaultValue={detail?.notiTitle} />
                     </label>
                     <label>
-                        내용 : <StyledInput type='text' name='fileContent' defaultValue={detail?.notiContent} />
+                        내용 : <textarea name='fileContent' defaultValue={detail?.notiContent} rows={5} />
                     </label>
                     파일 :
                     <StyledInput

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
+import { AccountManageContext } from "../../../../../api/Provider/AccountProvider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";

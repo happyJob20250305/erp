@@ -25,6 +25,15 @@ export const NoticeModalStyled = styled.div`
         border: 1px solid #ccc;
     }
 
+    textarea {
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 6px;
+        outline: none;
+        border: 1px solid #ccc;
+        font-family: Arial, sans-serif;
+    }
+
     .container {
         background: white;
         padding: 20px;

@@ -1,14 +1,8 @@
 import styled from "styled-components";
 
-export const SalalyListMainStyled = styled.div`
-    // display: flex;
-    gap: 5px;
-    align-items: center;
-    justify-content: flex-end;
-    margin-top: 5px;
-
+export const SalalyManagerDetailStyled = styled.div`
+    margin-top: 100px;
     .info {
-        width: 97%;
         padding: 16px;
         margin: 10px 0;
         background-color: #f0f0f0;
@@ -18,10 +12,5 @@ export const SalalyListMainStyled = styled.div`
         display: flex;
         justify-content: space-between;
         align-items: center;
-        // border: 2px solid black;
-    }
-
-    .tables {
-        display: flex;
     }
 `;

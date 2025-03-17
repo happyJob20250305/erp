@@ -19,6 +19,7 @@ export interface IDetailGroupListBody {
 export interface IClientListBody extends IDetailGroupListBody {
     clientList: IClient[];
 }
+
 export interface IClient {
     id: number;
     clientName: string;
@@ -27,8 +28,11 @@ export interface IClient {
 export interface ICrebitList {
     detail_code: string;
     detail_name: string;
+    use_yn: string;
+    content: string;
+    code_type: string;
 }
 
-export interface IExpenseReviewBody {
+export interface ICrebitListBody {
     crebitList: ICrebitList[];
 }

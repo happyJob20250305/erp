@@ -250,9 +250,9 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                     </th>
                                     <td>
                                         <StyledInput
-                                            type='number'
+                                            type={expenseDetail ? "text" : "number"}
                                             name='exp_pay'
-                                            defaultValue={expenseDetail?.expense_payment}
+                                            defaultValue={expenseDetail?.expense_payment.toLocaleString("ko-KR")}
                                             readOnly={!!expenseDetail}
                                         ></StyledInput>
                                     </td>

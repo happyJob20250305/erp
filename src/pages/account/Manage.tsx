@@ -1,4 +1,4 @@
-import { AccountManageProvider } from "../../api/Provider/AccountManageProvider";
+import { AccountManageProvider } from "../../api/Provider/AccountProvider/AccountManageProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { ManageMain } from "../../components/page/Account/Manage/ManageMain/ManageMain";
 import { ManageSearch } from "../../components/page/Account/Manage/ManageSearch.tsx/ManageSearch";

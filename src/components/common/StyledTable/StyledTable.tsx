@@ -5,6 +5,7 @@ export interface Column<T> {
     title: string;
     clickable?: boolean;
     render?: (value: any) => React.ReactNode;
+    isMoney?: boolean;
 }
 
 interface TableProps<T> {
@@ -59,8 +60,10 @@ export const StyledTable = <T extends { [key: string]: any }>({
                                     {col.key === "actions" && renderAction
                                         ? renderAction(row)
                                         : col.render
-                                          ? col.render(row[col.key as keyof T]) // ✅ render 함수 호출
+                                          ? col.render(row[col.key as keyof T])
                                           : (row[col.key as keyof T] as React.ReactNode)}
+                                    : col.isMoney ? Number(row[col.key as keyof T]).toLocaleString("ko-KR") :
+                                    (row[col.key as keyof T] as React.ReactNode)
                                 </Td>
                             ))}
                         </Tr>

@@ -2,17 +2,30 @@ import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { modalState } from "../../../../../stores/modalState";
-import { useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { Employee } from "../../../../../api/api";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
-import { IEmployeeDetailResponse } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
+import {
+    IEmployeeDetailResponse,
+    ISalaryClass,
+} from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
 import { EmployeeModalStyled } from "./styled";
+import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
 
 export const EmployeeDetailModal = () => {
+    const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [response, setResponse] = useState<IEmployeeDetailResponse>();
+    const [salaryClassList, setSalaryClassList] = useState<ISalaryClass>();
     const { employeeId, jobGradeCode, departmentCode } = useContext(EmployeeDetailModalContext);
+    const [zipCode, setZipCode] = useState("");
+    const [address, setAddress] = useState("");
+    const [addressDetail, setAddressDetail] = useState("");
+    const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
+    const [email, setEmail] = useState("");
+    const [hp, setHp] = useState("");
+    const [finalEducation, setFinalEducation] = useState("");
 
     const closeModal = () => {
         setModal(false);
@@ -24,6 +37,17 @@ export const EmployeeDetailModal = () => {
         employeeDetailList();
         // }
     }, [employeeId, jobGradeCode, departmentCode]);
+
+    useEffect(() => {
+        if (response?.detail) {
+            setEmail(response.detail.email || "");
+            setHp(response.detail.hp || "");
+            setFinalEducation(response.detail.finalEducation || "");
+            setAddress(response.detail.address || "");
+            setAddressDetail(response.detail.addressDetail || "");
+        }
+    }, [response]);
+
     const employeeDetailList = async () => {
         const searchParam = new URLSearchParams();
         searchParam.append("employeeId", employeeId);
@@ -34,7 +58,7 @@ export const EmployeeDetailModal = () => {
             const result = await postApi<IEmployeeDetailResponse>(Employee.employeeDetail, searchParam);
             if (result) {
                 setResponse(result);
-
+                setSalaryClassList(result.salaryClassList);
                 console.log(result.detail.employeeId);
             }
         } catch (error) {
@@ -42,160 +66,268 @@ export const EmployeeDetailModal = () => {
         }
     };
 
+    const handleComplete = (data: any) => {
+        setIsOpen(false);
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+            if (data.bname !== "") extraAddress += data.bname;
+            if (data.buildingName !== "")
+                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
+        }
+
+        setZipCode(data.zonecode);
+        setAddress(fullAddress);
+    };
+
+    const updateEmployee = async () => {
+        const formData = new FormData(formRef.current!);
+
+        try {
+            const retuls = await postApi<IEmployeeDetailResponse>(Employee.employeeUpdate, formData);
+            alert("수정되었습니다.");
+        } catch {
+            alert("수정 실패");
+        }
+    };
+
     return (
         <EmployeeModalStyled>
-            <table className='container'>
-                <tbody>
-                    <tr>
-                        {/* 이미지 고정 영역 */}
-                        <td
-                            rowSpan={14} // 전체 row 수만큼 설정
-                            style={{ width: "180px", textAlign: "center", verticalAlign: "middle" }}
-                        >
-                            {response?.detail?.profileLogicalPath ? (
-                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                    <img
-                                        src={response?.detail?.profileLogicalPath}
-                                        alt='프로필'
-                                        style={{
-                                            width: "150px",
-                                            height: "150px",
-                                            objectFit: "cover",
-                                            borderRadius: "8px",
-                                        }}
-                                    />
-                                </div>
-                            ) : (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        height: "150px",
-                                    }}
+            <div className='container'>
+                <h2>사원 상세</h2>
+                <form ref={formRef}>
+                    <ModalStyledTable>
+                        <tbody>
+                            <tr>
+                                {/* 이미지 고정 영역 */}
+                                <td
+                                    rowSpan={12}
+                                    style={{ width: "180px", textAlign: "center", verticalAlign: "middle" }}
                                 >
-                                    이미지 없음
-                                </div>
-                            )}
-                        </td>
-                        <th>사번</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.number || ""} readOnly />
-                        </td>
-                        <th>이름</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.employeeName || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>주민번호</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.registrationNumber || ""} readOnly />
-                        </td>
-                        <th>성별</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.sex || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>생년월일</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.birthday || ""} readOnly />
-                        </td>
-                        <th>최종학력</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.finalEducation || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이메일</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.email || ""} readOnly />
-                        </td>
-                        <th>연락처</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.hp || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.address || ""} readOnly />
-                        </td>
-                        <th>상세주소</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.addressDetail || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>은행</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.bank || ""} readOnly />
-                        </td>
-                        <th>계좌번호</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.bankAccount || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>부서</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.departmentDetailName || ""} readOnly />
-                        </td>
-                        <th>직급</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.jobGradeDetailName || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>입사일</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.regDate || ""} readOnly />
-                        </td>
-                        <th>퇴사일</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.resignationDate || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>근무연차</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.workingYear || ""} readOnly />
-                        </td>
-                        <th>퇴직금</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.severancePay || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>부서코드</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.departmentCode || ""} readOnly />
-                        </td>
-                        <th>재직 구분</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.emplStatus || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>직무</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.departmentDetailName || ""} readOnly />
-                        </td>
-                        <th>직급코드</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.jobGradeCode || ""} readOnly />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>연봉</th>
-                        <td colSpan={3}>
-                            <StyledInput value={response?.detail?.address || ""} readOnly />
-                        </td>
-                    </tr>
-                </tbody>
-                <StyledButton onClick={closeModal}>취소</StyledButton>
-            </table>
+                                    {response?.detail?.profileLogicalPath ? (
+                                        <img
+                                            src={response?.detail?.profileLogicalPath}
+                                            alt='프로필'
+                                            style={{
+                                                width: "150px",
+                                                height: "150px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
+                                        />
+                                    ) : (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                height: "150px",
+                                            }}
+                                        >
+                                            이미지 없음
+                                        </div>
+                                    )}
+                                </td>
+                                <th>사번</th>
+                                <td>
+                                    <StyledInput
+                                        name='employeeId'
+                                        value={response?.detail?.employeeId || ""}
+                                        type='hidden'
+                                        readOnly
+                                    />
+                                    <StyledInput name='number' value={response?.detail?.number || ""} readOnly />
+                                </td>
+                                <th>이름</th>
+                                <td>
+                                    <StyledInput
+                                        name='employeeName'
+                                        value={response?.detail?.employeeName || ""}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>주민번호</th>
+                                <td>
+                                    <StyledInput
+                                        name='registrationNumber'
+                                        value={response?.detail?.registrationNumber || ""}
+                                        readOnly
+                                    />
+                                </td>
+                                <th>성별</th>
+                                <td>
+                                    <StyledInput name='sex' value={response?.detail?.sex || ""} readOnly />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>생년월일</th>
+                                <td>
+                                    <StyledInput name='birthday' value={response?.detail?.birthday || ""} readOnly />
+                                </td>
+                                <th>최종학력</th>
+                                <td>
+                                    <StyledInput
+                                        name='finalEducation'
+                                        value={finalEducation}
+                                        onChange={(e) => setFinalEducation(e.target.value)}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>이메일</th>
+                                <td>
+                                    <StyledInput
+                                        name='email'
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </td>
+                                <th>연락처</th>
+                                <td>
+                                    <StyledInput name='hp' value={hp} onChange={(e) => setHp(e.target.value)} />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>
+                                    <StyledInput
+                                        name='address'
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                    />
+                                </td>
+                                <th>상세주소</th>
+                                <td>
+                                    <StyledInput
+                                        name='addressDetail'
+                                        value={addressDetail}
+                                        onChange={(e) => setAddressDetail(e.target.value)}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>은행</th>
+                                <td>
+                                    <StyledInput name='bank' value={response?.detail?.bank || ""} />
+                                </td>
+                                <th>계좌번호</th>
+                                <td>
+                                    <StyledInput name='bankAccount' value={response?.detail?.bankAccount || ""} />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>부서</th>
+                                <td>
+                                    <StyledInput
+                                        name='departmentDetailName'
+                                        value={response?.detail?.departmentDetailName || ""}
+                                    />
+                                </td>
+                                <th>직급</th>
+                                <td>
+                                    <StyledInput
+                                        name='jobGradeDetailName'
+                                        value={response?.detail?.jobGradeDetailName || ""}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>입사일</th>
+                                <td>
+                                    <StyledInput name='regDate' value={response?.detail?.regDate || ""} readOnly />
+                                </td>
+                                <th>퇴사일</th>
+                                <td>
+                                    <StyledInput
+                                        name='resignationDate'
+                                        value={response?.detail?.resignationDate || ""}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>근무연차</th>
+                                <td>
+                                    <StyledInput
+                                        name='workingYear'
+                                        value={response?.detail?.workingYear || ""}
+                                        readOnly
+                                    />
+                                </td>
+                                <th>퇴직금</th>
+                                <td>
+                                    <StyledInput
+                                        name='severancePay'
+                                        value={response?.detail?.severancePay || "미정"}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>부서코드</th>
+                                <td>
+                                    <StyledInput
+                                        name='departmentCode '
+                                        value={response?.detail?.departmentCode || ""}
+                                        readOnly
+                                    />
+                                </td>
+                                <th>재직 구분</th>
+                                <td>
+                                    <StyledInput
+                                        name='emplStatus'
+                                        value={response?.detail?.emplStatus || ""}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>직무</th>
+                                <td>
+                                    <StyledInput
+                                        name='departmentDetailName'
+                                        value={response?.detail?.departmentDetailName || ""}
+                                        readOnly
+                                    />
+                                </td>
+                                <th>직급코드</th>
+                                <td>
+                                    <StyledInput
+                                        name='jobGradeCode'
+                                        value={response?.detail?.jobGradeCode || ""}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>연봉</th>
+                                <td colSpan={3}>
+                                    <StyledInput
+                                        name='workingYear'
+                                        value={
+                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`] || ""
+                                        }
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ModalStyledTable>
+                </form>
+                {/* 버튼 영역 */}
+                <ButtonArea>
+                    <StyledButton variant='secondary' type='button' onClick={updateEmployee}>
+                        수정
+                    </StyledButton>
+                    <StyledButton variant='secondary' type='button' onClick={closeModal}>
+                        닫기
+                    </StyledButton>
+                </ButtonArea>
+            </div>
         </EmployeeModalStyled>
     );
 };

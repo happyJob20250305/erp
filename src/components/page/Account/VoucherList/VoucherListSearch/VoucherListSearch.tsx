@@ -2,7 +2,7 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { VoucherListContext } from "../../../../../api/Provider/VoucherListProvider";
+import { VoucherListContext } from "../../../../../api/Provider/AccountProvider/VoucherListProvider";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { VoucherListSearchStyled } from "./styled";
 import { VoucherList } from "../../../../../api/api";
@@ -53,9 +53,9 @@ export const VoucherListSearch = () => {
             <div className='search-group'>
                 <div className='search-bar'>
                     <span>신청일자</span>
-                    <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} />
+                    <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} width={127} />
                     <span>~</span>
-                    <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} />
+                    <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} width={126} />
                     <span>거래처명</span>
                     <StyledSelectBox options={clientList} value={selectedClient} onChange={setSelectedClient} />
                 </div>
