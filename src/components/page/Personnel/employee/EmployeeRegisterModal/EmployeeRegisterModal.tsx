@@ -28,6 +28,8 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [selectedEducation, setSelectedEducation] = useState("");
+    const [selectedBank, setSelectedBank] = useState("");
 
     //  옵션 데이터 조회
     useEffect(() => {
@@ -52,6 +54,27 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         ...JobGradeGroupItem.map((item) => ({ label: item.jobGradeDetailName, value: item.jobGradeDetailName })),
     ];
 
+    const educationOptions = [
+        { label: "선택", value: "" },
+        { label: "고등학교 졸업", value: "고등학교 졸업" },
+        { label: "전문대학 졸업", value: "전문대학 졸업" },
+        { label: "대학교 졸업", value: "대학교 졸업" },
+        { label: "대학원 졸업", value: "대학원 졸업" },
+    ];
+
+    const bankOptions = [
+        { label: "선택", value: "" },
+        { label: "국민은행", value: "국민은행" },
+        { label: "신한은행", value: "신한은행" },
+        { label: "우리은행", value: "우리은행" },
+        { label: "하나은행", value: "하나은행" },
+        { label: "농협은행", value: "농협은행" },
+        { label: "기업은행", value: "기업은행" },
+        { label: "카카오뱅크", value: "카카오뱅크" },
+        { label: "토스뱅크", value: "토스뱅크" },
+        { label: "새마을금고", value: "새마을금고" },
+    ];
+
     //  파일 업로드 핸들링
     const handlerFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -68,6 +91,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         const registrationNumber = formData.get("registrationNumber")?.toString().trim();
         const hp = formData.get("hp")?.toString().trim();
         const email = formData.get("email")?.toString().trim();
+        const birthday = formData.get("birthday")?.toString().trim();
 
         // 예: 필수 항목 체크
         if (!employeeName) {
@@ -84,6 +108,21 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         }
         if (!email) {
             alert("이메일을 입력해주세요.");
+            return;
+        }
+
+        // 만 20세 이상 검사
+        const today = new Date();
+        const birthDate = new Date(birthday);
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--; // 생일 안 지난 경우 나이 -1
+        }
+
+        if (age < 20) {
+            alert("만 20세 이상만 등록할 수 있습니다.");
             return;
         }
 
@@ -142,7 +181,12 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             <tr>
                                 <th>최종학력</th>
                                 <td>
-                                    <StyledInput type='text' name='finalEducation' />
+                                    <StyledSelectBox
+                                        options={educationOptions}
+                                        value={selectedEducation}
+                                        onChange={setSelectedEducation}
+                                    />
+                                    <StyledInput type='hidden' name='finalEducation' value={selectedEducation} />
                                 </td>
                                 <th>이메일</th>
                                 <td>
@@ -175,8 +219,14 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             <tr>
                                 <th>은행</th>
                                 <td>
-                                    <StyledInput type='text' name='bank' />
+                                    <StyledSelectBox
+                                        options={bankOptions}
+                                        value={selectedBank}
+                                        onChange={setSelectedBank}
+                                    />
+                                    <StyledInput type='hidden' name='bank' value={selectedBank} />
                                 </td>
+
                                 <th>계좌번호</th>
                                 <td>
                                     <StyledInput type='text' name='bankAccount' />

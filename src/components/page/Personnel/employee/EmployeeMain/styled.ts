@@ -8,4 +8,9 @@ export const EmployeeMainStyled = styled.div`
         gap: 5px;
         padding: 10px;
     }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto; /* ✅ 가로 스크롤 자동 */
+    }
 `;
