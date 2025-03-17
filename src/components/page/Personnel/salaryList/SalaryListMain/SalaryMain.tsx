@@ -82,18 +82,19 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
                         <StyledInput value={salaryListDetail.workingYear} readOnly />
                     </div>
 
-                    {/* 공제항목 테이블 */}
-                    <StyledTable data={getDeductionData()} columns={deductionColumns} fullWidth={true} />
+                    <div className='tables'>
+                        {/* 공제항목 테이블 */}
+                        <StyledTable data={getDeductionData()} columns={deductionColumns} fullWidth={true} />
 
-                    <img
-                        src='/help_question_icon.png'
-                        style={{ width: "30px", height: "30px" }}
-                        onClick={handleModal}
-                    />
+                        <img
+                            src='/help_question_icon.png'
+                            style={{ width: "30px", height: "30px" }}
+                            onClick={handleModal}
+                        />
 
-                    {/* 지급항목 테이블 */}
-                    <StyledTable data={getPaymentData()} columns={paymentColumns} fullWidth={true} />
-
+                        {/* 지급항목 테이블 */}
+                        <StyledTable data={getPaymentData()} columns={paymentColumns} fullWidth={true} />
+                    </div>
                     {modal && (
                         <Portal>
                             <SalaryModal />

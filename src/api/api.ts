@@ -9,6 +9,7 @@ export const Employee = {
     employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
     employeeDetail: "/personnel/employeeDetail.do",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
+    employeeUpdate: "/personnel/employeeUpdate.do",
 };
 
 export const Promotion = {
@@ -36,7 +37,7 @@ export const AttendanceRequest = {
 };
 
 export const AttendanceList = {
-    attendanceCalendar: "/personnel/attendanceCalendar.do",
+    attendanceCalendar: "/personnel/attendanceCalendarSummary.do",
     searchDetail: "/personnel/approveDetailListBody.do",
 };
 
