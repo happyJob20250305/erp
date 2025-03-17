@@ -19,7 +19,6 @@ import { setSelectOption } from "../../../../../common/setSelectOption";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { approvalCode } from "../../../../../common/approvalStatus";
 import { IClientListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
-import { numberToKorean } from "number-to-korean";
 
 interface IExpenseModalProps {
     expenseDetail?: IExpense;
