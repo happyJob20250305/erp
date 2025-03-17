@@ -1,17 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AttendanceApprovalSearchStyled } from "./styled"
 import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvider";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 
-export const AttendanceApprovalSearch = () => {
+export const AttendanceApprovalSearch = ({ loginUserType }) => {
     const { setSearchKeyword } = useContext(AttendanceContext);
     const [startDate, setStartDate] = useState<string>();
     const [endDate, setEndDate] = useState<string>();
     const [number, setNumber] = useState<string>();
     const [name, setName] = useState<string>();
     const [selectReqStatusValue, setSelectReqStatusValue] = useState<string>("");
+    const [isDefault, setIsDefault] = useState<boolean>(false);
 
     const optionsReqStatus = [
         { label: "전체", value: "" },
@@ -21,6 +22,16 @@ export const AttendanceApprovalSearch = () => {
         { label: "반려", value: "반려" },
     ]
 
+    useEffect(() => {
+        setDefaultOptions();
+    }, [])
+
+    useEffect(() => {
+        if (isDefault) {
+            handlerSearch();
+        }
+    }, [isDefault])
+
     const handlerSearch = () => {
         setSearchKeyword({
             searchStDate: startDate,
@@ -29,6 +40,18 @@ export const AttendanceApprovalSearch = () => {
             searchName: name,
             searchReqStatus: selectReqStatusValue
         })
+    }
+
+    const setDefaultOptions = async () => {
+        switch (loginUserType) {
+            case "C":
+                setSelectReqStatusValue("승인 대기");
+                break;
+            case "A":
+                setSelectReqStatusValue("검토 대기");
+                break;
+        }
+        setIsDefault(true);
     }
 
     return (

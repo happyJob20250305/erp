@@ -16,7 +16,7 @@ interface IAttendanceListResponse {
     attendanceRequestCnt: number
 }
 
-export const AttendanceApprovalMain = () => {
+export const AttendanceApprovalMain = ({ loginUserType, loginUserEmpid }) => {
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
@@ -85,7 +85,7 @@ export const AttendanceApprovalMain = () => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceApprovalModal id={id} setId={setId} postSuccess={postSuccess} />
+                        <AttendanceApprovalModal id={id} setId={setId} postSuccess={postSuccess} loginUserType={loginUserType} loginUserEmpid={loginUserEmpid} />
                     </Portal>
                 )
             }
