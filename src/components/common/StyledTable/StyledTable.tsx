@@ -4,6 +4,7 @@ export interface Column<T> {
     key: keyof T | "actions";
     title: string;
     clickable?: boolean;
+    isMoney?: boolean;
 }
 
 interface TableProps<T> {
@@ -57,7 +58,7 @@ export const StyledTable = <T extends { [key: string]: any }>({
                                 >
                                     {col.key === "actions" && renderAction
                                         ? renderAction(row)
-                                        : col.key === "expense_payment" || col.key === "voucher_amount"
+                                        : col.isMoney
                                         ? Number(row[col.key as keyof T]).toLocaleString("ko-KR")
                                         : (row[col.key as keyof T] as React.ReactNode)}
                                 </Td>
