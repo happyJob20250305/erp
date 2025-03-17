@@ -66,10 +66,11 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
     const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id.toString() || "");
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>(detailSalesPlan?.industry_code || "");
-    const [selectMaincategory, setSelectMaincategory] = useState<string>(detailSalesPlan?.group_code || "");
+    const [selectMaincategory, setSelectMaincategory] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectSubcategory, setSelectSubcategory] = useState<string>(detailSalesPlan?.detail_code || "");
-    const [selectProduct, setSelectProduct] = useState<string>(detailSalesPlan?.product_id || "");
+    const [selectProduct, setSelectProduct] = useState<string>(detailSalesPlan?.product_name || "");
 
+    const [planNum, setPlanNum] = useState<string>(detailSalesPlan?.plan_num);
     const [selectDate, setSelectDate] = useState<string>("");
 
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
@@ -106,6 +107,10 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
             ? manuFacturerList.map((manuFacturerValue: IManufacturer) => {
+                  //   console.log("manuFacturerList:" + manuFacturerList);
+                  //   for (let key in manuFacturerList) {
+                  //       console.log(manuFacturerList[key]);
+                  //   }
                   return {
                       value: manuFacturerValue.industryCode,
                       label: manuFacturerValue.industryName,
@@ -202,12 +207,27 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     const insertSalesPlan = () => {
         // console.log("formRef.current:" + formRef.current);
         const formData = new FormData(formRef.current);
-
+        // const selectManuFacturerId = () => {
+        //     return () => {
+        //         manuFacturerList["industry_code"];
+        //     };
+        // };
         // console.log("formData:" + formData);
 
-        // formData.forEach((value, key) => {
-        //     console.log(`${key}: ${value}`);
-        // });
+        const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
+            return manuFacturerList.industryCode === formData.get("industry_code");
+        };
+
+        const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
+
+        const isProductName = (productList: IProduct): boolean => {
+            return productList.name === formData.get("product_id");
+        };
+
+        const selectProductName = productList.find(isProductName);
+
+        formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
+        formData.append("product_name", selectProductName.name);
 
         axios
             .post("/business/sales-plan/insertPlanBody.do", formData, {
@@ -240,36 +260,46 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     };
 
     const updateSalesPlan = () => {
-        // console.log("formRef.current:" + formRef.current);
         const formData = new FormData(formRef.current);
 
-        // console.log("formData:" + formData);
+        const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
+            return manuFacturerList.industryCode === formData.get("industry_code");
+        };
 
-        // formData.forEach((value, key) => {
-        //     console.log(`${key}: ${value}`);
-        // });
+        const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
 
+        const isProductName = (productList: IProduct): boolean => {
+            return productList.name === formData.get("product_id");
+        };
+
+        const selectProductName = productList.find(isProductName);
+
+        formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
+        formData.set("product_name", selectProductName.name);
         axios
             .post("/business/sales-plan/updatePlanBody.do", formData, {
                 headers: { "Content-Type": "application/json" },
             })
-            // .post("/business/sales-plan/insertPlanBody.do", {
-            //     emp_id: "3",
-            //     client_id: "0",
-            //     manufacturer_id: "0",
-            //     industry_code: "MF001",
-            //     target_date: "2025-03-16",
-            //     goal_quanti: "10",
-            //     perform_qut: "0",
-            //     plan_memo: "250316_1",
-            //     detail_code: "MF00102",
-            //     product_name: "레고 캐슬",
-            //     plan_num: "",
-            // }
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
                     console.log("Response:", res);
                     alert("수정되었습니다.");
+                    postSuccess();
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("서버 오류가 발생했습니다.");
+            });
+    };
+
+    const deleteSalesPlan = () => {
+        axios
+            .post("/business/sales-plan/deletePlanBody.do", { plan_num: planNum })
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    console.log("Response:", res);
+                    alert("삭제되었습니다.");
                     postSuccess();
                 }
             })
@@ -386,10 +416,13 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         ></StyledInput>
                     </label>
                     <div className={"button-container"}>
-                        {detailSalesPlan?.plan_num ? (
+                        {planNum ? (
                             <>
                                 <StyledButton type='button' onClick={updateSalesPlan}>
                                     수정
+                                </StyledButton>
+                                <StyledButton type='button' onClick={deleteSalesPlan}>
+                                    삭제
                                 </StyledButton>
                             </>
                         ) : (
@@ -403,7 +436,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                             나가기
                         </StyledButton>
                     </div>
-                    <input type='hidden' name='plan_num' value={detailSalesPlan?.plan_num} readOnly />
+                    <input type='hidden' name='plan_num' value={planNum} readOnly />
                     <input type='hidden' name='perform_qut' value={detailSalesPlan?.perform_qut} readOnly />
                 </form>
             </div>
