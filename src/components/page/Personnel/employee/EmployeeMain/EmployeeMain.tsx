@@ -136,7 +136,7 @@ export const EmployeeMain = () => {
                                     퇴직처리
                                 </StyledButton>
                             ) : (
-                                <StyledButton size='small' disabled>
+                                <StyledButton size='small' disabled variant='secondary'>
                                     퇴직처리불가
                                 </StyledButton>
                             )
