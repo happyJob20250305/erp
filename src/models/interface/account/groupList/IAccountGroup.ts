@@ -35,3 +35,7 @@ export interface ICrebitList {
     content: string;
     code_type: string;
 }
+
+export interface ICrebitListBody {
+    crebitList: ICrebitList[];
+}

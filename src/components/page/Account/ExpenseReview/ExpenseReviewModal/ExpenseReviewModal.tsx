@@ -9,12 +9,12 @@ import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
-import { IExpenseReviewBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseReview } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { approvalCode } from "../../../../../common/approvalStatus";
+import { ICrebitListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
@@ -36,7 +36,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
     }, [expenseDetail]);
 
     const getCrebitList = async () => {
-        const result = await accountSearchApi<IExpenseReviewBody>(ExpenseReview.getCrebitList, {});
+        const result = await accountSearchApi<ICrebitListBody>(ExpenseReview.getCrebitList, {});
         if (result) {
             setCrebitList(setSelectOption(result.crebitList, "detail_name", "detail_code"));
         }
