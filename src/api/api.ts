@@ -9,6 +9,7 @@ export const Employee = {
     employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
     employeeDetail: "/personnel/employeeDetail.do",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
+    employeeUpdate: "/personnel/employeeUpdate.do",
 };
 
 export const Promotion = {

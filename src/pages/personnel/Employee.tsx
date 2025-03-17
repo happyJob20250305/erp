@@ -2,7 +2,8 @@ import { EmployeeDetailProvider } from "../../api/Provider/EmployeeProvider/Empl
 import { EmployeeRetirementModalProvider } from "../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
 import { EmployeeSearchProvider } from "../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
-import { EmplyoeeMain } from "../../components/page/Personnel/employee/EmployeeMain/EmployeeMain";
+import { EmployeeMain } from "../../components/page/Personnel/employee/EmployeeMain/EmployeeMain";
+
 import { EmployeeSearch } from "../../components/page/Personnel/employee/EmployeSearch/EmployeeSearch";
 
 export const Employee = () => {
@@ -15,7 +16,7 @@ export const Employee = () => {
                             인사 관리
                         </ContentBox>
                         <EmployeeSearch />
-                        <EmplyoeeMain />
+                        <EmployeeMain />
                     </EmployeeRetirementModalProvider>
                 </EmployeeDetailProvider>
             </EmployeeSearchProvider>
