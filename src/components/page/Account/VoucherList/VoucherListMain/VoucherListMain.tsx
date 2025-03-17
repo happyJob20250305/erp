@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { VoucherListContext } from "../../../../../api/Provider/VoucherListProvider";
+import { VoucherListContext } from "../../../../../api/Provider/AccountProvider/VoucherListProvider";
 import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { VoucherListMainStyled } from "./styled";
