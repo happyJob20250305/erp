@@ -8,15 +8,15 @@ import { Portal } from '../../../../common/potal/Portal';
 import { AttendanceListModal } from '../AttendanceListModal/AttendanceListModal';
 import { searchApi } from '../../../../../api/PersonnelApi/searchApi';
 import { AttendanceList } from '../../../../../api/api';
-import { IAttendance } from '../../../../../models/interface/personnel/attendance/IAttendance';
 import { IEvent } from '../../../../../models/interface/personnel/attendance/IEvent';
+import { IAttendanceAmt } from '../../../../../models/interface/personnel/attendance/IAttendanceAmt';
 
 interface IAttendanceListResponse {
-    attendanceList: IAttendance[]
+    attendanceListAmt: IAttendanceAmt[]
 }
 
 export const AttendanceListMain = () => {
-    const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
+    const [attendanceListAmt, setAttendanceListAmt] = useState<IAttendanceAmt[]>([]);
     const [events, setEvents] = useState<IEvent[]>([]);
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [searchStDate, setSearchStDate] = useState<string>("");
@@ -27,66 +27,50 @@ export const AttendanceListMain = () => {
     }, [])
 
     useEffect(() => {
-        if (attendanceList.length > 0) {
+        if (attendanceListAmt.length > 0) {
             makeEvents();
         }
-    }, [attendanceList]);
+    }, [attendanceListAmt]);
 
     const attendanceCalendar = async () => {
         const result = await searchApi<IAttendanceListResponse>(AttendanceList.attendanceCalendar);
 
         if (result) {
-            setAttendanceList(result.attendanceList);
+            setAttendanceListAmt(result.attendanceListAmt);
         }
     }
 
     const makeEvents = () => {
-        const dataMap = new Map();
-
-        for (const attendance of attendanceList) {
-            const reqSt = attendance.reqSt;
-            const reqStatus = attendance.reqStatus;
-            const key = `${reqSt}-${reqStatus}`; // 날짜와 상태를 결합하여 키 생성
-
-            if (dataMap.has(key)) {
-                let val = dataMap.get(key) + 1;
-                dataMap.set(key, val);
-            } else {
-                dataMap.set(key, 1);
-            }
-        }
-
         let myevents = [];
 
-        dataMap.forEach((value, key) => {
-            let date = key.substring(0, 10);
-            let reqStatus = key.substring(11);
-            let title = `${reqStatus} ${value}건`
-            switch (reqStatus) {
-                case "승인":
+        attendanceListAmt.forEach(function (attendanceAmt) {
+            let date = attendanceAmt.reqSt;
+
+            switch (attendanceAmt.reqStatus) {
+                case "S":
                     myevents.push({
-                        title: title,
+                        title: `승인 ${attendanceAmt.countReqStatus}건`,
                         date: date,
                         color: '#71C379'
                     })
                     break;
-                case "승인 대기":
+                case "F":
                     myevents.push({
-                        title: title,
+                        title: `승인 대기 ${attendanceAmt.countReqStatus}건`,
                         date: date,
                         color: '#E6B800'
                     })
                     break;
-                case "검토 대기":
+                case "W":
                     myevents.push({
-                        title: title,
+                        title: `검토 대기 ${attendanceAmt.countReqStatus}건`,
                         date: date,
                         color: '#5B91D4'
                     })
                     break;
-                case "반려":
+                case "N":
                     myevents.push({
-                        title: title,
+                        title: `반려 ${attendanceAmt.countReqStatus}건`,
                         date: date,
                         color: '#E57373'
                     })
@@ -94,7 +78,8 @@ export const AttendanceListMain = () => {
                 default:
                     break;
             }
-        });
+
+        })
         setEvents(myevents);
     }
 

@@ -37,7 +37,7 @@ export const AttendanceRequest = {
 };
 
 export const AttendanceList = {
-    attendanceCalendar: "/personnel/attendanceCalendar.do",
+    attendanceCalendar: "/personnel/attendanceCalendarSummary.do",
     searchDetail: "/personnel/approveDetailListBody.do",
 };
 
