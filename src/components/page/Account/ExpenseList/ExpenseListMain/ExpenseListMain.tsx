@@ -26,7 +26,7 @@ export const ExpenseListMain = () => {
         { key: "group_name", title: "계정대분류명" },
         { key: "detail_name", title: "계정과목" },
         { key: "use_department", title: "사용부서" },
-        { key: "expense_payment", title: "결의금액" },
+        { key: "expense_payment", title: "결의금액", isMoney: true },
         { key: "actions", title: "승인여부" },
     ] as Column<IExpense>[];
 

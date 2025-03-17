@@ -26,24 +26,34 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) 
                             <tr>
                                 <th scope='row'>전표번호</th>
                                 <td>
-                                    <StyledInput defaultValue={voucherDetail?.voucher_no}></StyledInput>
+                                    <StyledInput defaultValue={voucherDetail?.voucher_no} width={150}></StyledInput>
                                 </td>
                                 <th scope='row'>구분</th>
                                 <td>
-                                    <StyledInput defaultValue={voucherDetail?.account_type}></StyledInput>
+                                    <StyledInput defaultValue={voucherDetail?.account_type} width={100}></StyledInput>
                                 </td>
                                 <th scope='row'>담당자</th>
-                                <td>{voucherDetail?.emp_name}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.emp_name} width={100}></StyledInput>
+                                </td>
                                 <th scope='row'>일자 </th>
-                                <td>{voucherDetail?.voucher_date}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.voucher_date} width={150}></StyledInput>
+                                </td>
                             </tr>
                             <tr>
                                 <th scope='row'>거래처</th>
-                                <td>{voucherDetail?.client_name}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.client_name} width={150}></StyledInput>
+                                </td>
                                 <th scope='row'>주문번호</th>
-                                <td>{voucherDetail?.order_id}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.order_id} width={100}></StyledInput>
+                                </td>
                                 <th scope='row'>지출번호</th>
-                                <td>{voucherDetail?.exp_id || "-"}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.exp_id || "-"} width={100}></StyledInput>
+                                </td>
                                 <td colSpan={2}></td>
                             </tr>
                             <tr id='writer'>
@@ -80,10 +90,14 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) 
                                     합계
                                 </th>
                                 <th scope='row' colSpan={2}>
-                                    {voucherDetail?.voucher_amount}
+                                    <StyledInput
+                                        defaultValue={voucherDetail?.voucher_amount.toLocaleString("ko-KR")}
+                                    ></StyledInput>
                                 </th>
                                 <th scope='row' colSpan={2}>
-                                    {voucherDetail?.voucher_amount}
+                                    <StyledInput
+                                        defaultValue={voucherDetail?.voucher_amount.toLocaleString("ko-KR")}
+                                    ></StyledInput>
                                 </th>
                             </tr>
                         </tbody>
