@@ -4,14 +4,14 @@ export interface IEmployeeResponse {
 }
 
 export interface IEmployee {
-    employeeId: number;
+    employeeId: string;
     userType: string | null;
     salaryClassId: number;
     loginId: string | null;
     password: string | null;
     departmentCode: string;
     jobGradeCode: string;
-    number: number;
+    number: string;
     employeeName: string;
     registrationNumber: string | null;
     sex: string | null;
