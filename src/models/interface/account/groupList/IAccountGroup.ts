@@ -31,8 +31,7 @@ export interface IClient {
 export interface ICrebitList {
     detail_code: string;
     detail_name: string;
-}
-
-export interface IExpenseReviewBody {
-    crebitList: ICrebitList[];
+    use_yn: string;
+    content: string;
+    code_type: string;
 }
