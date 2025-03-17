@@ -12,6 +12,10 @@ export interface IAccountGroupListBody {
     accountGroupList: IAccountGroup[];
 }
 
+export interface IAccountGroupListBody {
+    accountGroupList: IAccountGroup[];
+}
+
 export interface IDetailGroupListBody {
     searchAccount: IDetailGroup[];
 }
