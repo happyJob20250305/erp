@@ -13,7 +13,9 @@ export const MySalary = () => {
 
     return (
         <>
-            <ContentBox>급여 조회</ContentBox>
+            <ContentBox variant='primary' fontSize='large'>
+                급여 조회
+            </ContentBox>
             <SalaryListSearch onSearch={handleSearch} />
             <SalaryMain data={searchPaymentMonth} />
         </>

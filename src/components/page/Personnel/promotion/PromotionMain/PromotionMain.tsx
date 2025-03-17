@@ -6,9 +6,10 @@ import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable"
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Promotion } from "../../../../../api/api";
 import { useContext, useEffect, useState } from "react";
-import { PromotionMainStyled } from "./PromotionMainStyled";
+
 import { PromotionSearchContext } from "../../../../../api/Provider/PromitionProvider/PromotionSearhProvider";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { PromotionMainStyled } from "./styled";
 
 interface PromotionMainProps {
     onSelectEmployee: (employeeNumber: number) => void;

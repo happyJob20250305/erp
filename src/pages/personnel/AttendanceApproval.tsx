@@ -1,7 +1,7 @@
-import { AttendanceProvider } from "../../api/Provider/AttendanceProvider"
-import { ContentBox } from "../../components/common/ContentBox/ContentBox"
-import { AttendanceApprovalMain } from "../../components/page/Personnel/AttendanceApproval/AttendanceApprovalMain/AttendanceApprovalMain"
-import { AttendanceApprovalSearch } from "../../components/page/Personnel/AttendanceApproval/AttendanceApprovalSearch/AttendanceApprovalSearch"
+import { AttendanceProvider } from "../../api/Provider/AttendanceProvider";
+import { ContentBox } from "../../components/common/ContentBox/ContentBox";
+import { AttendanceApprovalMain } from "../../components/page/Personnel/AttendanceApproval/AttendanceApprovalMain/AttendanceApprovalMain";
+import { AttendanceApprovalSearch } from "../../components/page/Personnel/AttendanceApproval/AttendanceApprovalSearch/AttendanceApprovalSearch";
 
 export const AttendanceApproval = () => {
     return (
@@ -12,5 +12,5 @@ export const AttendanceApproval = () => {
             <AttendanceApprovalSearch></AttendanceApprovalSearch>
             <AttendanceApprovalMain></AttendanceApprovalMain>
         </AttendanceProvider>
-    )
-}
+    );
+};
