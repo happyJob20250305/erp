@@ -57,6 +57,8 @@ export const StyledTable = <T extends { [key: string]: any }>({
                                 >
                                     {col.key === "actions" && renderAction
                                         ? renderAction(row)
+                                        : col.key === "expense_payment" || col.key === "voucher_amount"
+                                        ? Number(row[col.key as keyof T]).toLocaleString("ko-KR")
                                         : (row[col.key as keyof T] as React.ReactNode)}
                                 </Td>
                             ))}

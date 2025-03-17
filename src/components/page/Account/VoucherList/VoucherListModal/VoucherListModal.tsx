@@ -5,6 +5,7 @@ import { ButtonArea, ModalOverlay, ModalStyledTable, VoucherListModalStyle } fro
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { useReactToPrint } from "react-to-print";
 import { IVoucher } from "../../../../../models/interface/account/voucherList/IVoucher";
+import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 
 interface IVoucherListModalProps {
     voucherDetail: IVoucher;
@@ -24,9 +25,13 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) 
                         <tbody>
                             <tr>
                                 <th scope='row'>전표번호</th>
-                                <td>{voucherDetail?.voucher_no}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.voucher_no}></StyledInput>
+                                </td>
                                 <th scope='row'>구분</th>
-                                <td>{voucherDetail?.account_type}</td>
+                                <td>
+                                    <StyledInput defaultValue={voucherDetail?.account_type}></StyledInput>
+                                </td>
                                 <th scope='row'>담당자</th>
                                 <td>{voucherDetail?.emp_name}</td>
                                 <th scope='row'>일자 </th>
@@ -39,6 +44,7 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) 
                                 <td>{voucherDetail?.order_id}</td>
                                 <th scope='row'>지출번호</th>
                                 <td>{voucherDetail?.exp_id || "-"}</td>
+                                <td colSpan={2}></td>
                             </tr>
                             <tr id='writer'>
                                 <th scope='row' colSpan={4}>
@@ -53,13 +59,21 @@ export const VoucherListModal: FC<IVoucherListModalProps> = ({ voucherDetail }) 
                             </tr>
                             <tr>
                                 <td colSpan={4}>{voucherDetail?.debit_name}</td>
-                                <td colSpan={2}>{voucherDetail?.voucher_amount}</td>
+                                <td colSpan={2}>
+                                    <StyledInput
+                                        defaultValue={voucherDetail?.voucher_amount.toLocaleString("ko-KR")}
+                                    ></StyledInput>
+                                </td>
                                 <td colSpan={2}>0</td>
                             </tr>
                             <tr>
                                 <td colSpan={4}>{voucherDetail?.crebit_name}</td>
                                 <td colSpan={2}>0</td>
-                                <td colSpan={2}>{voucherDetail?.voucher_amount}</td>
+                                <td colSpan={2}>
+                                    <StyledInput
+                                        defaultValue={voucherDetail?.voucher_amount.toLocaleString("ko-KR")}
+                                    ></StyledInput>
+                                </td>
                             </tr>
                             <tr>
                                 <th scope='row' colSpan={4}>

@@ -19,6 +19,7 @@ import { setSelectOption } from "../../../../../common/setSelectOption";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { approvalCode } from "../../../../../common/approvalStatus";
 import { IClientListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
+import { numberToKorean } from "number-to-korean";
 
 interface IExpenseModalProps {
     expenseDetail?: IExpense;
@@ -250,9 +251,9 @@ export const ExpenseModal: FC<IExpenseModalProps> = ({ expenseDetail, postSucces
                                     </th>
                                     <td>
                                         <StyledInput
-                                            type='number'
+                                            type={expenseDetail ? "text" : "number"}
                                             name='exp_pay'
-                                            defaultValue={expenseDetail?.expense_payment}
+                                            defaultValue={expenseDetail?.expense_payment.toLocaleString("ko-KR")}
                                             readOnly={!!expenseDetail}
                                         ></StyledInput>
                                     </td>

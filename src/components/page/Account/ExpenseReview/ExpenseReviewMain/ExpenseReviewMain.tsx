@@ -61,7 +61,10 @@ export const ExpenseReviewMain = () => {
 
     const handlerModal = (row: IExpenseReview) => {
         setModal(!modal);
-        setExpenseDetail(row);
+        setExpenseDetail({
+            ...row,
+            expense_payment: row.expense_payment.toLocaleString("ko-KR"),
+        });
     };
 
     const postSuccess = () => {

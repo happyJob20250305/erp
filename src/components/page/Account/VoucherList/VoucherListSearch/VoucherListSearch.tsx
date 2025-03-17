@@ -53,9 +53,9 @@ export const VoucherListSearch = () => {
             <div className='search-group'>
                 <div className='search-bar'>
                     <span>신청일자</span>
-                    <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} />
+                    <StyledInput type='date' onChange={(e) => setSearchStDate(e.target.value)} width={127} />
                     <span>~</span>
-                    <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} />
+                    <StyledInput type='date' onChange={(e) => setSearchEdDate(e.target.value)} width={126} />
                     <span>거래처명</span>
                     <StyledSelectBox options={clientList} value={selectedClient} onChange={setSelectedClient} />
                 </div>

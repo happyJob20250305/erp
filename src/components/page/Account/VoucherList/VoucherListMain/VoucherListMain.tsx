@@ -51,7 +51,10 @@ export const VoucherListMain = () => {
 
     const handlerModal = (row: IVoucher) => {
         setModal(!modal);
-        setVoucherDetail(row);
+        setVoucherDetail({
+            ...row,
+            voucher_amount: Number(row.voucher_amount),
+        });
     };
 
     return (

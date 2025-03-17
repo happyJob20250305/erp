@@ -51,7 +51,10 @@ export const ExpenseListMain = () => {
 
     const handlerModal = (row: IExpense) => {
         setModal(!modal);
-        setExpenseDetail(row);
+        setExpenseDetail({
+            ...row,
+            expense_payment: Number(row.expense_payment),
+        });
     };
 
     const postSuccess = () => {

@@ -9,7 +9,7 @@ export interface IExpense {
     detail_name: string;
     debit_code: string;
     use_department: string;
-    expense_payment: string;
+    expense_payment: number | string;
     is_approval: string;
     content: string;
     expense_content: string;
