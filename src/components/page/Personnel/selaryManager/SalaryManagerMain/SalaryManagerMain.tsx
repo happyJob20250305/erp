@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useLocation } from "react-router-dom";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { ISalaryListDetail } from "../../../../../models/interface/personnel/salary/IsalaryMain";
 import { ISalaryListDetailResponse } from "../../../../../models/interface/personnel/salary/ISalaryManager";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
@@ -9,6 +8,7 @@ import { SalaryManager } from "../../../../../api/api";
 import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 
 interface SalaryManagerDetailProps {
     Pdata: (data: number) => void;
@@ -29,6 +29,35 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         paymentData,
         paymentStatus,
     } = useContext(SalaryManagerContext);
+
+    //   <StyledTh>번호</StyledTh>
+    //                         <StyledTh>사원명</StyledTh>
+    //                         <StyledTh>직급</StyledTh>
+    //                         <StyledTh>부서명</StyledTh>
+    //                         <StyledTh>사번</StyledTh>
+    //                         <StyledTh>연봉</StyledTh>
+    //                         <StyledTh>기본급</StyledTh>
+    //                         <StyledTh>국민연금</StyledTh>
+    //                         <StyledTh>건강보험료</StyledTh>
+    //                         <StyledTh>산재보험</StyledTh>
+    //                         <StyledTh>고용보험</StyledTh>
+    //                         <StyledTh>비고금액</StyledTh>
+    //                         <StyledTh>지급</StyledTh>
+    // 테이블 컬럼 정의
+    const columns: Column<ISalaryListDetail>[] = [
+        { key: "employeeName", title: "사원명" },
+        { key: "jobGradeDetailName", title: "직급" },
+        { key: "departmentDetailName", title: "부서명" },
+        { key: "employeeNumber", title: "사번" },
+        { key: "salary", title: "연봉" },
+        { key: "baseSalary", title: "기본급" },
+        { key: "nationalPension", title: "국민연금" },
+        { key: "healthInsurance", title: "건강보험료" },
+        { key: "industrialAccident", title: "산재보험" },
+        { key: "employmentInsurance", title: "고용보험" },
+        { key: "additionalAmount", title: "비고금액" },
+        { key: "actions", title: "지급" },
+    ];
 
     useEffect(() => {
         if (paymentData) salarySave(paymentData);
@@ -71,7 +100,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         searchParam.append("paymentDate", paymentData);
 
         const result = await postApi<string>(SalaryManager.salarySave, searchParam);
-        alert(`명세서 생성 결과: ${result}`);
+        alert("급여가 생성되었습니다.");
     };
 
     const allPaymentStatus = async (paymentStatus: string) => {
@@ -79,7 +108,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         searchParam.append("paymentStatus", paymentStatus);
 
         const result = await postApi<string>(SalaryManager.allPaymentStatusUpdate, searchParam);
-        alert(`지급 처리 결과: ${result}`);
+        alert("전부 지급 처리 되었습니다.");
     };
 
     const handlePayment = async (salaryId: number, baseSalary: number) => {
@@ -107,7 +136,8 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
     return (
         <>
             <div>총 개수 : {salaryCnt}</div>
-            <StyledTable>
+
+            {/* <StyledTable>
                 <thead>
                     <tr>
                         <StyledTh>번호</StyledTh>
@@ -161,7 +191,34 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                         </tr>
                     )}
                 </tbody>
-            </StyledTable>
+            </StyledTable> */}
+            <div className='table-container'>
+                <StyledTable
+                    columns={columns}
+                    data={salaryList}
+                    striped
+                    // bordered
+                    hoverable
+                    fullWidth
+                    onCellClick={(row) => handlerSearch(row.employeeNumber)}
+                    renderAction={(row) =>
+                        row.paymentStatus === 0 ? (
+                            <StyledButton
+                                size='small'
+                                onClick={(e) => {
+                                    handlePayment(row.salaryId, row.baseSalary);
+                                }}
+                            >
+                                지급하기
+                            </StyledButton>
+                        ) : (
+                            <StyledButton size='small' disabled color='gray'>
+                                지급 완료
+                            </StyledButton>
+                        )
+                    }
+                />
+            </div>
 
             <PageNavigate totalItemsCount={salaryCnt} onChange={setCPage} activePage={cPage} itemsCountPerPage={5} />
         </>

@@ -6,7 +6,9 @@ import {
 } from "../../../../../models/interface/personnel/salary/ISalaryManagerDetail";
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { SalaryManager } from "../../../../../api/api";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+// import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { SalalyManagerDetailStyled } from "./styled";
 
 export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     // data는 props로부터 전달받은 employeeNumber라고 가정
@@ -14,6 +16,34 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     const [salaryDetail, setSalaryDetail] = useState<ISalaryDetail[]>([]);
     const [employeeNumber, setEmployeeNumber] = useState<number>();
 
+    //  <StyledTd>{salary.salaryId}</StyledTd>
+    //                             <StyledTd>{salary.employeeName}</StyledTd>
+    //                             <StyledTd>{salary.salary?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.baseSalary?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.nationalPension?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.healthInsurance?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.industrialAccident?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.employmentInsurance?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>
+    //                                 {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
+    //                             </StyledTd>
+    //                             <StyledTd>{salary.paymentDate?.toLocaleString() ?? "0"}</StyledTd>
+    //                             <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
+
+    const columns: Column<ISalaryDetail>[] = [
+        { key: "salaryId", title: "사원명" },
+        { key: "salary", title: "직급" },
+        { key: "baseSalary", title: "부서명" },
+        { key: "nationalPension", title: "사번" },
+        { key: "healthInsurance", title: "연봉" },
+        { key: "baseSalary", title: "기본급" },
+        { key: "nationalPension", title: "국민연금" },
+        { key: "healthInsurance", title: "건강보험료" },
+        { key: "industrialAccident", title: "산재보험" },
+        { key: "employmentInsurance", title: "고용보험" },
+        { key: "additionalAmount", title: "비고금액" },
+        { key: "paymentDate", title: "지급일" },
+    ];
     useEffect(() => {
         // 컴포넌트 마운트 시 또는 data(=employeeNumber)가 바뀔 때 조회
         salaryManagerDetailList(data);
@@ -43,49 +73,19 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     };
 
     return (
-        <div>
-            <h2>급여 상세</h2>
-
-            {salaryDetail.length > 0 ? (
-                <StyledTable>
-                    <thead>
-                        <tr>
-                            <StyledTh>번호</StyledTh>
-                            <StyledTh>사원명</StyledTh>
-                            <StyledTh>연봉</StyledTh>
-                            <StyledTh>기본급</StyledTh>
-                            <StyledTh>국민연금</StyledTh>
-                            <StyledTh>건강보험</StyledTh>
-                            <StyledTh>산재보험</StyledTh>
-                            <StyledTh>고용보험</StyledTh>
-                            <StyledTh>비고금액</StyledTh>
-                            <StyledTh>실급여</StyledTh>
-                            <StyledTh>지급일</StyledTh>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {salaryDetail.map((salary) => (
-                            <tr key={salary.salaryId}>
-                                <StyledTd>{salary.salaryId}</StyledTd>
-                                <StyledTd>{salary.employeeName}</StyledTd>
-                                <StyledTd>{salary.salary?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.baseSalary?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.nationalPension?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.healthInsurance?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.industrialAccident?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.employmentInsurance?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>
-                                    {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
-                                </StyledTd>
-                                <StyledTd>{salary.paymentDate?.toLocaleString() ?? "0"}</StyledTd>
-                                <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
-                            </tr>
-                        ))}
-                    </tbody>
-                </StyledTable>
-            ) : (
-                <div>데이터가 없습니다.</div>
+        <>
+            {salaryDetail.length > 0 && (
+                <SalalyManagerDetailStyled>
+                    <StyledTable
+                        columns={columns}
+                        data={salaryDetail}
+                        striped
+                        // bordered
+                        hoverable
+                        fullWidth
+                    />
+                </SalalyManagerDetailStyled>
             )}
-        </div>
+        </>
     );
 };
