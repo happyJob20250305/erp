@@ -4,6 +4,7 @@ export interface Column<T> {
     key: keyof T | "actions";
     title: string;
     clickable?: boolean;
+    render?: (value: any) => React.ReactNode;
 }
 
 interface TableProps<T> {
@@ -57,7 +58,9 @@ export const StyledTable = <T extends { [key: string]: any }>({
                                 >
                                     {col.key === "actions" && renderAction
                                         ? renderAction(row)
-                                        : (row[col.key as keyof T] as React.ReactNode)}
+                                        : col.render
+                                          ? col.render(row[col.key as keyof T]) // ✅ render 함수 호출
+                                          : (row[col.key as keyof T] as React.ReactNode)}
                                 </Td>
                             ))}
                         </Tr>
