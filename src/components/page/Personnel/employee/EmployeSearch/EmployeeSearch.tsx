@@ -69,6 +69,16 @@ export const EmployeeSearch = () => {
         setEmplStatus(selectedEmplStatus);
     };
 
+    const resetSearch = () => {
+        setSearchId("");
+        setSearchName("");
+        setDepartment("");
+        setJobGrade("");
+        setSearchRegDateStart("");
+        setSearchRegDateEnd("");
+        setEmplStatus("");
+    };
+
     // SelectBox 옵션 변환
     const departmentOptions = [
         { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
@@ -125,6 +135,12 @@ export const EmployeeSearch = () => {
                     <div className='button-container'>
                         <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
                     </div>
+
+                    <img
+                        src='/refresh.png'
+                        onClick={resetSearch}
+                        style={{ width: "30px", height: "30px", color: "white" }}
+                    />
                 </div>
             </div>
         </EmployeeSearchStyled>

@@ -15,6 +15,7 @@ import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelect
 import { IEmployeeRegisterResponse } from "../../../../../models/interface/personnel/employee/IEmployeeRegisterResponse";
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
 import { IEmployee } from "../../../../../models/interface/personnel/employee/IEmployeeList";
+import DaumPostcode from "react-daum-postcode"; // 추가
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -30,7 +31,11 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [imageUrl, setImageUrl] = useState<string>("");
     const [selectedEducation, setSelectedEducation] = useState("");
     const [selectedBank, setSelectedBank] = useState("");
-
+    const [selectedSex, setSelectedSex] = useState("");
+    const [zipCode, setZipCode] = useState("");
+    const [address, setAddress] = useState("");
+    const [addressDetail, setAddressDetail] = useState("");
+    const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
     //  옵션 데이터 조회
     useEffect(() => {
         getOptionList();
@@ -73,6 +78,12 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         { label: "카카오뱅크", value: "카카오뱅크" },
         { label: "토스뱅크", value: "토스뱅크" },
         { label: "새마을금고", value: "새마을금고" },
+    ];
+
+    const sexOptionse = [
+        { label: "선택", value: "" },
+        { label: "여성", value: "여성" },
+        { label: "남성", value: "남성" },
     ];
 
     //  파일 업로드 핸들링
@@ -142,6 +153,22 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         }
     };
 
+    const handleComplete = (data: any) => {
+        setIsOpen(false);
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+            if (data.bname !== "") extraAddress += data.bname;
+            if (data.buildingName !== "")
+                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
+        }
+
+        setZipCode(data.zonecode);
+        setAddress(fullAddress);
+    };
+
     //  모달 닫기
     const closeModal = () => setModal(false);
 
@@ -151,6 +178,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     return (
         <EmployeeRegisterModalStyled>
             <div className='container'>
+                <h2>사원 등록</h2>
                 <form ref={formRef}>
                     <ModalStyledTable>
                         <tbody>
@@ -173,8 +201,12 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </td>
                                 <th>성별</th>
                                 <td>
-                                    남 <input type='radio' name='sex' value='남자' /> 여{" "}
-                                    <input type='radio' name='sex' value='여자' />
+                                    <StyledSelectBox
+                                        options={sexOptionse}
+                                        value={selectedSex}
+                                        onChange={setSelectedSex}
+                                    />
+                                    <StyledInput type='hidden' name='sex' value={selectedSex} />
                                 </td>
                             </tr>
                             {/* 3 */}
@@ -201,20 +233,49 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </td>
                                 <th>우편번호</th>
                                 <td>
-                                    <StyledInput type='text' name='zipCode' />
+                                    <StyledInput type='text' name='zipCode' value={zipCode} readOnly />
+                                    <StyledButton
+                                        type='button'
+                                        onClick={() => setIsOpen(true)}
+                                        style={{ marginLeft: "10px" }}
+                                    >
+                                        주소 검색
+                                    </StyledButton>
                                 </td>
                             </tr>
-                            {/* 5 */}
                             <tr>
                                 <th>주소</th>
                                 <td>
-                                    <StyledInput type='text' name='address' />
+                                    <StyledInput type='text' name='address' value={address} readOnly />
                                 </td>
                                 <th>상세주소</th>
                                 <td>
-                                    <StyledInput type='text' name='addressDetail' />
+                                    <StyledInput
+                                        type='text'
+                                        name='addressDetail'
+                                        value={addressDetail}
+                                        onChange={(e) => setAddressDetail(e.target.value)}
+                                    />
                                 </td>
                             </tr>
+                            {/* ✅ 주소 검색 모달 (조건부 렌더링) */}
+                            {isOpen && (
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        top: "20%",
+                                        left: "30%",
+                                        width: "500px",
+                                        height: "600px",
+                                        zIndex: 100,
+                                        border: "1px solid #ccc",
+                                        backgroundColor: "#fff",
+                                    }}
+                                >
+                                    <DaumPostcode onComplete={handleComplete} autoClose />
+                                </div>
+                            )}
+
                             {/* 6 */}
                             <tr>
                                 <th>은행</th>

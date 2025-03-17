@@ -51,6 +51,7 @@ export const EmployeeRetireModal: FC<IEmployeeRetireModalProps> = ({ postSuccess
         <>
             <EmployeeRetireModalStyled>
                 <div className='container'>
+                    <h2>퇴직 처리</h2>
                     <form ref={formRef}>
                         <ModalStyledTable>
                             <tbody>
