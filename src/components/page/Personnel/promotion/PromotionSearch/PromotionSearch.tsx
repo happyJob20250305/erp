@@ -63,61 +63,77 @@ export const PromotionSearch = () => {
     };
 
     const handleSearchcSaveContext = () => {
-        console.log("검색 버튼 클릭");
         setSearchEmployeeName(employeeNameInput);
         setSearchEmployeeNumber(employeeNumber);
         setSearchRegDateEnd(endDate);
         setSearchRegDateStart(startDate);
         setDepartment(selectedDepartment);
         setJobGrade(selectedJobGrade);
-        console.log("컨테스트에 저장");
-        console.log(employeeNameInput);
-        console.log(employeeNumber);
     };
 
-    // 2) SelectBox에서 사용할 옵션 배열 생성
-    //    (label, value) 형태를 StyledSelectBox에 맞춰 변환
-    const departmentOptions = DepartmentGroupItem.map((item) => ({
-        label: item.departmentDetailName,
-        value: item.departmentDetailName,
-    }));
+    const resetSearch = () => {
+        setSearchEmployeeName("");
+        setSearchEmployeeNumber("");
+        setSearchRegDateEnd("");
+        setSearchRegDateStart("");
+        setDepartment("");
+        setJobGrade("");
+    };
 
-    const jobGradeOptions = JobGradeGroupItem.map((item) => ({
-        label: item.jobGradeDetailName,
-        value: item.jobGradeDetailName,
-    }));
+    // SelectBox 옵션 변환
+    const departmentOptions = [
+        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
+        ...DepartmentGroupItem.map((item) => ({
+            label: item.departmentDetailName,
+            value: item.departmentDetailName,
+        })),
+    ];
 
+    const jobGradeOptions = [
+        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
+        ...JobGradeGroupItem.map((item) => ({
+            label: item.jobGradeDetailName,
+            value: item.jobGradeDetailName,
+        })),
+    ];
     return (
         <>
             <PromotionSearchStyled>
-                {/* 부서 : department */}
-                <div style={{ marginLeft: "20px" }}>
-                    부서
-                    <StyledSelectBox
-                        options={departmentOptions}
-                        value={selectedDepartment}
-                        onChange={setSelectedDepartment}
-                    />
-                    {/* 직급 : jobGrade */}
-                    직급
-                    <StyledSelectBox
-                        options={jobGradeOptions}
-                        value={selectedJobGrade}
-                        onChange={setSelectedJobGrade}
-                    />
-                    {/* 사원명 : searchEmployeeName */}
-                    사번
-                    <StyledInput value={employeeNumber} onChange={(e) => setEmployeeNumber(e.target.value)} />
-                    이름
-                    <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
+                <div className='searchBarBox' style={{ border: "5px solid white" }}>
+                    <div className='searchBar' style={{ border: "5px solid white" }}>
+                        {/* 부서 : department */}
+                        <span>부서</span>
+                        <StyledSelectBox
+                            options={departmentOptions}
+                            value={selectedDepartment}
+                            onChange={setSelectedDepartment}
+                        />
+                        <span>직급</span>
+                        <StyledSelectBox
+                            options={jobGradeOptions}
+                            value={selectedJobGrade}
+                            onChange={setSelectedJobGrade}
+                        />
+                        {/* 사원명 : searchEmployeeName */}
+                        <span>사번</span>
+                        <StyledInput value={employeeNumber} onChange={(e) => setEmployeeNumber(e.target.value)} />
+                        <span>이름</span>
+                        <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
+                    </div>
+                    <div className='searchBar'>
+                        {/* 입사일 조회 */}
+                        <span>기간별 조회 </span>
+                        <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        {/* 검색  */}
+                        <StyledButton onClick={handleSearchcSaveContext}>검색</StyledButton>
+                        <img
+                            src='/refresh.png'
+                            onClick={resetSearch}
+                            style={{ width: "30px", height: "30px", color: "white" }}
+                        />
+                    </div>
                 </div>
-                {/* 입사일 조회 */}
-                기간별 조회
-                {/* 급여 계산  */}
-                <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                {/* 검색  */}
-                <StyledButton onClick={handleSearchcSaveContext}>검색</StyledButton>
             </PromotionSearchStyled>
         </>
     );

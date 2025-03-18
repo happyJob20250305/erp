@@ -37,17 +37,22 @@ export const SalaryManagerSearch = () => {
         }
     };
 
-    // 2) SelectBox에서 사용할 옵션 배열 생성
-    //    (label, value) 형태를 StyledSelectBox에 맞춰 변환
-    const departmentOptions = DepartmentGroupItem.map((item) => ({
-        label: item.departmentDetailName,
-        value: item.departmentDetailName,
-    }));
+    // SelectBox 옵션 변환
+    const departmentOptions = [
+        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
+        ...DepartmentGroupItem.map((item) => ({
+            label: item.departmentDetailName,
+            value: item.departmentDetailName,
+        })),
+    ];
 
-    const jobGradeOptions = JobGradeGroupItem.map((item) => ({
-        label: item.jobGradeDetailName,
-        value: item.jobGradeDetailName,
-    }));
+    const jobGradeOptions = [
+        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
+        ...JobGradeGroupItem.map((item) => ({
+            label: item.jobGradeDetailName,
+            value: item.jobGradeDetailName,
+        })),
+    ];
 
     // (추가) 지급여부 SelectBox용 옵션 예시
     const paymentStatusOptions = [
@@ -83,6 +88,14 @@ export const SalaryManagerSearch = () => {
         setSearchPaymentMonth(selectedMonth);
     };
 
+    const resetSearch = () => {
+        setSearchEmployeeName("");
+        setDepartment("");
+        setJobGrade("");
+        setSearchPaymentStatus(null);
+        setSearchPaymentMonth("");
+    };
+
     //급여 계산
     const salarySave = (selectedPaymentDate: string) => {
         setPaymentData(selectedPaymentDate);
@@ -107,47 +120,65 @@ export const SalaryManagerSearch = () => {
 
     return (
         <SalalyManagerSearchStyled>
-            {/* 급여 계산  */}
-            <div className='top-right' style={{ display: "flex", justifyContent: "flex-end" }}>
-                <div style={{ marginRight: "10px" }}>
+            <div className='searchBarBox' style={{ border: "5px solid white" }}>
+                <div className='searchBar' style={{ border: "5px solid white" }}>
+                    {/* 급여 계산  */}
+                    <span>급여 계산</span>
                     <StyledInput
                         type='month'
                         value={selectedPaymentDate}
                         onChange={(e) => setSelectedPaymentDate(e.target.value)}
                     />
+                    <StyledButton onClick={() => salarySave(selectedPaymentDate)}>급여 생성</StyledButton>
+                    {/* 일괄 지급 */}
+                    <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
                 </div>
-                <StyledButton onClick={(e) => salarySave(selectedPaymentDate)}>급여 계산</StyledButton>
-            </div>
-            {/* 사원명 : searchEmployeeName */}
-            <div className='row' style={{ marginLeft: "20px", marginBottom: "20px" }}>
-                사원명
-                <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
-                {/* 급여년월 searchPaymentMonth */}
-                급여년월
-                <StyledInput type='month' value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
-            </div>
-            {/* 부서 : department */}
-            <div style={{ marginLeft: "20px" }}>
-                부서
-                <StyledSelectBox
-                    options={departmentOptions}
-                    value={selectedDepartment}
-                    onChange={setSelectedDepartment}
-                />
-                {/* 직급 : jobGrade */}
-                직급
-                <StyledSelectBox options={jobGradeOptions} value={selectedJobGrade} onChange={setSelectedJobGrade} />
-                {/* 지급 여부 : searchPamentStatus */}
-                지급여부
-                <StyledSelectBox
-                    options={paymentStatusOptions}
-                    value={selectedPaymentStatus?.toString()}
-                    onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
-                />
-                {/* 검색  */}
-                <StyledButton onClick={handleSearch}>검색</StyledButton>
-                {/* 일괄 지급 */}
-                <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
+                <div className='searchBar' style={{ border: "5px solid white" }}>
+                    {/* 직급 : jobGrade */}
+                    <span>직급</span>
+                    <StyledSelectBox
+                        options={jobGradeOptions}
+                        value={selectedJobGrade}
+                        onChange={setSelectedJobGrade}
+                    />
+                    {/* 부서 : department */}
+                    <span>부서</span>
+                    <StyledSelectBox
+                        options={departmentOptions}
+                        value={selectedDepartment}
+                        onChange={setSelectedDepartment}
+                    />
+
+                    {/* 사원명 : searchEmployeeName */}
+                    <span>사원명</span>
+                    <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
+
+                    <div className='searchBar' style={{ border: "5px solid white" }}>
+                        {/* 급여년월 searchPaymentMonth */}
+                        <span>급여년월</span>
+                        <StyledInput
+                            type='month'
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                        />
+
+                        {/* 지급 여부 : searchPamentStatus */}
+                        <span>지급 여부 </span>
+                        <StyledSelectBox
+                            options={paymentStatusOptions}
+                            value={selectedPaymentStatus?.toString()}
+                            onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
+                        />
+                        {/* 검색  */}
+                        <StyledButton onClick={handleSearch}>검색</StyledButton>
+
+                        <img
+                            src='/refresh.png'
+                            onClick={resetSearch}
+                            style={{ width: "30px", height: "30px", color: "white" }}
+                        />
+                    </div>
+                </div>
             </div>
         </SalalyManagerSearchStyled>
     );

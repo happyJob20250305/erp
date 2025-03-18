@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ManageSearchStyled } from "./styled";
-import { AccountManageContext } from "../../../../../api/Provider/AccountManageProvider";
+import { AccountManageContext } from "../../../../../api/Provider/AccountProvider/AccountManageProvider";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";

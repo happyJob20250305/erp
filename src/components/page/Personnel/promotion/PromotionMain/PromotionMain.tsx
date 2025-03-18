@@ -6,9 +6,10 @@ import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable"
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Promotion } from "../../../../../api/api";
 import { useContext, useEffect, useState } from "react";
-import { PromotionMainStyled } from "./PromotionMainStyled";
+
 import { PromotionSearchContext } from "../../../../../api/Provider/PromitionProvider/PromotionSearhProvider";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { PromotionMainStyled } from "./styled";
 
 interface PromotionMainProps {
     onSelectEmployee: (employeeNumber: number) => void;
@@ -36,7 +37,7 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     const [cPage, setCPage] = useState<number>(1);
     const columns = [
         { key: "employeeNumber", title: "사번" },
-        { key: "employeeName", title: "사원명", clickable: true },
+        { key: "employeeName", title: "사원명" },
         { key: "departmentCode", title: "부서코드" },
         { key: "departmentDetailName", title: "부서명" },
         { key: "jobGrade", title: "직급" },

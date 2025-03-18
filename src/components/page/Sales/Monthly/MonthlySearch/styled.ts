@@ -1,4 +1,4 @@
-import { Monthly } from './../../../../../api/api';
+import { Monthly } from "./../../../../../api/api";
 import styled from "styled-components";
 
 export const MonthlySearchStyled = styled.div`

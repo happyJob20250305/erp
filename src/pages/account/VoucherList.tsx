@@ -1,4 +1,4 @@
-import { VoucherListProvider } from "../../api/Provider/VoucherListProvider";
+import { VoucherListProvider } from "../../api/Provider/AccountProvider/VoucherListProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
 import { VoucherListMain } from "../../components/page/Account/VoucherList/VoucherListMain/VoucherListMain";
 import { VoucherListSearch } from "../../components/page/Account/VoucherList/VoucherListSearch/VoucherListSearch";

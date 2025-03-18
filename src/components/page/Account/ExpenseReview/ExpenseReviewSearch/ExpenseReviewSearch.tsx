@@ -3,16 +3,20 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ExpenseReviewSearchStyled } from "./styled";
 import { useContext, useEffect, useState } from "react";
-import { ExpenseReviewContext } from "../../../../../api/Provider/ExpenseReviewProvider";
+import { ExpenseReviewContext } from "../../../../../api/Provider/AccountProvider/ExpenseReviewProvider";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseReview } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { dateCheck } from "../../../../../common/dateCheck";
 import { IDetailGroupListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
+import { useRecoilValue } from "recoil";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../../stores/userInfo";
 
 export const ExpenseReviewSearch = () => {
     const { setSearchKeyword } = useContext(ExpenseReviewContext);
+    const loginInfo = useRecoilValue<ILoginInfo>(loginInfoState);
     const [searchStDate, setSearchStDate] = useState<string>("");
     const [searchEdDate, setSearchEdDate] = useState<string>("");
     const [selectedGroup, setSelectedGroup] = useState<string>("");
@@ -39,6 +43,13 @@ export const ExpenseReviewSearch = () => {
             setAccountDetailList([{ label: "전체", value: "" }]);
         }
         setSelectedDetail("");
+
+        const userTypeApproval = loginInfo.userType === "C" ? "F" : "W";
+        setSearchKeyword((prev) => ({
+            ...prev,
+            searchApproval: userTypeApproval,
+        }));
+        setSelectedApprove(userTypeApproval);
     }, [selectedGroup]);
 
     const searchAccountDetailList = async (selectedGroup: string) => {

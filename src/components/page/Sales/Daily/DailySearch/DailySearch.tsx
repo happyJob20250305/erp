@@ -4,8 +4,7 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { useNavigate } from "react-router-dom";
 import { DailySearchStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
-import { error } from "console";
+import axios from "axios";
 
 export const DailySearch = () => {
     const [selectedClient, setSelectedClient] = useState<string>("");
@@ -43,6 +42,12 @@ export const DailySearch = () => {
         navigate(`/react/sales/daily${queryString}`);
     };
 
+    const getDay = (value: number) => {
+        const currentDate = new Date(searchDate);
+        currentDate.setDate(currentDate.getDate() + value);
+        setSearchDate(currentDate.toISOString().split("T")[0]);
+    };
+
     return (
         <DailySearchStyled>
             <div className='input-box'>
@@ -54,9 +59,9 @@ export const DailySearch = () => {
                     value={searchDate}
                     onChange={(e) => setSearchDate(e.target.value)}
                 ></StyledInput>
-                <i className='bi bi-arrow-left-circle-fill'></i>
-                <StyledButton> 오늘</StyledButton>
-                <i className='bi bi-arrow-right-circle-fill'></i>
+                <i className='bi bi-arrow-left-circle-fill' onClick={() => getDay(-1)}></i>
+                <StyledButton onClick={() => setSearchDate(getCurrentDate())}> 오늘</StyledButton>
+                <i className='bi bi-arrow-right-circle-fill' onClick={() => getDay(1)}></i>
                 <StyledButton variant='secondary' onClick={dailySearch}>
                     조회
                 </StyledButton>

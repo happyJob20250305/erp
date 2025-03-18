@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { FC, useContext, useRef } from "react";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
 import { EmployeeRetireModalStyled } from "./styled";
@@ -7,8 +7,13 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { Employee } from "../../../../../api/api";
+import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
 
-export const EmployeeRetireModal = () => {
+interface IEmployeeRetireModalProps {
+    postSuccess: () => void;
+}
+
+export const EmployeeRetireModal: FC<IEmployeeRetireModalProps> = ({ postSuccess }) => {
     const {
         retireEmployeeId,
         setRetireEmployeeId,
@@ -35,6 +40,7 @@ export const EmployeeRetireModal = () => {
 
         try {
             const result = await postApi<string>(Employee.emplStatusUpdate, formData);
+            postSuccess();
             alert("수정되었습니다.");
         } catch {
             alert("수정 실패되었습니다.");
@@ -45,30 +51,61 @@ export const EmployeeRetireModal = () => {
         <>
             <EmployeeRetireModalStyled>
                 <div className='container'>
+                    <h2>퇴직 처리</h2>
                     <form ref={formRef}>
-                        <label>사원번호</label>
-                        <StyledInput value={retireEmployeeNumber} readOnly />
-                        <StyledInput type='hidden' name='employeeId' value={retireEmployeeId} />
-                        <StyledInput type='hidden' name='emplStatus' value='F' />
-                        <StyledInput type='hidden' name='salary' value='' />
-                        <label>사원명</label>
-                        <StyledInput value={retireEmployeeName} name='employeeNumber' readOnly />
-                        <label>입사일자</label>
-                        <StyledInput value={regDate} name='regData' readOnly />
-                        <label>퇴직금</label>
-                        <StyledInput type='text' name='severancePay' />
-                        <label>
-                            퇴사이유: <StyledInput type='text' name='resignationReason' />
-                        </label>
-                        <label>
-                            퇴사일자: <StyledInput type='date' name='resignationDate' />
-                        </label>
-                        <StyledButton type='submit' onClick={handleRetire}>
-                            퇴직
-                        </StyledButton>
-                        <StyledButton type='button' onClick={closeModal}>
-                            취소
-                        </StyledButton>
+                        <ModalStyledTable>
+                            <tbody>
+                                {/* 1 */}
+                                <tr>
+                                    <th>사원번호</th>
+                                    <td>
+                                        <StyledInput value={retireEmployeeNumber} readOnly />
+                                        <StyledInput type='hidden' name='employeeId' value={retireEmployeeId} />
+                                        <StyledInput type='hidden' name='emplStatus' value='F' />
+                                        <StyledInput type='hidden' name='salary' value='' />
+                                    </td>
+                                    <th>사원명</th>
+                                    <td>
+                                        <StyledInput value={retireEmployeeName} name='employeeNumber' readOnly />
+                                    </td>
+                                </tr>
+                                {/* 2 */}
+                                <tr>
+                                    <th>입사일자</th>
+                                    <td>
+                                        <StyledInput value={regDate} name='regData' readOnly />
+                                    </td>
+                                    <th>퇴직금</th>
+                                    <td>
+                                        <StyledInput type='text' name='severancePay' />
+                                    </td>
+                                </tr>
+                                {/* 3 */}
+                                <tr>
+                                    <th>퇴사이유</th>
+                                    <td colSpan={3}>
+                                        <StyledInput type='text' name='resignationReason' />
+                                    </td>
+                                </tr>
+                                {/* 4 */}
+                                <tr>
+                                    <th>퇴사일자</th>
+                                    <td colSpan={3}>
+                                        <StyledInput type='date' name='resignationDate' />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </ModalStyledTable>
+
+                        {/* 버튼 */}
+                        <ButtonArea>
+                            <StyledButton type='button' onClick={handleRetire}>
+                                퇴직
+                            </StyledButton>
+                            <StyledButton variant='secondary' type='button' onClick={closeModal}>
+                                취소
+                            </StyledButton>
+                        </ButtonArea>
                     </form>
                 </div>
             </EmployeeRetireModalStyled>

@@ -23,6 +23,7 @@ export const ExpenseApprovalPrint = forwardRef<HTMLDivElement, { expenseDetail: 
                                     <td>{expenseDetail.req_date}</td>
                                     <th>사용일자</th>
                                     <td>{expenseDetail.use_date}</td>
+                                    <td colSpan={2}></td>
                                 </tr>
                                 <tr>
                                     <th>계정대분류명</th>

@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { VoucherListContext } from "../../../../../api/Provider/VoucherListProvider";
+import { VoucherListContext } from "../../../../../api/Provider/AccountProvider/VoucherListProvider";
 import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { VoucherListMainStyled } from "./styled";
@@ -25,7 +25,7 @@ export const VoucherListMain = () => {
         { key: "client_name", title: "거래처" },
         { key: "debit_name", title: "차변계정과목" },
         { key: "crebit_name", title: "대변계정과목" },
-        { key: "voucher_amount", title: "장부금액" },
+        { key: "voucher_amount", title: "장부금액", isMoney: true },
     ] as Column<IVoucher>[];
 
     useEffect(() => {
@@ -51,7 +51,10 @@ export const VoucherListMain = () => {
 
     const handlerModal = (row: IVoucher) => {
         setModal(!modal);
-        setVoucherDetail(row);
+        setVoucherDetail({
+            ...row,
+            voucher_amount: Number(row.voucher_amount),
+        });
     };
 
     return (

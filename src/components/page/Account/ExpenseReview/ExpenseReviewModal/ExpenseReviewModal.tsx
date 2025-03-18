@@ -4,18 +4,17 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { ExpenseReviewModalStyle } from "./styled";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 import { ISetListOption } from "../../../../../models/interface/ISetListOption";
 import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
-import { ICrebitList, IExpenseReviewBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseReview } from "../../../../../api/api";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { accountPostApi } from "../../../../../api/AccountApi/accountPostApi";
 import { approvalCode } from "../../../../../common/approvalStatus";
+import { ICrebitListBody } from "../../../../../models/interface/account/groupList/IAccountGroup";
 
 interface IExpenseReviewModalProps {
     expenseDetail?: IExpenseReview;
@@ -37,7 +36,7 @@ export const ExpenseReviewModal: FC<IExpenseReviewModalProps> = ({ expenseDetail
     }, [expenseDetail]);
 
     const getCrebitList = async () => {
-        const result = await accountSearchApi<IExpenseReviewBody>(ExpenseReview.getCrebitList, {});
+        const result = await accountSearchApi<ICrebitListBody>(ExpenseReview.getCrebitList, {});
         if (result) {
             setCrebitList(setSelectOption(result.crebitList, "detail_name", "detail_code"));
         }

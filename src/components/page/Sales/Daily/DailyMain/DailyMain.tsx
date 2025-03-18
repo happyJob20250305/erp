@@ -8,6 +8,7 @@ import { DailyChart } from "../DailyChart/DailyChart";
 import { Chart, registerables } from "chart.js";
 import { DailyStatistics } from "../DailyStatistics/DailyStatistics";
 import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/sales/IDaily";
+import { ChartContainer, ChartWrapper, StatisticsWrapper } from "./styled";
 Chart.register(...registerables);
 
 export const DailyMain = () => {
@@ -39,9 +40,14 @@ export const DailyMain = () => {
 
     return (
         <>
-            {/* 별도의 Chart 컴포넌트 사용 */}
-            <DailyChart dailyListChart={dailyList} />
-            <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>
+            <ChartContainer>
+                <ChartWrapper>
+                    <DailyChart dailyListChart={dailyList} />
+                </ChartWrapper>
+                <StatisticsWrapper>
+                    <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>
+                </StatisticsWrapper>
+            </ChartContainer>
             {/* 기존 테이블 유지 */}
             <StyledTable>
                 <thead>

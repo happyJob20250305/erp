@@ -84,7 +84,7 @@ export const AttendanceRequestMain = () => {
             setAttendanceList(result2.attendanceList);
             setAttendanceRequestCnt(result2.attendanceRequestCnt);
             setCPage(currentPage);
-            setAttId(result2.attendanceList[0].attId);
+            setAttId(result2.attendanceList[0]?.attId);
         }
     }
 

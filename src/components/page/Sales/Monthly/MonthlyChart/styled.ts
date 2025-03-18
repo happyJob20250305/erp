@@ -1,7 +1,8 @@
 //css 를 자바스크립트처럼 사용가능
 
 import styled from "styled-components";
-export const ReceivablesModalStyled = styled.div`
+
+export const MonthlyModalStyled = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
@@ -11,9 +12,11 @@ export const ReceivablesModalStyled = styled.div`
     align-items: center;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    font-weight: bold;
 
-    td {
-        padding: 20px;
+    label {
+        display: flex;
+        flex-direction: column;
     }
 
     .container {
@@ -22,11 +25,11 @@ export const ReceivablesModalStyled = styled.div`
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
-        width: 1080px;
+        width: 400px;
     }
 
     .button-container {
-        text-align: right;
+        text-align: center;
         margin-top: 10px;
     }
     button {
@@ -34,7 +37,7 @@ export const ReceivablesModalStyled = styled.div`
         border: none;
         color: white;
         padding: 10px 22px;
-        text-align: right;
+        text-align: center;
         text-decoration: none;
         display: inline-block;
         font-size: 16px;

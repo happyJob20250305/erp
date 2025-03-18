@@ -11,7 +11,7 @@ export interface IExpenseReview {
     crebit_code: string;
     crebit_name: string;
     use_department: string;
-    expense_payment: string;
+    expense_payment: number | string;
     is_approval: string;
     content: string;
     expense_content: string;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const PromotionDetailStyled = styled.div`
+export const SalalyManagerDetailStyled = styled.div`
     margin-top: 100px;
     .info {
         padding: 16px;

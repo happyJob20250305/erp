@@ -1,7 +1,7 @@
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
-import { ExpenseListContext } from "../../../../../api/Provider/ExpenseListProvider";
+import { ExpenseListContext } from "../../../../../api/Provider/AccountProvider/ExpenseListProvider";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ExpenseListMainStyled } from "./styled";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
@@ -10,7 +10,7 @@ import { ExpenseModal } from "../ExpenseModal/ExpenseModal";
 import { approvalCode } from "../../../../../common/approvalStatus";
 import { accountSearchApi } from "../../../../../api/AccountApi/accountSearchApi";
 import { ExpenseList } from "../../../../../api/api";
-import { IExpense, IExpenseResponseBody } from "../../../../../models/interface/account/expenstList/IExpenseList";
+import { IExpense, IExpenseResponseBody } from "../../../../../models/interface/account/expenseList/IExpenseList";
 
 export const ExpenseListMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -26,7 +26,7 @@ export const ExpenseListMain = () => {
         { key: "group_name", title: "계정대분류명" },
         { key: "detail_name", title: "계정과목" },
         { key: "use_department", title: "사용부서" },
-        { key: "expense_payment", title: "결의금액" },
+        { key: "expense_payment", title: "결의금액", isMoney: true },
         { key: "actions", title: "승인여부" },
     ] as Column<IExpense>[];
 
@@ -51,7 +51,10 @@ export const ExpenseListMain = () => {
 
     const handlerModal = (row: IExpense) => {
         setModal(!modal);
-        setExpenseDetail(row);
+        setExpenseDetail({
+            ...row,
+            expense_payment: Number(row.expense_payment),
+        });
     };
 
     const postSuccess = () => {
