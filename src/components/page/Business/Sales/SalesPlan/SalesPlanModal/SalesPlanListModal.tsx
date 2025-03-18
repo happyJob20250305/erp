@@ -48,7 +48,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectclient, setSelectClient] = useState<number>(Number(detailSalesPlan?.client_id) || 0);
+    const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id || "");
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectMaincategory, setSelectMaincategory] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectSubcategory, setSelectSubcategory] = useState<string>(detailSalesPlan?.detail_code || "");
@@ -322,7 +322,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         거래처
                         <StyledSelectBox
                             options={clientOptions}
-                            value={selectclient}
+                            value={Number(selectclient)}
                             onChange={setSelectClient}
                             name='client_id'
                         />
