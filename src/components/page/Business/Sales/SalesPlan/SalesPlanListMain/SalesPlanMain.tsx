@@ -46,7 +46,7 @@ export const SalesPlanListMain = () => {
         setDetailSalesPlan(row);
     };
 
-    const postSucces = () => {
+    const postSuccess = () => {
         setModal(!modal);
         searchSalesPlanList();
     };
@@ -68,7 +68,7 @@ export const SalesPlanListMain = () => {
                     <SalesPlanListModal
                         detailSalesPlan={detailSalesPlan}
                         setDetailSalesPlan={setDetailSalesPlan}
-                        postSuccess={postSucces}
+                        postSuccess={postSuccess}
                     />
                 </Portal>
             )}
