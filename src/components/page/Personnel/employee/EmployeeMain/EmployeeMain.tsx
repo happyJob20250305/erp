@@ -120,7 +120,9 @@ export const EmployeeMain = () => {
         <>
             <EmployeeMainStyled>
                 <div className='button-container'>
-                    <StyledButton onClick={handleModal}>사원 등록</StyledButton>
+                    <StyledButton style={{ float: "right", marginBottom: "15px" }} onClick={handleModal}>
+                        사원 등록
+                    </StyledButton>
                 </div>
                 <div className='table-container'>
                     <MKStyledTable

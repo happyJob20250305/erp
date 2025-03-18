@@ -12,6 +12,7 @@ export const EmployeeSearchStyled = styled.div`
         align-items: center;
         gap: 10px;
         flex: 1;
+        margin-botton: 10px;
     }
 
     // .button-container {

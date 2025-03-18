@@ -14,6 +14,7 @@ import {
 import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
 import { SalaryOptionList } from "../../../../../api/api";
 import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const SalaryManagerSearch = () => {
     //DepartmentGroupItem
@@ -38,21 +39,17 @@ export const SalaryManagerSearch = () => {
     };
 
     // SelectBox 옵션 변환
-    const departmentOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...DepartmentGroupItem.map((item) => ({
-            label: item.departmentDetailName,
-            value: item.departmentDetailName,
-        })),
-    ];
+    const departmentOptions = setSelectOption(
+        DepartmentGroupItem,
+        "departmentDetailName", // 라벨 (화면에 표시될 값)
+        "departmentDetailName", // 값 (실제 선택될 값)
+        { label: "전체", value: "" } // 기본 옵션
+    );
 
-    const jobGradeOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...JobGradeGroupItem.map((item) => ({
-            label: item.jobGradeDetailName,
-            value: item.jobGradeDetailName,
-        })),
-    ];
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     // (추가) 지급여부 SelectBox용 옵션 예시
     const paymentStatusOptions = [

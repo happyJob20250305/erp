@@ -13,6 +13,7 @@ import {
     IGroupListResponse,
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const EmployeeSearch = () => {
     // Context 상태
@@ -80,21 +81,17 @@ export const EmployeeSearch = () => {
     };
 
     // SelectBox 옵션 변환
-    const departmentOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...DepartmentGroupItem.map((item) => ({
-            label: item.departmentDetailName,
-            value: item.departmentDetailName,
-        })),
-    ];
+    const departmentOptions = setSelectOption(
+        DepartmentGroupItem,
+        "departmentDetailName", // 라벨 (화면에 표시될 값)
+        "departmentDetailName", // 값 (실제 선택될 값)
+        { label: "전체", value: "" } // 기본 옵션
+    );
 
-    const jobGradeOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...JobGradeGroupItem.map((item) => ({
-            label: item.jobGradeDetailName,
-            value: item.jobGradeDetailName,
-        })),
-    ];
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     // 렌더링
     return (
@@ -113,29 +110,42 @@ export const EmployeeSearch = () => {
                         value={selectedJobGrade}
                         onChange={setSelectedJobGrade}
                     />
-
-                    {/* 재직 상태 */}
-                    <span>재직 상태</span>
-                    <StyledSelectBox
-                        options={emplStatusOptions}
-                        value={selectedEmplStatus}
-                        onChange={(val) => setSelectedEmplStatus(val as string)}
-                    />
-                    {/* 입사일 조회 */}
-                    <span>입사일 조회</span>
-                    <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                    <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                </div>
-                <div className='searchBar' style={{ border: "5px solid white" }}>
                     <span>사번</span>
                     <StyledInput value={employeeNumber} onChange={(e) => setEmployeeNumber(e.target.value)} />
                     <span>이름</span>
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
-                    {/* 검색 버튼 */}
 
+                    {/* 재직 상태 */}
+                    {/* <span>재직 상태</span>
+                    <StyledSelectBox
+                        options={emplStatusOptions}
+                        value={selectedEmplStatus}
+                        onChange={(val) => setSelectedEmplStatus(val as string)}
+                    /> */}
+                    {/* 입사일 조회 */}
+                    {/* <span>입사일 조회</span>
+                    <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                    <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} /> */}
+                </div>
+                {/* <div className='searchBar' style={{ border: "5px solid white" }}>
+                    <span>입사일 조회</span>
+                    <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                    <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                     <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
-
                     <img src='/refresh.png' onClick={resetSearch} style={{ width: "30px", height: "30px" }} />
+                </div> */}
+
+                <div className='searchBar' style={{ border: "5px solid white" }}>
+                    <StyledButton onClick={() => setEmplStatus("W")}>재직자</StyledButton>
+                    <StyledButton onClick={() => setEmplStatus("F")}>퇴직자</StyledButton>
+
+                    <div className='searchBar'>
+                        <span>입사일 조회</span>
+                        <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
+                        <img src='/refresh.png' onClick={resetSearch} style={{ width: "30px", height: "30px" }} />
+                    </div>
                 </div>
             </div>
         </EmployeeSearchStyled>
