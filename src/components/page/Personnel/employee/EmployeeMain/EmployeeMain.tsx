@@ -20,6 +20,7 @@ import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal"
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
+import { MKStyledTable } from "../../../../common/MkStyledTable/MKStyled";
 
 export const EmployeeMain = () => {
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
@@ -42,10 +43,16 @@ export const EmployeeMain = () => {
         { key: "departmentDetailName", title: "부서명" },
         { key: "jobGradeDetailName", title: "직급" },
         { key: "regDate", title: "입사일자" },
-        { key: "emplStatus", title: "휴직" },
+        { key: "actions2", title: "재직 상태" },
         { key: "resignationDate", title: "퇴직일자" },
         { key: "actions", title: "퇴직처리" },
     ];
+
+    const statusMap: { [key: string]: string } = {
+        W: "재직",
+        F: "퇴직",
+        O: "휴직",
+    };
 
     //  데이터 호출 함수 (메모이제이션)
     const employeeBasicList = useCallback(
@@ -116,7 +123,7 @@ export const EmployeeMain = () => {
                     <StyledButton onClick={handleModal}>사원 등록</StyledButton>
                 </div>
                 <div className='table-container'>
-                    <StyledTable
+                    <MKStyledTable
                         columns={columns}
                         data={employeeList}
                         striped
@@ -124,6 +131,7 @@ export const EmployeeMain = () => {
                         hoverable
                         fullWidth
                         onCellClick={(row) => handleEmployeDetail(row.employeeId, row.jobGradeCode, row.departmentCode)}
+                        renderAction2={(row) => <span>{statusMap[row.emplStatus] || "알 수 없음"}</span>}
                         renderAction={(row) =>
                             row.emplStatus === "W" ? (
                                 <StyledButton
