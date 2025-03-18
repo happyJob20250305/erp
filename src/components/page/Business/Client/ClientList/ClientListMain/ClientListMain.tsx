@@ -3,6 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { ClientListMainStyled } from "./styled";
 import { ClientListContext } from "../../../../../../api/Provider/SalaryMangerProvider/ClientListProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { Portal } from "../../../../../common/potal/Portal";
+import { ClientListModal } from "../ClientListModal/ClientListModal";
 
 export interface IClient {
     zip: string;
@@ -26,6 +30,9 @@ export interface IClientResponse {
 }
 export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
+
+    const [detailClient, setDetailClient] = useState<IClient>();
 
     const { searchKeyword } = useContext(ClientListContext);
 
@@ -55,9 +62,28 @@ export const ClientListMain = () => {
             });
     };
 
+    const handlerClientModal = (row: IClient) => {
+        setModal(!modal);
+        setDetailClient(row);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchClientList();
+    };
+
     return (
         <ClientListMainStyled>
             <StyledTable data={clientList} columns={columns} hoverable={true} fullWidth={true} />
+            {modal && (
+                <Portal>
+                    <ClientListModal
+                        detailClient={detailClient}
+                        setDetailClient={setDetailClient}
+                        postSuccess={postSuccess}
+                    />
+                </Portal>
+            )}
         </ClientListMainStyled>
     );
 };
