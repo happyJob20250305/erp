@@ -4,12 +4,10 @@ import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
-import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
-
+import { Column } from "../../../../common/StyledTable/StyledTable";
 import { EmployeeMainStyled } from "./styled";
 
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
-import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import { Employee } from "../../../../../api/api";
 import { modalState } from "../../../../../stores/modalState";
 
@@ -21,8 +19,10 @@ import { EmployeeDetailModalContext } from "../../../../../api/Provider/Employee
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
 import { MKStyledTable } from "../../../../common/MkStyledTable/MKStyled";
+import { searchApi } from "../../../../../api/SystemApi/searchApi";
 
 export const EmployeeMain = () => {
+    console.log("EmployeeMain 렌더링됨!");
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
     const [employeeCnt, setEmployeeCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(1);
@@ -30,11 +30,11 @@ export const EmployeeMain = () => {
     const [modal, setModal] = useRecoilState(modalState);
 
     const { setEmployeeId, setJobGradeCode, setdepartmentCode } = useContext(EmployeeDetailModalContext);
-    const { searchId, searchName, searchRegDateStart, searchRegDateEnd, jobGrade, department, emplStatus } =
-        useContext(EmployeeSearchContext);
+    const { searchKeyword } = useContext(EmployeeSearchContext);
     const { setRetireEmployeeId, setRetireEmployeeNumber, setRetireEmployeeName, setRegDate } =
         useContext(EmployeeRetirementModalContext);
 
+    console.log(searchKeyword);
     // 테이블 컬럼 정의
     const columns: Column<IEmployee>[] = [
         { key: "number", title: "사번" },
@@ -54,34 +54,26 @@ export const EmployeeMain = () => {
         O: "휴직",
     };
 
-    //  데이터 호출 함수 (메모이제이션)
-    const employeeBasicList = useCallback(
-        async (currentPage: number = 1) => {
-            const searchParam = new URLSearchParams();
-            searchParam.append("currentPage", currentPage.toString());
-            searchParam.append("pageSize", "5");
+    const employeeBasicList = async (currentPage?: number) => {
+        currentPage = currentPage || 1;
 
-            if (searchId) searchParam.append("searchId", searchId);
-            if (searchName) searchParam.append("searchName", searchName);
-            if (searchRegDateStart) searchParam.append("searchRegDateStart", searchRegDateStart);
-            if (searchRegDateEnd) searchParam.append("searchRegDateEnd", searchRegDateEnd);
-            if (jobGrade) searchParam.append("jobGrade", jobGrade);
-            if (department) searchParam.append("department", department);
-            if (emplStatus) searchParam.append("emplStatus", emplStatus);
+        const result = await searchApi<IEmployeeResponse>(Employee.employeeList, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
 
-            const result = await postApi<IEmployeeResponse>(Employee.employeeList, searchParam);
-            if (result) {
-                setEmployeeList(result.employeeList);
-                setEmployeeCnt(result.employeeCnt);
-            }
-        },
-        [searchId, searchName, searchRegDateStart, searchRegDateEnd, jobGrade, department, emplStatus]
-    );
+        if (result) {
+            setEmployeeList(result.employeeList);
+            setEmployeeCnt(result.employeeCnt);
+            setCPage(currentPage);
+        }
+    };
 
     // 호출
     useEffect(() => {
-        employeeBasicList(cPage);
-    }, [employeeBasicList, cPage]);
+        employeeBasicList();
+    }, [searchKeyword]);
 
     // 등록 후 새로고침
     const postSuccess = () => {
@@ -153,7 +145,6 @@ export const EmployeeMain = () => {
                         }
                     />
                 </div>
-
                 {/*  페이지 네비 */}
                 <PageNavigate
                     totalItemsCount={employeeCnt}

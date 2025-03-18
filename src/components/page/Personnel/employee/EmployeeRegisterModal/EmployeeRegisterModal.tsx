@@ -14,8 +14,10 @@ import { Employee, SalaryOptionList } from "../../../../../api/api";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { IEmployeeRegisterResponse } from "../../../../../models/interface/personnel/employee/IEmployeeRegisterResponse";
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
-import { IEmployee } from "../../../../../models/interface/personnel/employee/IEmployeeList";
 import DaumPostcode from "react-daum-postcode"; // 추가
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { validateEmployeeForm } from "../../../../../common/registerCheck";
+import { dateCheck } from "../../../../../common/dateCheck";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -50,14 +52,18 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     };
 
     //  옵션 변환
-    const departmentOptions = [
-        { label: "전체", value: "" },
-        ...DepartmentGroupItem.map((item) => ({ label: item.departmentDetailName, value: item.departmentDetailName })),
-    ];
-    const jobGradeOptions = [
-        { label: "전체", value: "" },
-        ...JobGradeGroupItem.map((item) => ({ label: item.jobGradeDetailName, value: item.jobGradeDetailName })),
-    ];
+    // SelectBox 옵션 변환
+    const departmentOptions = setSelectOption(
+        DepartmentGroupItem,
+        "departmentDetailName", // 라벨 (화면에 표시될 값)
+        "departmentDetailName", // 값 (실제 선택될 값)
+        { label: "전체", value: "" } // 기본 옵션
+    );
+
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     const educationOptions = [
         { label: "선택", value: "" },
@@ -104,50 +110,22 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         const email = formData.get("email")?.toString().trim();
         const birthday = formData.get("birthday")?.toString().trim();
 
-        // 예: 필수 항목 체크
-        if (!employeeName) {
-            alert("이름을 입력해주세요.");
-            return;
-        }
-        if (!registrationNumber) {
-            alert("주민번호를 입력해주세요.");
-            return;
-        }
-        if (!hp) {
-            alert("연락처를 입력해주세요.");
-            return;
-        }
-        if (!email) {
-            alert("이메일을 입력해주세요.");
-            return;
-        }
+        const employeeData = {
+            employeeName,
+            registrationNumber,
+            hp,
+            email,
+            birthday,
+        };
 
-        // 만 20세 이상 검사
-        const today = new Date();
-        const birthDate = new Date(birthday);
-
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--; // 생일 안 지난 경우 나이 -1
-        }
-
-        if (age < 20) {
-            alert("만 20세 이상만 등록할 수 있습니다.");
-            return;
-        }
-
-        // 추가로 정규표현식 등으로 이메일, 주민번호, 연락처 형식 검사 가능
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("올바른 이메일 형식이 아닙니다.");
+        if (!validateEmployeeForm(employeeData)) {
             return;
         }
 
         try {
             const result = await postApi<IEmployeeRegisterResponse>(Employee.employeeSave, formData);
             alert("저장되었습니다.");
-            postSuccess(); // 등록 성공 후 부모에 알림
+            postSuccess();
         } catch {
             alert("저장 실패");
         }
@@ -258,7 +236,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     />
                                 </td>
                             </tr>
-                            {/* ✅ 주소 검색 모달 (조건부 렌더링) */}
+                            {/* 주소 검색 모달 (조건부 렌더링) */}
                             {isOpen && (
                                 <div
                                     style={{
@@ -293,12 +271,8 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     <StyledInput type='text' name='bankAccount' />
                                 </td>
                             </tr>
-                            {/* 7 */}
+
                             <tr>
-                                {/* <th>계좌번호</th>
-                                <td>
-                                    <StyledInput type='text' name='bankAccount' />
-                                </td> */}
                                 <th>입사일자</th>
                                 <td>
                                     <StyledInput type='date' name='regDate' />
