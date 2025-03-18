@@ -132,15 +132,10 @@ export const EmployeeSearch = () => {
                     <span>이름</span>
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                     {/* 검색 버튼 */}
-                    <div className='button-container'>
-                        <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
-                    </div>
 
-                    <img
-                        src='/refresh.png'
-                        onClick={resetSearch}
-                        style={{ width: "30px", height: "30px", color: "white" }}
-                    />
+                    <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
+
+                    <img src='/refresh.png' onClick={resetSearch} style={{ width: "30px", height: "30px" }} />
                 </div>
             </div>
         </EmployeeSearchStyled>

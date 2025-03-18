@@ -148,36 +148,35 @@ export const SalaryManagerSearch = () => {
                         value={selectedDepartment}
                         onChange={setSelectedDepartment}
                     />
-
                     {/* 사원명 : searchEmployeeName */}
                     <span>사원명</span>
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
+                </div>
 
-                    <div className='searchBar' style={{ border: "5px solid white" }}>
-                        {/* 급여년월 searchPaymentMonth */}
-                        <span>급여년월</span>
-                        <StyledInput
-                            type='month'
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
-                        />
+                <div className='searchBar' style={{ border: "5px solid white" }}>
+                    {/* 급여년월 searchPaymentMonth */}
+                    <span>급여년월</span>
+                    <StyledInput
+                        type='month'
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                    />
 
-                        {/* 지급 여부 : searchPamentStatus */}
-                        <span>지급 여부 </span>
-                        <StyledSelectBox
-                            options={paymentStatusOptions}
-                            value={selectedPaymentStatus?.toString()}
-                            onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
-                        />
-                        {/* 검색  */}
-                        <StyledButton onClick={handleSearch}>검색</StyledButton>
+                    {/* 지급 여부 : searchPamentStatus */}
+                    <span>지급 여부 </span>
+                    <StyledSelectBox
+                        options={paymentStatusOptions}
+                        value={selectedPaymentStatus?.toString()}
+                        onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
+                    />
+                    {/* 검색  */}
+                    <StyledButton onClick={handleSearch}>검색</StyledButton>
 
-                        <img
-                            src='/refresh.png'
-                            onClick={resetSearch}
-                            style={{ width: "30px", height: "30px", color: "white" }}
-                        />
-                    </div>
+                    <img
+                        src='/refresh.png'
+                        onClick={resetSearch}
+                        style={{ width: "30px", height: "30px", color: "white" }}
+                    />
                 </div>
             </div>
         </SalalyManagerSearchStyled>

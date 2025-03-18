@@ -151,11 +151,15 @@ export const EmployeeMain = () => {
                         }
                     />
                 </div>
+
+                {/*  페이지 네비 */}
+                <PageNavigate
+                    totalItemsCount={employeeCnt}
+                    onChange={setCPage}
+                    activePage={cPage}
+                    itemsCountPerPage={5}
+                />
             </EmployeeMainStyled>
-
-            {/*  페이지 네비 */}
-            <PageNavigate totalItemsCount={employeeCnt} onChange={setCPage} activePage={cPage} itemsCountPerPage={5} />
-
             {/*  모달들 */}
             {modalType === "registerModal" && modal && (
                 <Portal>
