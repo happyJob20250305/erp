@@ -86,7 +86,7 @@ export const SalesReultListSearch = () => {
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
             ? manuFacturerList.map((manuFacturerValue: IManufacturer) => ({
-                  value: manuFacturerValue.industryCode,
+                  value: manuFacturerValue.manufacturer_id,
                   label: manuFacturerValue.industryName,
               }))
             : []),
