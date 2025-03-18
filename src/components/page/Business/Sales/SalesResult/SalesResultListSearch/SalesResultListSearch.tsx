@@ -32,6 +32,10 @@ export const SalesReultListSearch = () => {
     const { setSearchKeyword } = useContext(SalesResultListContext);
 
     useEffect(() => {
+        console.log("selectManuFacturer:" + selectManuFacturer);
+        console.log("selectMaincategory:" + selectMaincategory);
+        console.log("selectSubcategory:" + selectSubcategory);
+        console.log("selectProduct:" + selectProduct);
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();
@@ -86,7 +90,7 @@ export const SalesReultListSearch = () => {
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
             ? manuFacturerList.map((manuFacturerValue: IManufacturer) => ({
-                  value: manuFacturerValue.manufacturer_id,
+                  value: manuFacturerValue.industryCode,
                   label: manuFacturerValue.industryName,
               }))
             : []),
