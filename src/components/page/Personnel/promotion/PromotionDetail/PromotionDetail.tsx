@@ -9,6 +9,7 @@ import { Promotion } from "../../../../../api/api";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { PromotionDetailStyled } from "./styled";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
+import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 
 export const PromotionDetail = ({ data }: PromotionMainProps) => {
     const [promotionDetailList, setPromotionDetailList] = useState<IPromotionDetail[]>([]);
@@ -30,10 +31,17 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
         setPromotionDetailList(result.promotionDetailList);
     };
 
+    const closeDetail = () => {
+        setPromotionDetailList([]);
+    };
+
     return (
         <>
-            {promotionDetailList.length > 0 && (
+            {promotionDetailList && promotionDetailList.length > 0 && (
                 <PromotionDetailStyled>
+                    <StyledButton size='small' onClick={closeDetail}>
+                        닫기
+                    </StyledButton>
                     <div className='info'>
                         <label>사번</label>
                         <StyledInput value={promotionDetailList[0]?.employeeNumber || ""} readOnly />

@@ -120,7 +120,9 @@ export const EmployeeMain = () => {
         <>
             <EmployeeMainStyled>
                 <div className='button-container'>
-                    <StyledButton onClick={handleModal}>사원 등록</StyledButton>
+                    <StyledButton style={{ float: "right", marginBottom: "15px" }} onClick={handleModal}>
+                        사원 등록
+                    </StyledButton>
                 </div>
                 <div className='table-container'>
                     <MKStyledTable
@@ -151,11 +153,15 @@ export const EmployeeMain = () => {
                         }
                     />
                 </div>
+
+                {/*  페이지 네비 */}
+                <PageNavigate
+                    totalItemsCount={employeeCnt}
+                    onChange={setCPage}
+                    activePage={cPage}
+                    itemsCountPerPage={5}
+                />
             </EmployeeMainStyled>
-
-            {/*  페이지 네비 */}
-            <PageNavigate totalItemsCount={employeeCnt} onChange={setCPage} activePage={cPage} itemsCountPerPage={5} />
-
             {/*  모달들 */}
             {modalType === "registerModal" && modal && (
                 <Portal>

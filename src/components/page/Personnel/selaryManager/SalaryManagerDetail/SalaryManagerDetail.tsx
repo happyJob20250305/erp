@@ -9,11 +9,13 @@ import { SalaryManager } from "../../../../../api/api";
 // import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { SalalyManagerDetailStyled } from "./styled";
+import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 
 export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     // data는 props로부터 전달받은 employeeNumber라고 가정
 
     const [salaryDetail, setSalaryDetail] = useState<ISalaryDetail[]>([]);
+
     const [employeeNumber, setEmployeeNumber] = useState<number>();
 
     //  <StyledTd>{salary.salaryId}</StyledTd>
@@ -72,10 +74,17 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
         }
     };
 
+    const closeDetail = () => {
+        setSalaryDetail([]); // ⬅️ `null` 대신 빈 배열로 변경
+    };
+
     return (
         <>
-            {salaryDetail.length > 0 && (
+            {salaryDetail && salaryDetail.length > 0 && (
                 <SalalyManagerDetailStyled>
+                    <StyledButton size='small' onClick={closeDetail}>
+                        닫기
+                    </StyledButton>
                     <StyledTable
                         columns={columns}
                         data={salaryDetail}
