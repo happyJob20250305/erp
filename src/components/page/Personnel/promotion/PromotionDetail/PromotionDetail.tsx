@@ -32,7 +32,7 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
     };
 
     const closeDetail = () => {
-        setPromotionDetailList([]); // ⬅️ `null` 대신 빈 배열로 변경
+        setPromotionDetailList([]);
     };
 
     return (
