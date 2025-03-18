@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-export const StyledTable = styled.table`
+export const DailyStatisticsStyled = styled.div`
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0px 0px 0px;
+    margin: 10px 0px 0px 100px;
     font-size: 18px;
     text-align: left;
     table-layout: fixed;
@@ -17,8 +17,7 @@ export const StyledTable = styled.table`
     }
 
     th {
-        background-color: #2676bf;
-        color: #ddd;
+        background-color: rgb(198, 204, 209);
     }
 
     /* 테이블 올렸을 때 */
@@ -28,7 +27,6 @@ export const StyledTable = styled.table`
         cursor: pointer;
     }
 `;
-
 export const StyledTh = styled.th`
     background-color: #f4f4f4;
     padding: 12px;

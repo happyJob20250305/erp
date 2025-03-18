@@ -1,11 +1,10 @@
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { MonthlyModalStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import { useLocation } from "react-router-dom";
 import { searchApi } from "../../../../../api/SalesApi/MonthlyApi/searchApi";
 import { Monthly } from "../../../../../api/api";
 import { Pie } from "react-chartjs-2";
@@ -15,6 +14,7 @@ import {
     IMonthlyModalDetail,
     IMonthlyProductDetail,
 } from "../../../../../models/interface/sales/IMonthly";
+import { MonthlyListContext } from "../../../../../api/Provider/SalesProvider/MonthlyProvider";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -23,24 +23,26 @@ interface IMonthlyModalProps {
     modalType: "product" | "client";
 }
 export const MonthlyModal: React.FC<IMonthlyModalProps> = ({ postSuccess, modalType }) => {
-    const { search } = useLocation();
+    const { searchKeyword } = useContext(MonthlyListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [topProduct, setTopProduct] = useState<IMonthlyModalDetail[]>([]);
     const [topClient, setTopClient] = useState<IMonthlyModalDetail[]>([]);
 
     useEffect(() => {
         monthlyModal();
-    }, [search, modalType]);
+    }, [searchKeyword, modalType]);
 
     const monthlyModal = async () => {
-        const searchParam = new URLSearchParams(search);
-
         if (modalType === "product") {
-            const productResult = await searchApi<IMonthlyProductDetail>(Monthly.detail, searchParam);
+            const productResult = await searchApi<IMonthlyProductDetail>(Monthly.detail, {
+                ...searchKeyword,
+            });
             if (productResult.detail) setTopProduct(productResult.detail);
             console.log("topProduct데이터:", productResult.detail);
         } else {
-            const clientResult = await searchApi<IMonthlyClientDetail>(Monthly.detailClient, searchParam);
+            const clientResult = await searchApi<IMonthlyClientDetail>(Monthly.detailClient, {
+                ...searchKeyword,
+            });
             console.log("clientResult", clientResult);
             if (clientResult.detail) setTopClient(clientResult.detail);
             console.log("topClient데이터:", clientResult.detail);
@@ -85,7 +87,7 @@ export const MonthlyModal: React.FC<IMonthlyModalProps> = ({ postSuccess, modalT
                         </StyledTable>
                     </>
                 ) : (
-                    <p>데이터를 불러오는 중...</p>
+                    <p>데이터가 존재하지 않습니다.</p>
                 )}
                 <StyledButton type='button' onClick={() => setModal(false)}>
                     닫기

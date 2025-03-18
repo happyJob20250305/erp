@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";

@@ -25,17 +25,15 @@ export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) =>
                             <>
                                 <tr>
                                     <StyledTd>매출 순수익 ①</StyledTd>
-                                    <StyledTd>
-                                        {formatBigInt(annual.totalSupplyPrice - annual.totalUnitPrice)} 원
-                                    </StyledTd>
+                                    <StyledTd>{formatBigInt(annual.totalSupplyPrice - annual.totalUnitPrice)}</StyledTd>
                                 </tr>
                                 <tr>
                                     <StyledTd>지출 총액 ②</StyledTd>
-                                    <StyledTd>{formatBigInt(annual.totalExpenseAmount)} 원</StyledTd>
+                                    <StyledTd>{formatBigInt(annual.totalExpenseAmount)} </StyledTd>
                                 </tr>
                                 <tr>
                                     <StyledTd>미수금 총액 ③</StyledTd>
-                                    <StyledTd>{formatBigInt(annual.totalReceivableAmount)} 원</StyledTd>
+                                    <StyledTd>{formatBigInt(annual.totalReceivableAmount)} </StyledTd>
                                 </tr>
                                 <tr>
                                     <StyledTd>손익 총계 (①-②-③)</StyledTd>
@@ -46,7 +44,6 @@ export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) =>
                                                 annual.totalExpenseAmount -
                                                 annual.totalReceivableAmount
                                         )}
-                                        원
                                     </StyledTd>
                                 </tr>
                             </>

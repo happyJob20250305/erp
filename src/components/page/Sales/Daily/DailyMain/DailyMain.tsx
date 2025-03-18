@@ -1,34 +1,47 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { Daily } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SalesApi/DailyApi/searchApi";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { DailyChart } from "../DailyChart/DailyChart";
 import { Chart, registerables } from "chart.js";
 import { DailyStatistics } from "../DailyStatistics/DailyStatistics";
 import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/sales/IDaily";
 import { ChartContainer, ChartWrapper, StatisticsWrapper } from "./styled";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { DailyListContext } from "../../../../../api/Provider/SalesProvider/DailyProvider";
 Chart.register(...registerables);
 
 export const DailyMain = () => {
-    const { search } = useLocation();
+    const { searchKeyword } = useContext(DailyListContext);
     const [dailyList, setDailyList] = useState<IDaily[]>([]);
     const [dailyCount, setDailyCount] = useState<number>(0);
     const [dailyStatistics, setDailyStatistics] = useState<IDaily>(null);
     const [cPage, setCpage] = useState<number>(0);
 
+    const columns = [
+        { key: "salesDate", title: "날짜" },
+        { key: "type", title: "구분" },
+        { key: "clientId", title: "기업코드" },
+        { key: "clientName", title: "기업명" },
+        { key: "crebitCode", title: "매출 구분" },
+        { key: "debitCode", title: "매출 상세" },
+        { key: "totalSupplyPrice", title: "수익 금액" },
+        { key: "totalExpenseAmount", title: "지출 금액" },
+        { key: "totalReceivableAmount", title: "당일 미수금 기록" },
+    ] as Column<IDaily>[];
+
     useEffect(() => {
         searchDailyList();
-    }, [search]);
+    }, [searchKeyword]);
 
     const searchDailyList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
-        const searchParam = new URLSearchParams(search);
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
 
-        const result = await searchApi<IDailyListBodyResponse, URLSearchParams>(Daily.search, searchParam);
+        const result = await searchApi<IDailyListBodyResponse>(Daily.search, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
 
         if (result) {
             setDailyList(result.dailyList);
@@ -49,44 +62,7 @@ export const DailyMain = () => {
                 </StatisticsWrapper>
             </ChartContainer>
             {/* 기존 테이블 유지 */}
-            <StyledTable>
-                <thead>
-                    <tr>
-                        <StyledTh>날짜</StyledTh>
-                        <StyledTh>구분</StyledTh>
-                        <StyledTh>기업 코드</StyledTh>
-                        <StyledTh>기업명</StyledTh>
-                        <StyledTh>매출 구분</StyledTh>
-                        <StyledTh>매출 상세</StyledTh>
-                        <StyledTh>수익 금액</StyledTh>
-                        <StyledTh>지출 금액</StyledTh>
-                        <StyledTh>당일 미수금 기록</StyledTh>
-                    </tr>
-                </thead>
-                <tbody>
-                    {dailyList?.length > 0 ? (
-                        dailyList.map((daily) => {
-                            return (
-                                <tr key={daily.clientId}>
-                                    <StyledTd>{daily.salesDate}</StyledTd>
-                                    <StyledTd>{daily.type}</StyledTd>
-                                    <StyledTd>{daily.clientId}</StyledTd>
-                                    <StyledTd>{daily.clientName}</StyledTd>
-                                    <StyledTd>{daily.crebitCode}</StyledTd>
-                                    <StyledTd>{daily.debitCode}</StyledTd>
-                                    <StyledTd>{daily.totalSupplyPrice.toString()}</StyledTd>
-                                    <StyledTd>{daily.totalExpenseAmount.toString()}</StyledTd>
-                                    <StyledTd>{daily.totalReceivableAmount.toString()}</StyledTd>
-                                </tr>
-                            );
-                        })
-                    ) : (
-                        <tr>
-                            <StyledTd colSpan={9}>데이터가 없습니다.</StyledTd>
-                        </tr>
-                    )}
-                </tbody>
-            </StyledTable>
+            <StyledTable columns={columns} data={dailyList} hoverable={true} fullWidth={true} />
 
             {/* 페이지 네비게이션 유지 */}
             <PageNavigate

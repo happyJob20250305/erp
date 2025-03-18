@@ -4,5 +4,15 @@ export const DailySearchStyled = styled.div`
     display: flex;
 
     margin-top: 20px;
-    margin-left: 100px;
+    margin-left: 350px;
+
+    .input-box > .bi {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    label {
+        margin-right: 20px;
+        margin-left: 30px;
+    }
 `;

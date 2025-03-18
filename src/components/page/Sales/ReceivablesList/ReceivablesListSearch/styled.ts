@@ -1,4 +1,3 @@
-import { Monthly } from "./../../../../../api/api";
 import styled from "styled-components";
 
 export const ReceivablesListSearchStyled = styled.div`
@@ -6,5 +5,5 @@ export const ReceivablesListSearchStyled = styled.div`
     gap: 5px;
     align-items: center;
     justify-content: flex-end;
-    margin-top: 5px;
+    margin-top: 30px;
 `;

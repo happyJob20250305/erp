@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     IAnnualClientDetail,
     IAnnualModalDetail,
@@ -14,6 +14,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { AnnualModalStyled } from "./styled";
+import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 interface IAnnualModalProps {
@@ -22,24 +23,26 @@ interface IAnnualModalProps {
 }
 
 export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalType }) => {
-    const { search } = useLocation();
+    const { searchKeyword } = useContext(AnnualListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [topProduct, setTopProduct] = useState<IAnnualModalDetail[]>([]);
     const [topClient, setTopClient] = useState<IAnnualModalDetail[]>([]);
 
     useEffect(() => {
         annualModal();
-    }, [search, modalType]);
+    }, [searchKeyword, modalType]);
 
     const annualModal = async () => {
-        const searchParam = new URLSearchParams(search);
-
         if (modalType === "product") {
-            const productResult = await searchApi<IAnnualProductDetail>(Annual.detail, searchParam);
+            const productResult = await searchApi<IAnnualProductDetail>(Annual.detail, {
+                ...searchKeyword,
+            });
             if (productResult.detail) setTopProduct(productResult.detail);
             console.log("topProduct데이터:", productResult.detail);
         } else {
-            const clientResult = await searchApi<IAnnualClientDetail>(Annual.detailClient, searchParam);
+            const clientResult = await searchApi<IAnnualClientDetail>(Annual.detailClient, {
+                ...searchKeyword,
+            });
             console.log("clientResult", clientResult);
             if (clientResult.detail) setTopClient(clientResult.detail);
             console.log("topClient데이터:", clientResult.detail);

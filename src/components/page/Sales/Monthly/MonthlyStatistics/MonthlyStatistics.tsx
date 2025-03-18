@@ -1,5 +1,6 @@
 import { IMonthly } from "../../../../../models/interface/sales/IMonthly";
 import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { MonthlyStatisticsStyled } from "./styled";
 
 interface MonthlyStatisticsProps {
     monthlyStatistics: IMonthly[];
@@ -46,7 +47,7 @@ export const MonthlyStatistics = ({ monthlyStatistics }: MonthlyStatisticsProps)
     const totalProfit = totalData.totalSupplyPrice - totalData.totalExpenseAmount - totalData.totalReceivableAmount;
 
     return (
-        <StyledTable>
+        <MonthlyStatisticsStyled>
             <thead>
                 <tr>
                     <StyledTh></StyledTh>
@@ -56,24 +57,24 @@ export const MonthlyStatistics = ({ monthlyStatistics }: MonthlyStatisticsProps)
             <tbody>
                 <tr>
                     <StyledTd>매출 순수익 ①</StyledTd>
-                    <StyledTd>{formatBigInt(totalData.totalSupplyPrice - totalData.totalUnitPrice)} 원</StyledTd>
+                    <StyledTd>{formatBigInt(totalData.totalSupplyPrice - totalData.totalUnitPrice)} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>지출 총액 ②</StyledTd>
-                    <StyledTd>{formatBigInt(totalData.totalExpenseAmount)} 원</StyledTd>
+                    <StyledTd>{formatBigInt(totalData.totalExpenseAmount)} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>미수금 총액 ③</StyledTd>
-                    <StyledTd>{formatBigInt(totalData.totalReceivableAmount)} 원</StyledTd>
+                    <StyledTd>{formatBigInt(totalData.totalReceivableAmount)} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>손익 총계 (①-②-③)</StyledTd>
                     <StyledTd>
                         {totalProfit < 0 ? " ▼" : " ▲"}
-                        {formatBigInt(totalProfit)} 원
+                        {formatBigInt(totalProfit)}
                     </StyledTd>
                 </tr>
             </tbody>
-        </StyledTable>
+        </MonthlyStatisticsStyled>
     );
 };

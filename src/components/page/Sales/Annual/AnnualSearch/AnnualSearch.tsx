@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { AnnualSearchStyled } from "./styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
+import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
 
 export const AnnualSearch = () => {
-    const navigate = useNavigate();
-
+    const { setSearchKeyword } = useContext(AnnualListContext);
     // 현재 연도 가져오기
     const getCurrentYear = () => new Date().getFullYear().toString();
 
@@ -17,12 +17,10 @@ export const AnnualSearch = () => {
 
     // 검색 실행 함수
     const annualSearch = () => {
-        const query: string[] = [];
-        if (searchStYear) query.push(`searchStDate=${searchStYear}`);
-        if (searchEdYear) query.push(`searchEdDate=${searchEdYear}`);
-
-        const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-        navigate(`/react/sales/annual${queryString}`);
+        setSearchKeyword({
+            searchStDate: searchStYear,
+            searchEdDate: searchEdYear,
+        });
     };
 
     // 연도 옵션 생성
