@@ -27,11 +27,12 @@ export const LoginMain = () => {
 
         axios.post("/loginProc.do", param).then((res) => {
             const data = res.data;
-
             if (data.result === "SUCCESS") {
                 setLoginInfo(data);
                 sessionStorage.setItem("userInfo", JSON.stringify(data));
                 navigate("/react");
+            } else if ((data.result === "FALSE" && data.emplStatus === "F") || data.emplStatus === "O") {
+                alert(data.resultMsg);
             } else {
                 alert("ID 혹은 비밀번호가 틀립니다");
                 return;
