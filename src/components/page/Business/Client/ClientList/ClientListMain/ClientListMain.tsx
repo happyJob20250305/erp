@@ -17,7 +17,7 @@ export interface IClient {
     ph: string;
     person_ph: string;
     detail_addr: string;
-    client_id: number;
+    id: string;
     addr: string;
     client_name: string;
     email: string;
@@ -27,6 +27,15 @@ export interface IClient {
 
 export interface IClientResponse {
     clientList: IClient[];
+}
+
+export interface IGetClient {
+    client_id: number;
+    client_name: string;
+}
+
+export interface IGetClientResponse {
+    clientList: IGetClient[];
 }
 export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
@@ -74,7 +83,15 @@ export const ClientListMain = () => {
 
     return (
         <ClientListMainStyled>
-            <StyledTable data={clientList} columns={columns} hoverable={true} fullWidth={true} />
+            <StyledTable
+                data={clientList}
+                columns={columns}
+                hoverable={true}
+                fullWidth={true}
+                onCellClick={(row) => {
+                    handlerClientModal(row);
+                }}
+            />
             {modal && (
                 <Portal>
                     <ClientListModal

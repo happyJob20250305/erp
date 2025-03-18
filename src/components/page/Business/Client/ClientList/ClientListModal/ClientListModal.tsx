@@ -24,22 +24,25 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
     const bankRef = useRef<HTMLElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
-    const [clientId, setClientId] = useState<number>(detailClient?.client_id);
-    const [zipCode, setZipCode] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
+    const [clientId, setClientId] = useState<string>(detailClient?.id || "");
+    const [custUpdateDate, setCustUpdateDate] = useState<string>(detailClient?.cust_update_date || "");
+    const [zipCode, setZipCode] = useState<string>(detailClient?.zip || "");
+    const [address, setAddress] = useState<string>(detailClient?.addr || "");
 
-    const [selectEmailDomain, setSelectEmailDomain] = useState<string>("");
-    const [isEmailLocal, setIsEmailLocal] = useState<string>("");
-    const [isEmailAddr, setIsEmailAddr] = useState<string>("");
-    const [selectBank, setSelectBank] = useState<string>("");
+    const [isEmailLocal, setIsEmailLocal] = useState<string>(detailClient?.email.split("@")[0] || "");
+    const [selectEmailDomain, setSelectEmailDomain] = useState<string>(detailClient?.email.split("@")[1] || "");
+    const [isEmailAddr, setIsEmailAddr] = useState<string>(detailClient?.email || "");
+    const [selectBank, setSelectBank] = useState<string>(detailClient?.bank.split("은행")[0] || "");
 
     useEffect(() => {
-        console.log("setIsEmailLocal:" + isEmailLocal);
-        console.log("selectEmailDomain:" + selectEmailDomain);
+        handlerEmailAddr(isEmailLocal, selectEmailDomain);
+        return () => {
+            setDetailClient();
+        };
     }, [isEmailLocal, selectEmailDomain]);
 
     const emailAddrOptions = [
-        { label: "직접입력", value: "" },
+        // { label: "직접입력", value: "" },
         { label: "gmail.com", value: "gmail.com" },
         { label: "hotmail.com", value: "hotmail.com" },
         { label: "naver.com", value: "naver.com" },
@@ -48,7 +51,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
     ];
 
     const bankOptions = [
-        { label: "직접입력", value: "" },
+        // { label: "직접입력", value: "" },
         { label: "기업", value: "기업" },
         { label: "신한", value: "신한" },
         { label: "하나", value: "하나" },
@@ -102,18 +105,24 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
     };
 
     const handlerEmailAddr = (isEmailLocal: string, selectEmailDomain: string): string => {
-        const resultEmailAddr = isEmailLocal + "@" + selectEmailDomain;
+        let resultEmailAddr = "";
+        if (selectEmailDomain === "") {
+            resultEmailAddr = isEmailLocal;
+        } else {
+            resultEmailAddr = isEmailLocal + "@" + selectEmailDomain;
+        }
+        setIsEmailAddr(resultEmailAddr);
         return resultEmailAddr;
     };
 
-    const handlerBank = (e: string) => {
-        if (e !== "직접입력") {
-            setSelectBank(e);
-        } else {
-            // const inputTagofBank =
-            console.log("e:" + e);
-        }
-    };
+    // const handlerBank = (e: string) => {
+    //     if (e !== "직접입력") {
+    //         setSelectBank(e);
+    //     } else {
+    //         // const inputTagofBank =
+    //         console.log("e:" + e);
+    //     }
+    // };
     const insertClient = () => {
         const formData = new FormData(formRef.current);
         console.log("formData:" + formData.get("zip"));
@@ -157,29 +166,54 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                 alert("서버 오류가 발생했습니다.");
             });
     };
+
+    const updateClient = () => {
+        const formData = new FormData(formRef.current);
+
+        axios
+            .post("/business/client-list/updateClientListBody.do", formData, {
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res: AxiosResponse<IPostResponse>) => {
+                if (res.data.result === "success") {
+                    console.log("Response:", res);
+                    alert("수정되었습니다.");
+                    postSuccess();
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("서버 오류가 발생했습니다.");
+            });
+    };
+
     return (
         <ClientListModalStyled>
             <div className='container'>
                 <form ref={formRef}>
                     <label>
                         업체명*
-                        <StyledInput type='text' name='client_name'></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='client_name'
+                            defaultValue={detailClient?.client_name}
+                        ></StyledInput>
                     </label>
                     <label>
                         담당자*
-                        <StyledInput type='text' name='person'></StyledInput>
+                        <StyledInput type='text' name='person' defaultValue={detailClient?.person}></StyledInput>
                     </label>
                     <label>
                         회사전화*
-                        <StyledInput type='text' name='ph'></StyledInput>
+                        <StyledInput type='text' name='ph' defaultValue={detailClient?.ph}></StyledInput>
                     </label>
                     <label>
                         담당자전화*
-                        <StyledInput type='text' name='person_ph'></StyledInput>
+                        <StyledInput type='text' name='person_ph' defaultValue={detailClient?.person_ph}></StyledInput>
                     </label>
                     <label>우편번호*</label>
                     <span>
-                        <StyledInput type='text' name='zip' value={zipCode} readOnly></StyledInput>
+                        <StyledInput type='text' name='zip' defaultValue={zipCode} readOnly></StyledInput>
                     </span>
                     <span className={"button-container"}>
                         <StyledButton type='button' onClick={handlerPostCode}>
@@ -188,17 +222,22 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </span>
                     <label>
                         주소*
-                        <StyledInput type='text' name='addr' value={address} readOnly></StyledInput>
+                        <StyledInput type='text' name='addr' defaultValue={address} readOnly></StyledInput>
                     </label>
                     <label>
                         상세주소*
-                        <StyledInput type='text' name='detail_addr'></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='detail_addr'
+                            defaultValue={detailClient?.detail_addr}
+                        ></StyledInput>
                     </label>
                     <label>
                         이메일*
                         <StyledInput
                             type='text'
                             name='email_local'
+                            defaultValue={isEmailLocal}
                             onChange={(e) => setIsEmailLocal(e.target.value)}
                         ></StyledInput>
                         <StyledSelectBox
@@ -207,39 +246,57 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                             onChange={setSelectEmailDomain}
                             name='email_domain'
                         />
-                        <input type='hidden' name='email' value={handlerEmailAddr(isEmailLocal, selectEmailDomain)} />
+                        <input type='hidden' name='email' defaultValue={isEmailAddr} />
                     </label>
                     <label>
                         사업자등록번호*
-                        <StyledInput type='text' name='biz_num'></StyledInput>
+                        <StyledInput type='text' name='biz_num' defaultValue={detailClient?.biz_num}></StyledInput>
                     </label>
                     <label>
                         은행*
-                        <StyledSelectBox
+                        {/* <StyledSelectBox
                             options={bankOptions}
                             value={selectBank}
                             onChange={(e: string) => handlerBank(e)}
                             name='bank_select'
+                        /> */}
+                        <StyledSelectBox
+                            options={bankOptions}
+                            value={selectBank}
+                            onChange={setSelectBank}
+                            name='bank'
                         />
                         {/* <StyledInput type='hidden' name='bank' value={selectBank} ref={bankRef}></StyledInput> */}
-                        <StyledInput type='text' name='bank_account'></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='bank_account'
+                            defaultValue={detailClient?.bank_account}
+                        ></StyledInput>
                     </label>
                     <label>
                         메모*
-                        <StyledInput type='text' name='memo'></StyledInput>
+                        <StyledInput type='text' name='memo' defaultValue={detailClient?.memo}></StyledInput>
                     </label>
                     <div className={"button-container"}>
-                        <>
-                            <StyledButton type='button' onClick={insertClient}>
-                                등록
-                            </StyledButton>
-                            <StyledButton type='button' onClick={() => setModal(!modal)}>
-                                나가기
-                            </StyledButton>
-                        </>
+                        {custUpdateDate ? (
+                            <>
+                                <StyledButton type='button' onClick={updateClient}>
+                                    수정
+                                </StyledButton>
+                            </>
+                        ) : (
+                            <>
+                                <StyledButton type='button' onClick={insertClient}>
+                                    등록
+                                </StyledButton>
+                            </>
+                        )}
+                        <StyledButton type='button' onClick={() => setModal(!modal)}>
+                            나가기
+                        </StyledButton>
                     </div>
-                    {/* <input type='hidden' name='client_id' value={clientId} readOnly />
-                    <input type='hidden' name='cust_update_date' value={} readOnly /> */}
+                    <input type='hidden' name='id' value={clientId} readOnly />
+                    <input type='hidden' name='cust_update_date' value={custUpdateDate} readOnly />
                 </form>
             </div>
         </ClientListModalStyled>
