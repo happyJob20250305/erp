@@ -32,6 +32,8 @@ export const LoginMain = () => {
                 setLoginInfo(data);
                 sessionStorage.setItem("userInfo", JSON.stringify(data));
                 navigate("/react");
+            } else if ((data.result === "FALSE" && data.emplStatus === "F") || data.emplStatus === "O") {
+                alert(data.resultMsg);
             } else {
                 alert("ID 혹은 비밀번호가 틀립니다");
                 return;

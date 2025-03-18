@@ -1,29 +1,22 @@
 import styled from "styled-components";
 
 export const EmployeeSearchStyled = styled.div`
-    display: inline-block;
+    display: flex;
     gap: 5px;
     align-items: center;
-    justify-content: flex-end;
-    margin-top: 10px;
+    // justify-content: flex-end;
+    margin-top: 5px;
 
     .searchBar {
         display: flex;
         align-items: center;
-        gap: 30px;
-        width: 100%; /* 부모 기준으로 꽉 채우기 */
+        gap: 10px;
+        flex: 1;
+        margin-botton: 10px;
     }
 
-    .button-container {
-        display: flex;
-        gap: 5px;
-    }
-
-    .searchBarBox {
-        width: 1300px; /* 고정 넓이 */
-        display: flex;
-        flex-direction: column; /* 위아래로 나란히 */
-        gap: 10px; /* 위아래 간격 */
-        border: 1px solid black; /* 확인용 */
-    }
+    // .button-container {
+    //     display: flex;
+    //     gap: 5px;
+    // }
 `;

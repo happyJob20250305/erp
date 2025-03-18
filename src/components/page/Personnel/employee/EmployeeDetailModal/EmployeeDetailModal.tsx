@@ -66,6 +66,7 @@ export const EmployeeDetailModal = () => {
         }
     };
 
+    //다음주소
     const handleComplete = (data: any) => {
         setIsOpen(false);
         let fullAddress = data.address;
@@ -168,7 +169,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput name='birthday' value={response?.detail?.birthday || ""} readOnly />
                                 </td>
-                                <th>최종학력</th>
+                                <th>최종학력*</th>
                                 <td>
                                     <StyledInput
                                         name='finalEducation'
@@ -178,7 +179,7 @@ export const EmployeeDetailModal = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <th>이메일</th>
+                                <th>이메일*</th>
                                 <td>
                                     <StyledInput
                                         name='email'
@@ -186,13 +187,13 @@ export const EmployeeDetailModal = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </td>
-                                <th>연락처</th>
+                                <th>연락처*</th>
                                 <td>
                                     <StyledInput name='hp' value={hp} onChange={(e) => setHp(e.target.value)} />
                                 </td>
                             </tr>
                             <tr>
-                                <th>주소</th>
+                                <th>주소*</th>
                                 <td>
                                     <StyledInput
                                         name='address'
@@ -200,7 +201,7 @@ export const EmployeeDetailModal = () => {
                                         onChange={(e) => setAddress(e.target.value)}
                                     />
                                 </td>
-                                <th>상세주소</th>
+                                <th>상세주소*</th>
                                 <td>
                                     <StyledInput
                                         name='addressDetail'
@@ -210,24 +211,24 @@ export const EmployeeDetailModal = () => {
                                 </td>
                             </tr>
                             <tr>
-                                <th>은행</th>
+                                <th>은행*</th>
                                 <td>
                                     <StyledInput name='bank' value={response?.detail?.bank || ""} />
                                 </td>
-                                <th>계좌번호</th>
+                                <th>계좌번호*</th>
                                 <td>
                                     <StyledInput name='bankAccount' value={response?.detail?.bankAccount || ""} />
                                 </td>
                             </tr>
                             <tr>
-                                <th>부서</th>
+                                <th>부서*</th>
                                 <td>
                                     <StyledInput
                                         name='departmentDetailName'
                                         value={response?.detail?.departmentDetailName || ""}
                                     />
                                 </td>
-                                <th>직급</th>
+                                <th>직급*</th>
                                 <td>
                                     <StyledInput
                                         name='jobGradeDetailName'

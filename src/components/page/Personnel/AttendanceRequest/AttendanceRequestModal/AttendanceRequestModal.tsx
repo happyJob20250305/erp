@@ -179,22 +179,26 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                 <form ref={formRef}>
                     <label>
                         근무부서
-                        <StyledInput type='text' name="deptName" defaultValue={id ? attendanceRequestDetail?.deptName : loginInfo?.detail_name} readOnly />
+                        <StyledInput type='text' name="deptName" disabled={true}
+                            defaultValue={id ? attendanceRequestDetail?.deptName : loginInfo?.detail_name} readOnly />
                     </label>
                     <label>
                         성명
-                        <StyledInput type='text' name="name" defaultValue={id ? attendanceRequestDetail?.name : loginInfo?.usr_nm} readOnly />
+                        <StyledInput type='text' name="name" disabled={true}
+                            defaultValue={id ? attendanceRequestDetail?.name : loginInfo?.usr_nm} readOnly />
                     </label>
                     <label>
                         사번
-                        <StyledInput type='text' name="number" defaultValue={id ? attendanceRequestDetail?.number : loginInfo?.usr_idx} readOnly />
+                        <StyledInput type='text' name="number" disabled={true}
+                            defaultValue={id ? attendanceRequestDetail?.number : loginInfo?.usr_idx} readOnly />
                     </label>
                     <label>
                         연/반차*
                         {
                             id ?
                                 (
-                                    <StyledInput type='text' name="reqType" defaultValue={attendanceRequestDetail?.reqType} readOnly />
+                                    <StyledInput type='text' name="reqType" disabled={true}
+                                        defaultValue={attendanceRequestDetail?.reqType} readOnly />
                                 )
                                 :
                                 (
@@ -221,11 +225,13 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                     </label>
                     <label>
                         비상연락처*
-                        <StyledInput type='text' name="reqTel" defaultValue={attendanceRequestDetail?.reqTel} />
+                        <StyledInput type='text' name="reqTel" placeholder="010-1234-4567"
+                            defaultValue={attendanceRequestDetail?.reqTel} />
                     </label>
                     <label>
                         신청일
-                        <StyledInput type='text' name="reqdate" defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} readOnly />
+                        <StyledInput type='text' name="reqdate" disabled={true}
+                            defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} readOnly />
                     </label>
                     <div className={"button-container"}>
                         {

@@ -39,4 +39,5 @@ export interface IEmployee {
     empMemo: string | null;
     departmentDetailName: string;
     jobGradeDetailName: string;
+    actions2: string | null;
 }

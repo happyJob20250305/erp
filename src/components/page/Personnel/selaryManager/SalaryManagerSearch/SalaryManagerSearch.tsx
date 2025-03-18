@@ -14,6 +14,7 @@ import {
 import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
 import { SalaryOptionList } from "../../../../../api/api";
 import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
+import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const SalaryManagerSearch = () => {
     //DepartmentGroupItem
@@ -38,21 +39,17 @@ export const SalaryManagerSearch = () => {
     };
 
     // SelectBox 옵션 변환
-    const departmentOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...DepartmentGroupItem.map((item) => ({
-            label: item.departmentDetailName,
-            value: item.departmentDetailName,
-        })),
-    ];
+    const departmentOptions = setSelectOption(
+        DepartmentGroupItem,
+        "departmentDetailName", // 라벨 (화면에 표시될 값)
+        "departmentDetailName", // 값 (실제 선택될 값)
+        { label: "전체", value: "" } // 기본 옵션
+    );
 
-    const jobGradeOptions = [
-        { label: "전체", value: "" }, // 가장 첫 번째 항목으로 추가
-        ...JobGradeGroupItem.map((item) => ({
-            label: item.jobGradeDetailName,
-            value: item.jobGradeDetailName,
-        })),
-    ];
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     // (추가) 지급여부 SelectBox용 옵션 예시
     const paymentStatusOptions = [
@@ -148,36 +145,35 @@ export const SalaryManagerSearch = () => {
                         value={selectedDepartment}
                         onChange={setSelectedDepartment}
                     />
-
                     {/* 사원명 : searchEmployeeName */}
                     <span>사원명</span>
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
+                </div>
 
-                    <div className='searchBar' style={{ border: "5px solid white" }}>
-                        {/* 급여년월 searchPaymentMonth */}
-                        <span>급여년월</span>
-                        <StyledInput
-                            type='month'
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
-                        />
+                <div className='searchBar' style={{ border: "5px solid white" }}>
+                    {/* 급여년월 searchPaymentMonth */}
+                    <span>급여년월</span>
+                    <StyledInput
+                        type='month'
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                    />
 
-                        {/* 지급 여부 : searchPamentStatus */}
-                        <span>지급 여부 </span>
-                        <StyledSelectBox
-                            options={paymentStatusOptions}
-                            value={selectedPaymentStatus?.toString()}
-                            onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
-                        />
-                        {/* 검색  */}
-                        <StyledButton onClick={handleSearch}>검색</StyledButton>
+                    {/* 지급 여부 : searchPamentStatus */}
+                    <span>지급 여부 </span>
+                    <StyledSelectBox
+                        options={paymentStatusOptions}
+                        value={selectedPaymentStatus?.toString()}
+                        onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
+                    />
+                    {/* 검색  */}
+                    <StyledButton onClick={handleSearch}>검색</StyledButton>
 
-                        <img
-                            src='/refresh.png'
-                            onClick={resetSearch}
-                            style={{ width: "30px", height: "30px", color: "white" }}
-                        />
-                    </div>
+                    <img
+                        src='/refresh.png'
+                        onClick={resetSearch}
+                        style={{ width: "30px", height: "30px", color: "white" }}
+                    />
                 </div>
             </div>
         </SalalyManagerSearchStyled>

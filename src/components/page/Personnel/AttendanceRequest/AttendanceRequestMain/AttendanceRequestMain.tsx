@@ -71,6 +71,7 @@ export const AttendanceRequestMain = () => {
         if (result1) {
             setAttendanceCnt(result1.attendanceCnt);
             setloginInfo(result1.loginInfo);
+            setAttId(result1.attendanceCnt[0]?.id);
         }
 
         const result2 = await searchApi<IAttendanceListResponse>(AttendanceRequest.searchAttendanceList, {
@@ -84,7 +85,6 @@ export const AttendanceRequestMain = () => {
             setAttendanceList(result2.attendanceList);
             setAttendanceRequestCnt(result2.attendanceRequestCnt);
             setCPage(currentPage);
-            setAttId(result2.attendanceList[0]?.attId);
         }
     }
 
