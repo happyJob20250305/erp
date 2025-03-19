@@ -112,31 +112,37 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                 <form ref={formRef}>
                     <label>
                         근무부서
-                        <StyledInput type='text' name="deptName" defaultValue={attendanceApprovalDetail?.deptName} readOnly />
+                        <StyledInput type='text' name="deptName" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.deptName} readOnly />
                     </label>
                     <label>
                         성명
-                        <StyledInput type='text' name="name" defaultValue={attendanceApprovalDetail?.name} readOnly />
+                        <StyledInput type='text' name="name" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.name} readOnly />
                     </label>
                     <label>
                         사번
-                        <StyledInput type='text' name="number" defaultValue={attendanceApprovalDetail?.number} readOnly />
+                        <StyledInput type='text' name="number" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.number} readOnly />
                     </label>
                     <label>
                         연/반차
-                        <StyledInput type='text' name="reqType" defaultValue={attendanceApprovalDetail?.reqType} readOnly />
+                        <StyledInput type='text' name="reqType" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.reqType} readOnly />
                     </label>
                     <label>
                         기간
                         <div className="input-date">
-                            <StyledInput type='date' name="reqSt" fullWidth={true} defaultValue={attendanceApprovalDetail?.reqSt} readOnly />
+                            <StyledInput type='date' name="reqSt" fullWidth={true} disabled={true}
+                                defaultValue={attendanceApprovalDetail?.reqSt} readOnly />
                             <span>~</span>
-                            <StyledInput type='date' name="reqEd" fullWidth={true} defaultValue={attendanceApprovalDetail?.reqEd} readOnly />
+                            <StyledInput type='date' name="reqEd" fullWidth={true} disabled={true}
+                                defaultValue={attendanceApprovalDetail?.reqEd} readOnly />
                         </div>
                     </label>
                     <label>
                         신청사유
-                        <textarea name="reqReason" defaultValue={attendanceApprovalDetail?.reqReason} readOnly />
+                        <textarea name="reqReason" disabled={true} defaultValue={attendanceApprovalDetail?.reqReason} readOnly />
                     </label>
                     <label>
                         승인/반려 사유*
@@ -144,11 +150,13 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                     </label>
                     <label>
                         비상연락처
-                        <StyledInput type='text' name="reqTel" defaultValue={attendanceApprovalDetail?.reqTel} readOnly />
+                        <StyledInput type='text' name="reqTel" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.reqTel} readOnly />
                     </label>
                     <label>
                         신청일
-                        <StyledInput type='text' name="reqdate" defaultValue={attendanceApprovalDetail?.reqdate} readOnly />
+                        <StyledInput type='text' name="reqdate" disabled={true}
+                            defaultValue={attendanceApprovalDetail?.reqdate} readOnly />
                     </label>
                     <div className={"button-container"}>
                         {

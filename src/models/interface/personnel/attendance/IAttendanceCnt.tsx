@@ -1,4 +1,5 @@
 export interface IAttendanceCnt {
+    id: number,
     useAttCnt: number,
     attCnt: number,
     leftAttCnt: number

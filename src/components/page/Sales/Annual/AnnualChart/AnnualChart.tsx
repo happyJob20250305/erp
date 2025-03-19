@@ -1,15 +1,4 @@
-import React from "react";
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    LabelList,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { IAnnual } from "../../../../../models/interface/sales/IAnnual";
 
 interface AnnualChartProps {
@@ -24,12 +13,12 @@ export const AnnualChart = ({ annualListChart }: AnnualChartProps) => {
     }));
 
     return (
-        <section className='chart-container' style={{ width: "50%", margin: "0 auto" }}>
+        <section className='chart-container' style={{ width: "100%", margin: "0 auto" }}>
             <ResponsiveContainer width='100%' height={300}>
                 <LineChart data={annualChartData}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='date' />
-                    <YAxis />
+                    <YAxis width={100} />
                     <Tooltip />
                     <Legend />
                     <Line type='monotone' dataKey='sales' stroke='rgba(255, 99, 132, 1)' name='매출' />

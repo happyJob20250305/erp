@@ -1,7 +1,6 @@
-import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
     IAnnualClientDetail,
     IAnnualModalDetail,
@@ -11,35 +10,37 @@ import { Annual } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { AnnualModalStyled } from "./styled";
+import { AnnualModalStyled, AnnualStyledTable, StyledTd, StyledTh } from "./styled";
+import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
 interface IAnnualModalProps {
     postSuccess: () => void;
     modalType: "product" | "client";
 }
 
 export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalType }) => {
-    const { search } = useLocation();
+    const { searchKeyword } = useContext(AnnualListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [topProduct, setTopProduct] = useState<IAnnualModalDetail[]>([]);
     const [topClient, setTopClient] = useState<IAnnualModalDetail[]>([]);
 
     useEffect(() => {
         annualModal();
-    }, [search, modalType]);
+    }, [searchKeyword, modalType]);
 
     const annualModal = async () => {
-        const searchParam = new URLSearchParams(search);
-
         if (modalType === "product") {
-            const productResult = await searchApi<IAnnualProductDetail>(Annual.detail, searchParam);
+            const productResult = await searchApi<IAnnualProductDetail>(Annual.detail, {
+                ...searchKeyword,
+            });
             if (productResult.detail) setTopProduct(productResult.detail);
             console.log("topProduct데이터:", productResult.detail);
         } else {
-            const clientResult = await searchApi<IAnnualClientDetail>(Annual.detailClient, searchParam);
+            const clientResult = await searchApi<IAnnualClientDetail>(Annual.detailClient, {
+                ...searchKeyword,
+            });
             console.log("clientResult", clientResult);
             if (clientResult.detail) setTopClient(clientResult.detail);
             console.log("topClient데이터:", clientResult.detail);
@@ -60,11 +61,12 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
     return (
         <AnnualModalStyled>
             <div className='container'>
+                <i className='bi bi-x-lg' onClick={() => setModal(false)}></i>
                 <h2>{modalType === "product" ? "매출 상위 제품" : "매출 상위 기업"}</h2>
                 {(modalType === "product" ? topProduct : topClient).length > 0 ? (
                     <>
                         <Pie data={chartData} options={{ responsive: true }} />
-                        <StyledTable>
+                        <AnnualStyledTable>
                             <thead>
                                 <tr>
                                     <StyledTh>순위</StyledTh>
@@ -81,14 +83,11 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
                                     </tr>
                                 ))}
                             </tbody>
-                        </StyledTable>
+                        </AnnualStyledTable>
                     </>
                 ) : (
                     <p>데이터가 존재하지 않습니다.</p>
                 )}
-                <StyledButton type='button' onClick={() => setModal(false)}>
-                    닫기
-                </StyledButton>
             </div>
         </AnnualModalStyled>
     );

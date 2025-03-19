@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { useNavigate } from "react-router-dom";
 import { DailySearchStyled } from "./styled";
-import axios, { AxiosResponse } from "axios";
-import { error } from "console";
+import axios from "axios";
+import { DailyListContext } from "../../../../../api/Provider/SalesProvider/DailyProvider";
 
 export const DailySearch = () => {
+    const { setSearchKeyword } = useContext(DailyListContext);
     const [selectedClient, setSelectedClient] = useState<string>("");
     const [clientOptions, setClientOptions] = useState<{ label: string; value: string }[]>([]);
-    const navigate = useNavigate();
 
     const getCurrentDate = () => {
         const now = new Date();
@@ -35,12 +34,16 @@ export const DailySearch = () => {
 
     //검색기능
     const dailySearch = () => {
-        const query: string[] = [];
-        !searchDate || query.push(`orderDate=${searchDate}`);
-        !selectedClient || query.push(`clientId=${selectedClient}`);
+        setSearchKeyword({
+            orderDate: searchDate,
+            clientId: selectedClient,
+        });
+    };
 
-        const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-        navigate(`/react/sales/daily${queryString}`);
+    const getDay = (value: number) => {
+        const currentDate = new Date(searchDate);
+        currentDate.setDate(currentDate.getDate() + value);
+        setSearchDate(currentDate.toISOString().split("T")[0]);
     };
 
     return (
@@ -54,9 +57,9 @@ export const DailySearch = () => {
                     value={searchDate}
                     onChange={(e) => setSearchDate(e.target.value)}
                 ></StyledInput>
-                <i className='bi bi-arrow-left-circle-fill'></i>
-                <StyledButton> 오늘</StyledButton>
-                <i className='bi bi-arrow-right-circle-fill'></i>
+                <i className='bi bi-arrow-left-circle-fill' onClick={() => getDay(-1)}></i>
+                <StyledButton onClick={() => setSearchDate(getCurrentDate())}> 오늘</StyledButton>
+                <i className='bi bi-arrow-right-circle-fill' onClick={() => getDay(1)}></i>
                 <StyledButton variant='secondary' onClick={dailySearch}>
                     조회
                 </StyledButton>

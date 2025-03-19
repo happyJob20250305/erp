@@ -32,6 +32,10 @@ export const SalesReultListSearch = () => {
     const { setSearchKeyword } = useContext(SalesResultListContext);
 
     useEffect(() => {
+        console.log("selectManuFacturer:" + selectManuFacturer);
+        console.log("selectMaincategory:" + selectMaincategory);
+        console.log("selectSubcategory:" + selectSubcategory);
+        console.log("selectProduct:" + selectProduct);
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();

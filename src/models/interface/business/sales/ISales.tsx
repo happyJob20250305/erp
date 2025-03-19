@@ -1,19 +1,21 @@
 export interface ISales {
-    client_id: number;
+    client_id: string;
     client_name: string;
     detail_code: string;
     detail_name: string;
-    emp_id: number;
+    emp_id: string;
     emp_name: string;
-    goal_quanti: number;
+    goal_quanti: string;
     group_name: string;
+    group_code: string;
     industry_code: string;
-    manufacturer_id: number;
+    manufacturer_id: string;
     name: string;
     perform_qut: number;
     plan_memo: string;
-    plan_num: number;
+    plan_num: string;
     product_name: string;
+    product_id: string;
     target_date: string;
 }
 
@@ -23,7 +25,7 @@ export interface ISalesResponse {
 }
 
 export interface IManufacturer {
-    industryCode?: string;
+    industryCode: string;
     industryName: string;
     manufacturer_id: number;
 }
@@ -58,6 +60,7 @@ export interface IProduct {
     industry_code: string;
     name: string;
     product_code: string;
+    product_id: number;
 }
 
 export interface IProductResponse {

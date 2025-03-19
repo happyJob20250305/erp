@@ -1,7 +1,6 @@
-//css 를 자바스크립트처럼 사용가능
-
 import styled from "styled-components";
-export const ReceivablesModalStyled = styled.div`
+
+export const ClientListModalStyled = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
@@ -12,8 +11,18 @@ export const ReceivablesModalStyled = styled.div`
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
 
-    td {
-        padding: 20px;
+    label {
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
     }
 
     .container {
@@ -22,7 +31,7 @@ export const ReceivablesModalStyled = styled.div`
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
-        width: 1080px;
+        width: 400px;
     }
 
     .button-container {
@@ -52,6 +61,15 @@ export const ReceivablesModalStyled = styled.div`
             background-color: #3e8e41;
             box-shadow: 0 2px #666;
             transform: translateY(2px);
+        }
+    }
+
+    .radio-group {
+        display: flex;
+
+        label {
+            font-weight: initial;
+            display: block;
         }
     }
 `;

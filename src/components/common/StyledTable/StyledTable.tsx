@@ -4,6 +4,7 @@ export interface Column<T> {
     key: keyof T | "actions";
     title: string;
     clickable?: boolean;
+    render?: (value: any) => React.ReactNode;
     isMoney?: boolean;
 }
 
@@ -18,16 +19,9 @@ interface TableProps<T> {
     renderAction?: (row: T) => React.ReactNode;
 }
 
-export const StyledTable = <T extends { [key: string]: any }>({
-    columns,
-    data,
-    striped,
-    bordered,
-    hoverable,
-    fullWidth,
-    onCellClick,
-    renderAction,
-}: TableProps<T>) => {
+export const StyledTable = <T extends { [key: string]: any }>(props: TableProps<T>) => {
+    const { columns, data, striped, bordered, hoverable, fullWidth, onCellClick, renderAction } = props;
+
     const generatedColumns =
         columns ??
         (data.length > 0
@@ -49,7 +43,7 @@ export const StyledTable = <T extends { [key: string]: any }>({
                 {data?.length > 0 ? (
                     data?.map((row, index) => (
                         <Tr key={index} striped={striped} hoverable={hoverable}>
-                            {columns.map((col) => (
+                            {generatedColumns.map((col) => (
                                 <Td
                                     key={col.key as string}
                                     bordered={bordered}
@@ -67,7 +61,7 @@ export const StyledTable = <T extends { [key: string]: any }>({
                     ))
                 ) : (
                     <Tr>
-                        <Td colSpan={columns.length}>조회 내역이 없습니다.</Td>
+                        <Td colSpan={generatedColumns.length}>조회 내역이 없습니다.</Td>
                     </Tr>
                 )}
             </tbody>

@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
@@ -26,9 +25,27 @@ export const ReceivablesListMain = () => {
         { key: "productName", title: "제품명" },
         { key: "orderDate", title: "수주일자" },
         { key: "deliveryDate", title: "배송일자" },
-        { key: "receivableAmount", title: "미수금" },
-        { key: "receivableStatus", title: "수금상태" },
-        { key: "managerName", title: "처리자" },
+        {
+            key: "receivableAmount",
+            title: "미수금",
+            render: (value) =>
+                value
+                    ? new Intl.NumberFormat("ko-KR", {
+                          style: "currency",
+                          currency: "KRW",
+                      }).format(value)
+                    : "0",
+        },
+        {
+            key: "receivableStatus",
+            title: "수금상태",
+            render: (value) => (value && value.trim() !== "" ? "수금" : "미수금"),
+        },
+        {
+            key: "managerName",
+            title: "처리자",
+            render: (value) => (value && value.trim() !== "" ? value : "자동처리"),
+        },
     ] as Column<IReceivablesList>[];
 
     useEffect(() => {

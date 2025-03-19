@@ -1,4 +1,3 @@
-import { DetailCode } from "../../../pages/system/DetailCode";
 export interface IReceivablesList {
     orderId: number;
     departmentName: string;
