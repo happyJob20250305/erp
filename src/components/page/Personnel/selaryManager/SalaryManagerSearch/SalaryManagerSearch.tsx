@@ -74,7 +74,13 @@ export const SalaryManagerSearch = () => {
     };
 
     const resetSearch = () => {
-        setSearchKeyword({});
+        setSearchKeyword({}); // 검색 컨텍스트 초기화
+        setEmployeeNameInput(""); // 사원명 초기화
+        setSelectedDepartment(""); // 부서 초기화
+        setSelectedJobGrade(""); // 직급 초기화
+        setSelectedPaymentStatus(null); // 지급 여부 초기화
+        setSelectedMonth(""); // 급여년월 초기화
+        setSelectedPaymentDate(""); // 급여 계산 월 초기화
     };
 
     // //급여 계산

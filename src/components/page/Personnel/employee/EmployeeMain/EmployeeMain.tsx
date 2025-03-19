@@ -21,7 +21,6 @@ import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 
 export const EmployeeMain = () => {
-    console.log("EmployeeMain 렌더링됨!");
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
     const [employeeCnt, setEmployeeCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(1);

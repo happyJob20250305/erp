@@ -18,6 +18,7 @@ export const PromotionSearch = () => {
     const { setSearchKeyword } = useContext(PromotionSearchContext);
 
     const employeeName = useRef<HTMLInputElement>();
+    const [employeeNameInput, setEmployeeNameInput] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
@@ -32,7 +33,8 @@ export const PromotionSearch = () => {
 
     const handlerSearch = () => {
         setSearchKeyword({
-            searchEmployeeName: employeeName.current.value,
+            searchName: employeeNameInput,
+            searchId: employeeNumber,
             department: selectedDepartment,
             jobGrade: selectedJobGrade,
             searchRegDateStart: startDate,
@@ -51,7 +53,13 @@ export const PromotionSearch = () => {
     };
 
     const resetSearch = () => {
-        setSearchKeyword({});
+        setSearchKeyword({}); // 검색 컨텍스트 초기화
+        setEmployeeNameInput(""); // 이름 초기화
+        setEmployeeNumber(""); // 사번 초기화
+        setSelectedDepartment(""); // 부서 선택 초기화
+        setSelectedJobGrade(""); // 직급 선택 초기화
+        setStartDate(""); // 날짜 초기화
+        setEndDate(""); // 날짜 초기화
     };
 
     const departmentOptions = setSelectOption(
@@ -75,9 +83,7 @@ export const PromotionSearch = () => {
                         <StyledSelectBox
                             options={departmentOptions}
                             value={selectedDepartment}
-                            onChange={(e) => {
-                                setSelectedDepartment(selectedDepartment);
-                            }}
+                            onChange={setSelectedDepartment}
                         />
                         <span>직급</span>
                         <StyledSelectBox
@@ -89,7 +95,7 @@ export const PromotionSearch = () => {
                         <span>사번</span>
                         <StyledInput value={employeeNumber} onChange={(e) => setEmployeeNumber(e.target.value)} />
                         <span>이름</span>
-                        <StyledInput ref={employeeName} />
+                        <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                     </div>
                     <div className='searchBar'>
                         {/* 입사일 조회 */}
