@@ -4,8 +4,11 @@ import { AttendanceContext } from "../../../../../api/Provider/AttendanceProvide
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { useRecoilState } from "recoil";
+import { loginInfoState } from "../../../../../stores/userInfo";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 
-export const AttendanceApprovalSearch = ({ loginUserType }) => {
+export const AttendanceApprovalSearch = () => {
     const { setSearchKeyword } = useContext(AttendanceContext);
     const [startDate, setStartDate] = useState<string>();
     const [endDate, setEndDate] = useState<string>();
@@ -13,6 +16,7 @@ export const AttendanceApprovalSearch = ({ loginUserType }) => {
     const [name, setName] = useState<string>();
     const [selectReqStatusValue, setSelectReqStatusValue] = useState<string>("");
     const [isDefault, setIsDefault] = useState<boolean>(false);
+    const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
     const optionsReqStatus = [
         { label: "전체", value: "" },
@@ -43,7 +47,7 @@ export const AttendanceApprovalSearch = ({ loginUserType }) => {
     }
 
     const setDefaultOptions = async () => {
-        switch (loginUserType) {
+        switch (userInfo.userType) {
             case "C":
                 setSelectReqStatusValue("승인 대기");
                 break;

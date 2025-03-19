@@ -10,13 +10,12 @@ import { AttendanceApprovalModal } from "../AttendanceApprovalModal/AttendanceAp
 import { searchApi } from "../../../../../api/PersonnelApi/searchApi";
 import { AttendanceApproval } from "../../../../../api/api";
 import { IAttendance } from "../../../../../models/interface/personnel/attendance/IAttendance";
-
 interface IAttendanceListResponse {
     attendanceList: IAttendance[],
     attendanceRequestCnt: number
 }
 
-export const AttendanceApprovalMain = ({ loginUserType, loginUserEmpid }) => {
+export const AttendanceApprovalMain = () => {
     const [attendanceList, setAttendanceList] = useState<IAttendance[]>([]);
     const [attendanceRequestCnt, setAttendanceRequestCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
@@ -85,7 +84,7 @@ export const AttendanceApprovalMain = ({ loginUserType, loginUserEmpid }) => {
             {
                 modal && (
                     <Portal>
-                        <AttendanceApprovalModal id={id} setId={setId} postSuccess={postSuccess} loginUserType={loginUserType} loginUserEmpid={loginUserEmpid} />
+                        <AttendanceApprovalModal id={id} setId={setId} postSuccess={postSuccess} />
                     </Portal>
                 )
             }
