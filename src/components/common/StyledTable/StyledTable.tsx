@@ -53,10 +53,8 @@ export const StyledTable = <T extends { [key: string]: any }>(props: TableProps<
                                     {col.key === "actions" && renderAction
                                         ? renderAction(row)
                                         : col.isMoney
-                                          ? new Intl.NumberFormat("ko-KR").format(Number(row[col.key as keyof T]))
-                                          : col.render
-                                            ? col.render(row[col.key as keyof T])
-                                            : (row[col.key as keyof T] as React.ReactNode)}
+                                          ? Number(row[col.key as keyof T]).toLocaleString("ko-KR")
+                                          : (row[col.key as keyof T] as React.ReactNode)}
                                 </Td>
                             ))}
                         </Tr>

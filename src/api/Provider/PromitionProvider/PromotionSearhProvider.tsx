@@ -1,63 +1,19 @@
-import React, { createContext, useState, FC, ReactNode, Dispatch, SetStateAction } from "react"; // ✅ vm 아님!
+import React, { createContext, FC, useState } from "react";
 
-interface IPromotionSearchContext {
-    searchEmployeeNumber: string;
-    setSearchEmployeeNumber: Dispatch<SetStateAction<string>>;
-    searchEmployeeName: string;
-    setSearchEmployeeName: Dispatch<SetStateAction<string>>;
-    department: string;
-    setDepartment: Dispatch<React.SetStateAction<string>>;
-    jobGrade: string;
-    setJobGrade: Dispatch<React.SetStateAction<string>>;
-    searchRegDateStart: string;
-    setSearchRegDateStart: Dispatch<React.SetStateAction<string>>;
-    searchRegDateEnd: string;
-    setSearchRegDateEnd: Dispatch<React.SetStateAction<string>>;
+//초기값의 타입
+interface ISearchKeyword {
+    searchKeyword?: object;
+    setSearchKeyword?: React.Dispatch<React.SetStateAction<object>>;
 }
 
-const defaultValue: IPromotionSearchContext = {
-    searchEmployeeNumber: "",
-    setSearchEmployeeNumber: () => {},
-    searchEmployeeName: "",
-    setSearchEmployeeName: () => {},
-    department: "",
-    setDepartment: () => {},
-    jobGrade: "",
-    setJobGrade: () => {},
-    searchRegDateStart: "",
-    setSearchRegDateStart: () => {},
-    searchRegDateEnd: "",
-    setSearchRegDateEnd: () => {},
-};
+// 다른 컴포넌트에서 사용이 가능한 context를 만든다.
+export const PromotionSearchContext = createContext<ISearchKeyword>({});
 
-export const PromotionSearchContext = createContext<IPromotionSearchContext>(defaultValue);
-
-// Provider 컴포넌트
-export const PromotionSearchProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [searchEmployeeNumber, setSearchEmployeeNumber] = useState<string>("");
-    const [searchEmployeeName, setSearchEmployeeName] = useState<string>("");
-    const [department, setDepartment] = useState<string>("");
-    const [jobGrade, setJobGrade] = useState<string>("");
-    const [searchRegDateStart, setSearchRegDateStart] = useState<string>("");
-    const [searchRegDateEnd, setSearchRegDateEnd] = useState<string>("");
+export const PromitionSearchProvider: FC<{ children: React.ReactNode | React.ReactNode[] }> = ({ children }) => {
+    const [searchKeyword, setSearchKeyword] = useState<object>({});
 
     return (
-        <PromotionSearchContext.Provider
-            value={{
-                searchEmployeeNumber,
-                setSearchEmployeeNumber,
-                searchEmployeeName,
-                setSearchEmployeeName,
-                department,
-                setDepartment,
-                jobGrade,
-                setJobGrade,
-                searchRegDateStart,
-                setSearchRegDateStart,
-                searchRegDateEnd,
-                setSearchRegDateEnd,
-            }}
-        >
+        <PromotionSearchContext.Provider value={{ searchKeyword, setSearchKeyword }}>
             {children}
         </PromotionSearchContext.Provider>
     );

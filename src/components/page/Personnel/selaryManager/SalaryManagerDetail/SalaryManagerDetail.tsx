@@ -33,7 +33,7 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     //                             <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
 
     const columns: Column<ISalaryDetail>[] = [
-        { key: "salaryId", title: "사원명" },
+        { key: "employeeName", title: "사원명" },
         { key: "salary", title: "직급" },
         { key: "baseSalary", title: "부서명" },
         { key: "nationalPension", title: "사번" },

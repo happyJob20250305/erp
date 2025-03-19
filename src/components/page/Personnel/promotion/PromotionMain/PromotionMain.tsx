@@ -17,22 +17,9 @@ interface PromotionMainProps {
 
 export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     const [promotionList, setPromotionList] = useState<IPromotionList[]>([]);
-    const [promitionCnt, setPromitionCnt] = useState<number>();
+    const [promitionCnt, setPromitionCnt] = useState<number>(1);
     // context 상태 및 업데이트 함수 가져오기
-    const {
-        searchEmployeeNumber,
-        setSearchEmployeeNumber,
-        searchEmployeeName,
-        setSearchEmployeeName,
-        department,
-        setDepartment,
-        jobGrade,
-        setJobGrade,
-        searchRegDateStart,
-        setSearchRegDateStart,
-        searchRegDateEnd,
-        setSearchRegDateEnd,
-    } = useContext(PromotionSearchContext);
+    const { searchKeyword } = useContext(PromotionSearchContext);
 
     const [cPage, setCPage] = useState<number>(1);
     const columns = [
@@ -45,34 +32,21 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     ] as unknown as Column<IPromotionList>[];
 
     useEffect(() => {
-        PromotionList(cPage);
-    }, [cPage, searchEmployeeName, searchEmployeeNumber, department, jobGrade, searchRegDateEnd, searchRegDateStart]);
+        PromotionList();
+    }, [searchKeyword]);
 
-    useEffect(() => {
-        PromotionList(cPage);
-    }, [cPage]);
+    const PromotionList = async (currentPage?: number) => {
+        currentPage = currentPage || 1;
 
-    const PromotionList = async (currentPage: number) => {
-        const searchParam = new URLSearchParams();
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
-        if (searchEmployeeName) searchParam.append("searchName", searchEmployeeName);
-        if (department) searchParam.append("department", department);
-        if (jobGrade) searchParam.append("jobGrade", jobGrade);
-        if (searchEmployeeNumber) searchParam.append("searchEmployeeNumber", searchEmployeeNumber);
-        if (searchRegDateEnd) searchParam.append("searchRegDateEnd", searchRegDateEnd);
-        if (searchRegDateStart) searchParam.append("searchRegDateStart", searchRegDateStart);
-        const result = await searchApi<IPromotionListResponse>(Promotion.promitionList, searchParam);
+        const result = await searchApi<IPromotionListResponse>(Promotion.promitionList, {
+            ...searchKeyword,
+        });
 
         if (result) {
             setPromotionList(result.promotionList);
             setPromitionCnt(result.promotionCnt);
-            console.log(result);
-        } else {
-            setPromotionList([]);
+            setCPage(currentPage);
         }
-
-        setCPage(currentPage);
     };
 
     return (
