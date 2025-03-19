@@ -17,7 +17,6 @@ import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal"
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
-import { MKStyledTable } from "../../../../common/MkStyledTable/MKStyled";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 
