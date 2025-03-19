@@ -50,13 +50,13 @@ export const EmployeeMain = () => {
                 console.log(value);
                 switch (value) {
                     case "W":
-                        return <span style={{ color: "green" }}>재직</span>;
+                        return <span>재직</span>;
                     case "O":
-                        return <span style={{ color: "blue" }}>휴직</span>;
+                        return <span>휴직</span>;
                     case "F":
-                        return <span style={{ color: "red" }}>퇴직</span>;
+                        return <span>퇴직</span>;
                     default:
-                        return <span style={{ color: "gray" }}>알 수 없음</span>;
+                        return <span>알 수 없음</span>;
                 }
             },
         },

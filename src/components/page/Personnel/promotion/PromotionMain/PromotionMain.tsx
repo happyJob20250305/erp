@@ -40,6 +40,8 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
 
         const result = await searchApi<IPromotionListResponse>(Promotion.promitionList, {
             ...searchKeyword,
+            pageSize: 5,
+            currentPage,
         });
 
         if (result) {
