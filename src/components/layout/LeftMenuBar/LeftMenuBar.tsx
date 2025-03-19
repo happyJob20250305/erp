@@ -8,8 +8,7 @@ import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-export const LeftMenuBar = React.memo(() => {
-    console.log("LeftMenuBar 렌더링됨!");
+export const LeftMenuBar = () => {
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const navigate = useNavigate();
 
@@ -91,4 +90,4 @@ export const LeftMenuBar = React.memo(() => {
             </ul>
         </LeftMenuBarStyled>
     );
-});
+};
