@@ -24,19 +24,16 @@ export const EmployeeSearch = () => {
     const [endDate, setEndDate] = useState<string>("");
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
     const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
-    const departmentOptions = setSelectOption(
-        DepartmentGroupItem,
-        "departmentDetailName", // 라벨 (화면에 표시될 값)
-        "departmentDetailName", // 값 (실제 선택될 값)
-        { label: "전체", value: "" } // 기본 옵션
-    );
+    const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
         label: "전체",
         value: "",
     });
 
-    // 부서, 직급 옵션 데이터 조회
     useEffect(() => {
         getOptionList();
     }, []);
@@ -68,14 +65,14 @@ export const EmployeeSearch = () => {
     };
 
     const resetSearch = () => {
-        setSearchKeyword({}); // 검색 컨텍스트 초기화
-        setEmployeeNameInput(""); // 이름 입력 필드 초기화
-        setEmployeeNumber(""); // 사번 입력 필드 초기화
-        setSelectedDepartment(""); // 부서 선택 초기화
-        setSelectedJobGrade(""); // 직급 선택 초기화
-        setSelectedEmplStatus(""); // 재직 상태 초기화
-        setStartDate(""); // 입사일 시작일 초기화
-        setEndDate(""); // 입사일 종료일 초기화
+        setSearchKeyword({});
+        setEmployeeNameInput("");
+        setEmployeeNumber("");
+        setSelectedDepartment("");
+        setSelectedJobGrade("");
+        setSelectedEmplStatus("");
+        setStartDate("");
+        setEndDate("");
     };
 
     return (

@@ -11,7 +11,6 @@ import {
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
 import { PromotionSearchContext } from "../../../../../api/Provider/PromitionProvider/PromotionSearhProvider";
-
 import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const PromotionSearch = () => {

@@ -1,19 +1,15 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { useRecoilState } from "recoil";
-
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
 import { EmployeeMainStyled } from "./styled";
-
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
 import { Employee } from "../../../../../api/api";
 import { modalState } from "../../../../../stores/modalState";
-
 import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
 import { EmployeeDetailModal } from "../EmployeeDetailModal/EmployeeDetailModal";
 import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
-
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
@@ -26,13 +22,9 @@ export const EmployeeMain = () => {
     const [cPage, setCPage] = useState<number>(1);
     const [modalType, setModalType] = useState<string>("");
     const [modal, setModal] = useRecoilState(modalState);
-    const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>("");
-
-    // const { setEmployeeId, setJobGradeCode, setdepartmentCode } = useContext(EmployeeDetailModalContext);
     const { setEmployeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const { searchKeyword } = useContext(EmployeeSearchContext);
     const { setDispachKeyword } = useContext(EmployeeRetirementModalContext);
-    // 테이블 컬럼 정의
 
     const columns = [
         { key: "number", title: "사번" },
@@ -63,6 +55,16 @@ export const EmployeeMain = () => {
         { key: "actions", title: "퇴직처리" },
     ] as Column<IEmployee>[];
 
+    useEffect(() => {
+        employeeBasicList();
+    }, [searchKeyword]);
+
+    const postSuccess = () => {
+        setModal(false);
+        employeeBasicList();
+    };
+
+    //리스트
     const employeeBasicList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
@@ -79,25 +81,13 @@ export const EmployeeMain = () => {
         }
     };
 
-    // 호출
-    useEffect(() => {
-        employeeBasicList();
-        console.log("Employee List:", employeeList);
-    }, [searchKeyword]);
-
-    // 등록 후 새로고침
-    const postSuccess = () => {
-        setModal(false);
-        employeeBasicList();
-    };
-
-    // 모달 오픈
+    //등록 모달
     const handleModal = () => {
         setModal(true);
         setModalType("registerModal");
     };
 
-    // 상세 모달
+    //상세모달
     const handleEmployeeDetail = (employeeId: string, jobGradeCode: string, departmentCode: string) => {
         setEmployeeDetailModalKeyword({
             employeeId: employeeId,
@@ -109,7 +99,7 @@ export const EmployeeMain = () => {
         setModal(true);
     };
 
-    //  퇴직 모달
+    //퇴직모달
     const handleResign = (employeeId: string, employeeNumber: string, employeeName: string, regDate: string) => {
         if (window.confirm(`${employeeNumber}님을 퇴직 처리하시겠습니까?`)) {
             setDispachKeyword({
@@ -142,7 +132,6 @@ export const EmployeeMain = () => {
                         onCellClick={(row) => {
                             handleEmployeeDetail(row.employeeId, row.jobGradeCode, row.departmentCode);
                         }}
-                        // renderAction2={(row) => <span>{statusMap[row.emplStatus] || "알 수 없음"}</span>}
                         renderAction={(row) =>
                             row.emplStatus === "W" ? (
                                 <StyledButton
