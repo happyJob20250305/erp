@@ -25,9 +25,9 @@ export const DailyMain = () => {
         { key: "clientName", title: "기업명" },
         { key: "crebitCode", title: "매출 구분" },
         { key: "debitCode", title: "매출 상세" },
-        { key: "totalSupplyPrice", title: "수익 금액" },
-        { key: "totalExpenseAmount", title: "지출 금액" },
-        { key: "totalReceivableAmount", title: "당일 미수금 기록" },
+        { key: "totalSupplyPrice", title: "수익 금액", isMoney: true },
+        { key: "totalExpenseAmount", title: "지출 금액", isMoney: true },
+        { key: "totalReceivableAmount", title: "당일 미수금 기록", isMoney: true },
     ] as Column<IDaily>[];
 
     useEffect(() => {
@@ -61,10 +61,8 @@ export const DailyMain = () => {
                     <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>
                 </StatisticsWrapper>
             </ChartContainer>
-            {/* 기존 테이블 유지 */}
             <StyledTable columns={columns} data={dailyList} hoverable={true} fullWidth={true} />
 
-            {/* 페이지 네비게이션 유지 */}
             <PageNavigate
                 totalItemsCount={dailyCount}
                 onChange={searchDailyList}

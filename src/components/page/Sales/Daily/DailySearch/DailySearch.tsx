@@ -17,7 +17,6 @@ export const DailySearch = () => {
     };
     const [searchDate, setSearchDate] = useState<string>(getCurrentDate());
 
-    //거래처 목록 가져오기
     useEffect(() => {
         axios
             .get("/business/clientNames")
@@ -32,7 +31,6 @@ export const DailySearch = () => {
         dailySearch();
     }, []);
 
-    //검색기능
     const dailySearch = () => {
         setSearchKeyword({
             orderDate: searchDate,

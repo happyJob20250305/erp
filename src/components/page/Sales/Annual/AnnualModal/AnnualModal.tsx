@@ -36,14 +36,11 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
                 ...searchKeyword,
             });
             if (productResult.detail) setTopProduct(productResult.detail);
-            console.log("topProduct데이터:", productResult.detail);
         } else {
             const clientResult = await searchApi<IAnnualClientDetail>(Annual.detailClient, {
                 ...searchKeyword,
             });
-            console.log("clientResult", clientResult);
             if (clientResult.detail) setTopClient(clientResult.detail);
-            console.log("topClient데이터:", clientResult.detail);
         }
     };
 

@@ -22,10 +22,10 @@ export const AnnualMain = () => {
     const columns = [
         { key: "orderDate", title: "년도" },
         { key: "orderCount", title: "주문 건수" },
-        { key: "totalSupplyPrice", title: "매출" },
-        { key: "totalUnitPrice", title: "매출 원가" },
-        { key: "totalExpenseAmount", title: "지출" },
-        { key: "totalReceivableAmount", title: "미수금" },
+        { key: "totalSupplyPrice", title: "매출", isMoney: true },
+        { key: "totalUnitPrice", title: "매출 원가", isMoney: true },
+        { key: "totalExpenseAmount", title: "지출", isMoney: true },
+        { key: "totalReceivableAmount", title: "미수금", isMoney: true },
     ] as Column<IAnnual>[];
 
     useEffect(() => {

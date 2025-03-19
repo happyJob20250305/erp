@@ -28,23 +28,17 @@ export const ReceivablesListMain = () => {
         {
             key: "receivableAmount",
             title: "미수금",
-            render: (value) =>
-                value
-                    ? new Intl.NumberFormat("ko-KR", {
-                          style: "currency",
-                          currency: "KRW",
-                      }).format(value)
-                    : "0",
+            isMoney: true,
         },
         {
             key: "receivableStatus",
             title: "수금상태",
-            render: (value) => (value && value.trim() !== "" ? "수금" : "미수금"),
+            render: (value) => (value == "Y" ? "수금완료" : "미수금"),
         },
         {
             key: "managerName",
             title: "처리자",
-            render: (value) => (value && value.trim() !== "" ? value : "자동처리"),
+            render: (value) => (value === null || value === "" ? "자동처리" : value),
         },
     ] as Column<IReceivablesList>[];
 

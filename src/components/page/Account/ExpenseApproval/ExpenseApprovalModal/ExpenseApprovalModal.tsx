@@ -2,7 +2,6 @@ import { FC, useEffect, useRef, useState } from "react";
 import { ExpenseApprovalModalStyle } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
-import axios, { AxiosResponse } from "axios";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { ButtonArea } from "../../VoucherList/VoucherListModal/styled";
