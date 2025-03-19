@@ -95,13 +95,13 @@ export const VoucherList = {
 };
 
 export const Daily = {
-    search: "/sales/dailyList.do",
+    search: "/sales/dailyListBody.do",
 };
 
 export const Monthly = {
-    search: "/sales/monthlyList.do",
-    detail: "/sales/monthlyTopProduct.do",
-    detailClient: "/sales/monthlyTopClient.do",
+    search: "/sales/monthlyListBody.do",
+    detail: "/sales/monthlyTopProductBody.do",
+    detailClient: "/sales/monthlyTopClientBody.do",
 };
 
 export const ReceivablesList = {
@@ -110,9 +110,9 @@ export const ReceivablesList = {
 };
 
 export const Annual = {
-    search: "/sales/annualList.do",
-    detail: "/sales/annualTopProduct.do",
-    detailClient: "/sales/annualTopClient.do",
+    search: "/sales/annualListBody.do",
+    detail: "/sales/annualTopProductBody.do",
+    detailClient: "/sales/annualTopClientBody.do",
 };
 
 export const CommonCode = {

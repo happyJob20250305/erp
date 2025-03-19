@@ -2,8 +2,10 @@ import styled from "styled-components";
 
 export const ChartContainer = styled.div`
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    gap: 10px;
+    margin-left: 10px;
 `;
 
 export const ChartWrapper = styled.div`
