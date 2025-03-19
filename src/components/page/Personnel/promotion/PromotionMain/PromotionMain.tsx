@@ -16,7 +16,6 @@ interface PromotionMainProps {
 }
 
 export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
-    console.log("Promotion Main 렌더링됨!");
     const [promotionList, setPromotionList] = useState<IPromotionList[]>([]);
     const [promitionCnt, setPromitionCnt] = useState<number>(1);
     // context 상태 및 업데이트 함수 가져오기
@@ -41,8 +40,6 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
 
         const result = await searchApi<IPromotionListResponse>(Promotion.promitionList, {
             ...searchKeyword,
-            pageSize: 5,
-            currentPage,
         });
 
         if (result) {

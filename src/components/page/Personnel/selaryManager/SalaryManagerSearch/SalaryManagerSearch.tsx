@@ -12,9 +12,10 @@ import {
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
 import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { SalaryOptionList } from "../../../../../api/api";
+import { SalaryManager, SalaryOptionList } from "../../../../../api/api";
 import { SalaryManagerContext } from "../../../../../api/Provider/SalaryMangerProvider/SalaryManagerProvider";
 import { setSelectOption } from "../../../../../common/setSelectOption";
+import { postApi } from "../../../../../api/SystemApi/postApi";
 
 export const SalaryManagerSearch = () => {
     //DepartmentGroupItem
@@ -59,49 +60,49 @@ export const SalaryManagerSearch = () => {
     ];
 
     // context 상태 및 업데이트 함수 가져오기
-    const {
-        searchEmployeeName,
-        setSearchEmployeeName,
-        department,
-        setDepartment,
-        jobGrade,
-        setJobGrade,
-        searchPaymentStatus,
-        setSearchPaymentStatus,
-        searchPaymentMonth,
-        setSearchPaymentMonth,
-        paymentData,
-        setPaymentData,
-        paymentStatus,
-        setPaymentStatus,
-    } = useContext(SalaryManagerContext);
+    const { setSearchKeyword } = useContext(SalaryManagerContext);
     // 검색 클릭 시 context에 저장
 
     const handleSearch = () => {
-        setSearchEmployeeName(employeeNameInput);
-        setDepartment(selectedDepartment);
-        setJobGrade(selectedJobGrade);
-        setSearchPaymentStatus(selectedPaymentStatus);
-        setSearchPaymentMonth(selectedMonth);
+        setSearchKeyword({
+            searchEmployeeName: employeeNameInput,
+            department: selectedDepartment,
+            jobGrade: selectedJobGrade,
+            searchPaymentStatus: selectedPaymentStatus,
+            searchPaymentMonth: selectedMonth,
+        });
     };
 
     const resetSearch = () => {
-        setSearchEmployeeName("");
-        setDepartment("");
-        setJobGrade("");
-        setSearchPaymentStatus(null);
-        setSearchPaymentMonth("");
+        setSearchKeyword({});
     };
 
-    //급여 계산
-    const salarySave = (selectedPaymentDate: string) => {
-        setPaymentData(selectedPaymentDate);
-        console.log(selectedPaymentDate);
+    // //급여 계산
+    // const salarySave = (selectedPaymentDate: string) => {
+    //     setSearchKeyword({ paymentData: selectedPaymentDate });
+    // };
+
+    const salarySave = async (selectedPaymentDate: string) => {
+        const searchParam = new URLSearchParams(selectedPaymentDate);
+        searchParam.append("paymentDate", selectedPaymentDate);
+
+        const result = await postApi<string>(SalaryManager.salarySave, searchParam);
+        alert("급여가 생성되었습니다.");
+        setSearchKeyword({
+            searchPaymentMonth: selectedMonth,
+        });
     };
 
-    //일괄 지급
-    const allPaymentStatusUpdate = () => {
-        setPaymentStatus("1");
+    // 지급되고 나서 리스트 초기화 되어야 함
+    const allPaymentStatusUpdate = async () => {
+        const searchParam = new URLSearchParams();
+        searchParam.append("paymentStatus", "1");
+
+        const result = await postApi<string>(SalaryManager.allPaymentStatusUpdate, searchParam);
+        alert("전부 지급 처리 되었습니다.");
+        setSearchKeyword({
+            searchPaymentStatus: selectedPaymentStatus,
+        });
     };
 
     // Input 관리 (ref 대신 state 추천)

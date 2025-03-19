@@ -4,7 +4,6 @@ import { useRecoilState } from "recoil";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Portal } from "../../../../common/potal/Portal";
-import { Column } from "../../../../common/StyledTable/StyledTable";
 import { EmployeeMainStyled } from "./styled";
 
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
@@ -20,6 +19,7 @@ import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvi
 import { EmployeeRetirementModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeRetirementModalProvider";
 import { MKStyledTable } from "../../../../common/MkStyledTable/MKStyled";
 import { searchApi } from "../../../../../api/SystemApi/searchApi";
+import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 
 export const EmployeeMain = () => {
     console.log("EmployeeMain 렌더링됨!");
@@ -28,31 +28,44 @@ export const EmployeeMain = () => {
     const [cPage, setCPage] = useState<number>(1);
     const [modalType, setModalType] = useState<string>("");
     const [modal, setModal] = useRecoilState(modalState);
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>("");
 
-    const { setEmployeeId, setJobGradeCode, setdepartmentCode } = useContext(EmployeeDetailModalContext);
+    // const { setEmployeeId, setJobGradeCode, setdepartmentCode } = useContext(EmployeeDetailModalContext);
+    const { setEmployeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const { searchKeyword } = useContext(EmployeeSearchContext);
-    const { setRetireEmployeeId, setRetireEmployeeNumber, setRetireEmployeeName, setRegDate } =
-        useContext(EmployeeRetirementModalContext);
-
-    console.log(searchKeyword);
+    const { setDispachKeyword } = useContext(EmployeeRetirementModalContext);
     // 테이블 컬럼 정의
-    const columns: Column<IEmployee>[] = [
+
+    const columns = [
         { key: "number", title: "사번" },
         { key: "employeeName", title: "사원명" },
         { key: "departmentCode", title: "부서코드" },
         { key: "departmentDetailName", title: "부서명" },
         { key: "jobGradeDetailName", title: "직급" },
         { key: "regDate", title: "입사일자" },
-        { key: "actions2", title: "재직 상태" },
+        {
+            key: "emplStatus",
+            title: "재직 상태",
+            render: (emplStatus) => {
+                console.log("emplStatus 값:", emplStatus); // 콘솔로 값 확인
+
+                if (!emplStatus) return <span style={{ color: "gray" }}>알 수 없음</span>;
+
+                switch (emplStatus) {
+                    case "W":
+                        return <span style={{ color: "green" }}>재직</span>;
+                    case "F":
+                        return <span style={{ color: "red" }}>퇴직</span>;
+                    case "O":
+                        return <span style={{ color: "blue" }}>휴직</span>;
+                    default:
+                        return <span style={{ color: "gray" }}>알 수 없음</span>;
+                }
+            },
+        },
         { key: "resignationDate", title: "퇴직일자" },
         { key: "actions", title: "퇴직처리" },
-    ];
-
-    const statusMap: { [key: string]: string } = {
-        W: "재직",
-        F: "퇴직",
-        O: "휴직",
-    };
+    ] as Column<IEmployee>[];
 
     const employeeBasicList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -73,6 +86,7 @@ export const EmployeeMain = () => {
     // 호출
     useEffect(() => {
         employeeBasicList();
+        console.log("Employee List:", employeeList);
     }, [searchKeyword]);
 
     // 등록 후 새로고침
@@ -88,10 +102,13 @@ export const EmployeeMain = () => {
     };
 
     // 상세 모달
-    const handleEmployeDetail = (employeeId: string, jobGradeCode: string, departmentCode: string) => {
-        setEmployeeId(employeeId);
-        setJobGradeCode(jobGradeCode);
-        setdepartmentCode(departmentCode);
+    const handleEmployeeDetail = (employeeId: string, jobGradeCode: string, departmentCode: string) => {
+        setEmployeeDetailModalKeyword({
+            employeeId: employeeId,
+            jobGradeCode: jobGradeCode,
+            departmentCode: departmentCode,
+        });
+
         setModalType("detailModal");
         setModal(true);
     };
@@ -99,10 +116,13 @@ export const EmployeeMain = () => {
     //  퇴직 모달
     const handleResign = (employeeId: string, employeeNumber: string, employeeName: string, regDate: string) => {
         if (window.confirm(`${employeeNumber}님을 퇴직 처리하시겠습니까?`)) {
-            setRetireEmployeeId(employeeId);
-            setRetireEmployeeNumber(employeeNumber);
-            setRetireEmployeeName(employeeName);
-            setRegDate(regDate);
+            setDispachKeyword({
+                retireEmployeeId: employeeId,
+                retireEmployeeNumber: employeeNumber,
+                retireEmployeeName: employeeName,
+                regDate: regDate,
+            });
+
             setModalType("retireModal");
             setModal(true);
         }
@@ -117,15 +137,16 @@ export const EmployeeMain = () => {
                     </StyledButton>
                 </div>
                 <div className='table-container'>
-                    <MKStyledTable
+                    <StyledTable
                         columns={columns}
                         data={employeeList}
                         striped
-                        // bordered
                         hoverable
                         fullWidth
-                        onCellClick={(row) => handleEmployeDetail(row.employeeId, row.jobGradeCode, row.departmentCode)}
-                        renderAction2={(row) => <span>{statusMap[row.emplStatus] || "알 수 없음"}</span>}
+                        onCellClick={(row) => {
+                            handleEmployeeDetail(row.employeeId, row.jobGradeCode, row.departmentCode);
+                        }}
+                        // renderAction2={(row) => <span>{statusMap[row.emplStatus] || "알 수 없음"}</span>}
                         renderAction={(row) =>
                             row.emplStatus === "W" ? (
                                 <StyledButton
