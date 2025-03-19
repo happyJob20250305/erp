@@ -2,9 +2,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 
-import { MonthlyModalStyled } from "./styled";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { MonthlyModalStyled, MonthlyStyledTable, StyledTd, StyledTh } from "./styled";
 import { searchApi } from "../../../../../api/SalesApi/MonthlyApi/searchApi";
 import { Monthly } from "../../../../../api/api";
 import { Pie } from "react-chartjs-2";
@@ -63,11 +61,12 @@ export const MonthlyModal: React.FC<IMonthlyModalProps> = ({ postSuccess, modalT
     return (
         <MonthlyModalStyled>
             <div className='container'>
+                <i className='bi bi-x-lg' onClick={() => setModal(false)}></i>
                 <h2>{modalType === "product" ? "매출 상위 제품" : "매출 상위 기업"}</h2>
                 {(modalType === "product" ? topProduct : topClient).length > 0 ? (
                     <>
                         <Pie data={chartData} options={{ responsive: true }} />
-                        <StyledTable>
+                        <MonthlyStyledTable>
                             <thead>
                                 <tr>
                                     <StyledTh>순위</StyledTh>
@@ -84,14 +83,11 @@ export const MonthlyModal: React.FC<IMonthlyModalProps> = ({ postSuccess, modalT
                                     </tr>
                                 ))}
                             </tbody>
-                        </StyledTable>
+                        </MonthlyStyledTable>
                     </>
                 ) : (
                     <p>데이터가 존재하지 않습니다.</p>
                 )}
-                <StyledButton type='button' onClick={() => setModal(false)}>
-                    닫기
-                </StyledButton>
             </div>
         </MonthlyModalStyled>
     );

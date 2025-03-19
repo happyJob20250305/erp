@@ -1,18 +1,10 @@
-//css 를 자바스크립트처럼 사용가능
-
 import styled from "styled-components";
 
 export const MonthlyModalStyled = styled.div`
-    width: 100%;
-    height: 100%;
-    position: fixed;
     display: flex;
     flex-flow: row wrep;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-    font-weight: bold;
 
     label {
         display: flex;
@@ -28,33 +20,50 @@ export const MonthlyModalStyled = styled.div`
         width: 400px;
     }
 
-    .button-container {
-        text-align: center;
-        margin-top: 10px;
+    .bi-x-lg {
+        display: flex;
+        justify-content: flex-end;
     }
-    button {
-        background-color: #3bb2ea;
-        border: none;
-        color: white;
-        padding: 10px 22px;
+`;
+
+export const MonthlyStyledTable = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0px 0px 0px 0px;
+    font-size: 18px;
+    text-align: left;
+    table-layout: fixed;
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
         text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
+    }
+
+    th {
+        background-color: #2676bf;
+        color: #ddd;
+    }
+
+    /* 테이블 올렸을 때 */
+    tbody tr:hover {
+        background-color: #d3d3d3;
+        opacity: 0.9;
         cursor: pointer;
-        border-radius: 12px;
-        box-shadow: 0 4px #999;
-        transition: 0.3s;
-
-        &:hover {
-            background-color: #45a049;
-        }
-
-        &:active {
-            background-color: #3e8e41;
-            box-shadow: 0 2px #666;
-            transform: translateY(2px);
-        }
     }
+`;
+
+export const StyledTh = styled.th<{ size?: number }>`
+    background-color: #f4f4f4;
+    padding: 12px;
+    border: 1px solid #ddd;
+    width: ${(props) => props.size}%;
+`;
+
+export const StyledTd = styled.td<{ size?: number }>`
+    padding: 12px;
+    border: 1px solid #ddd;
+    width: ${(props) => props.size}%;
 `;

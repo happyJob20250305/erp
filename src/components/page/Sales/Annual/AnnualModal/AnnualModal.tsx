@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
@@ -11,12 +10,11 @@ import { Annual } from "../../../../../api/api";
 import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { AnnualModalStyled } from "./styled";
+import { AnnualModalStyled, AnnualStyledTable, StyledTd, StyledTh } from "./styled";
 import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
+
 interface IAnnualModalProps {
     postSuccess: () => void;
     modalType: "product" | "client";
@@ -63,11 +61,12 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
     return (
         <AnnualModalStyled>
             <div className='container'>
+                <i className='bi bi-x-lg' onClick={() => setModal(false)}></i>
                 <h2>{modalType === "product" ? "매출 상위 제품" : "매출 상위 기업"}</h2>
                 {(modalType === "product" ? topProduct : topClient).length > 0 ? (
                     <>
                         <Pie data={chartData} options={{ responsive: true }} />
-                        <StyledTable>
+                        <AnnualStyledTable>
                             <thead>
                                 <tr>
                                     <StyledTh>순위</StyledTh>
@@ -84,14 +83,11 @@ export const AnnualModal: React.FC<IAnnualModalProps> = ({ postSuccess, modalTyp
                                     </tr>
                                 ))}
                             </tbody>
-                        </StyledTable>
+                        </AnnualStyledTable>
                     </>
                 ) : (
                     <p>데이터가 존재하지 않습니다.</p>
                 )}
-                <StyledButton type='button' onClick={() => setModal(false)}>
-                    닫기
-                </StyledButton>
             </div>
         </AnnualModalStyled>
     );

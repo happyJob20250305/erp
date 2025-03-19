@@ -1,6 +1,5 @@
 import { IMonthly } from "../../../../../models/interface/sales/IMonthly";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
-import { MonthlyStatisticsStyled } from "./styled";
+import { MonthlyStatisticsStyled, StyledTd, StyledTh } from "./styled";
 
 interface MonthlyStatisticsProps {
     monthlyStatistics: IMonthly[];
@@ -13,7 +12,7 @@ const formatBigInt = (value: bigint) => {
 export const MonthlyStatistics = ({ monthlyStatistics }: MonthlyStatisticsProps) => {
     if (monthlyStatistics.length === 0) {
         return (
-            <StyledTable>
+            <MonthlyStatisticsStyled>
                 <thead>
                     <tr>
                         <StyledTh></StyledTh>
@@ -25,7 +24,7 @@ export const MonthlyStatistics = ({ monthlyStatistics }: MonthlyStatisticsProps)
                         <StyledTd colSpan={2}>데이터가 없습니다.</StyledTd>
                     </tr>
                 </tbody>
-            </StyledTable>
+            </MonthlyStatisticsStyled>
         );
     }
 

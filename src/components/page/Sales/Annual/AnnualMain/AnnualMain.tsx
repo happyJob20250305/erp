@@ -64,7 +64,7 @@ export const AnnualMain = () => {
                 <StyledButton onClick={() => annualModal("product")}>매출상위제품</StyledButton>
                 <StyledButton onClick={() => annualModal("client")}>매출상위기업</StyledButton>
             </div>
-            <StyledTable columns={columns} data={annualList} hoverable={true} fullWidth={true}></StyledTable>
+            <StyledTable columns={columns} data={annualList} hoverable={true} fullWidth={true} />
 
             {modal && (
                 <Portal>
