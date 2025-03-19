@@ -3,6 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { ClientListMainStyled } from "./styled";
 import { ClientListContext } from "../../../../../../api/Provider/SalaryMangerProvider/ClientListProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { Portal } from "../../../../../common/potal/Portal";
+import { ClientListModal } from "../ClientListModal/ClientListModal";
 
 export interface IClient {
     zip: string;
@@ -13,7 +17,7 @@ export interface IClient {
     ph: string;
     person_ph: string;
     detail_addr: string;
-    client_id: number;
+    id: string;
     addr: string;
     client_name: string;
     email: string;
@@ -24,8 +28,20 @@ export interface IClient {
 export interface IClientResponse {
     clientList: IClient[];
 }
+
+export interface IGetClient {
+    client_id: number;
+    client_name: string;
+}
+
+export interface IGetClientResponse {
+    clientList: IGetClient[];
+}
 export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
+
+    const [detailClient, setDetailClient] = useState<IClient>();
 
     const { searchKeyword } = useContext(ClientListContext);
 
@@ -55,9 +71,36 @@ export const ClientListMain = () => {
             });
     };
 
+    const handlerClientModal = (row: IClient) => {
+        setModal(!modal);
+        setDetailClient(row);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchClientList();
+    };
+
     return (
         <ClientListMainStyled>
-            <StyledTable data={clientList} columns={columns} hoverable={true} fullWidth={true} />
+            <StyledTable
+                data={clientList}
+                columns={columns}
+                hoverable={true}
+                fullWidth={true}
+                onCellClick={(row) => {
+                    handlerClientModal(row);
+                }}
+            />
+            {modal && (
+                <Portal>
+                    <ClientListModal
+                        detailClient={detailClient}
+                        setDetailClient={setDetailClient}
+                        postSuccess={postSuccess}
+                    />
+                </Portal>
+            )}
         </ClientListMainStyled>
     );
 };

@@ -19,7 +19,12 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
 import { SalesPlanListModalStyle } from "./styled";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
-import { IClient, IClientResponse } from "../../../Client/ClientList/ClientListMain/ClientListMain";
+import {
+    IClient,
+    IClientResponse,
+    IGetClient,
+    IGetClientResponse,
+} from "../../../Client/ClientList/ClientListMain/ClientListMain";
 
 interface ISalesModalProps {
     detailSalesPlan: ISales;
@@ -27,27 +32,6 @@ interface ISalesModalProps {
     // setDetailSalesPlan: React.Dispatch<React.SetStateAction<object>>;
     postSuccess: () => void;
 }
-
-const initSalesPlan = {
-    client_id: "",
-    client_name: "",
-    detail_code: "",
-    detail_name: "",
-    emp_id: "",
-    emp_name: "",
-    goal_quanti: "",
-    group_name: "",
-    group_code: "",
-    industry_code: "",
-    manufacturer_id: "",
-    name: "",
-    perform_qut: 0,
-    plan_memo: "",
-    plan_num: "",
-    product_name: "",
-    product_id: "",
-    target_date: "",
-};
 
 interface IPostResponse {
     result: "success" | "fail";
@@ -58,13 +42,13 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     // const [salesPlan, setSalesPlan] = useState<ISales>(initSalesPlan);
 
-    const [clientList, setClientList] = useState<IClient[]>([]);
+    const [clientList, setClientList] = useState<IGetClient[]>([]);
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id.toString() || "");
+    const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id || "");
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectMaincategory, setSelectMaincategory] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectSubcategory, setSelectSubcategory] = useState<string>(detailSalesPlan?.detail_code || "");
@@ -85,15 +69,18 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         getMainCategoryList();
         getSubCategoryList();
         getProductList();
+        for (let key in clientList) {
+            console.log("clientList:" + clientList[key]);
+        }
         return () => {
-            setDetailSalesPlan(initSalesPlan);
+            setDetailSalesPlan();
         };
     }, [selectclient, selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
 
     const clientOptions = [
         { value: "", label: "선택" },
         ...(clientList?.length > 0
-            ? clientList.map((clientValue: IClient) => {
+            ? clientList.map((clientValue: IGetClient) => {
                   //   console.log("clientValue.client_id:" + clientValue.client_id);
                   return {
                       value: clientValue.client_id,
@@ -167,7 +154,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     ];
 
     const getClientList = () => {
-        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IClientResponse>) => {
+        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
@@ -335,7 +322,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         거래처
                         <StyledSelectBox
                             options={clientOptions}
-                            value={selectclient}
+                            value={Number(selectclient)}
                             onChange={setSelectClient}
                             name='client_id'
                         />
@@ -437,7 +424,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         </StyledButton>
                     </div>
                     <input type='hidden' name='plan_num' value={planNum} readOnly />
-                    <input type='hidden' name='perform_qut' value={detailSalesPlan?.perform_qut} readOnly />
+                    <input type='hidden' name='perform_qut' value={detailSalesPlan?.perform_qut || 0} readOnly />
                 </form>
             </div>
         </SalesPlanListModalStyle>

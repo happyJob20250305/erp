@@ -6,6 +6,8 @@ import { IClient, IClientResponse } from "../ClientListMain/ClientListMain";
 import { useContext, useEffect, useState } from "react";
 import { ClientListContext } from "../../../../../../api/Provider/SalaryMangerProvider/ClientListProvider";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
 
 export const ClientListSearch = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
@@ -13,6 +15,8 @@ export const ClientListSearch = () => {
     const [selectDate, setSelectDate] = useState<string>("");
 
     const { setSearchKeyword } = useContext(ClientListContext);
+
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {
         getClientList();
@@ -56,6 +60,7 @@ export const ClientListSearch = () => {
                 <StyledInput type='date' onChange={(e) => setSelectDate(e.target.value)} />
             </label>
             <StyledButton onClick={handlerClientSearch}>조회</StyledButton>
+            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
         </ClientListSearchStyled>
     );
 };
