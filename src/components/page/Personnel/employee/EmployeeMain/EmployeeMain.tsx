@@ -46,18 +46,16 @@ export const EmployeeMain = () => {
         {
             key: "emplStatus",
             title: "재직 상태",
-            render: (emplStatus) => {
-                console.log("emplStatus 값:", emplStatus); // 콘솔로 값 확인
-
-                if (!emplStatus) return <span style={{ color: "gray" }}>알 수 없음</span>;
-
-                switch (emplStatus) {
+            render: (value) => {
+                console.log("value");
+                console.log(value);
+                switch (value) {
                     case "W":
                         return <span style={{ color: "green" }}>재직</span>;
-                    case "F":
-                        return <span style={{ color: "red" }}>퇴직</span>;
                     case "O":
                         return <span style={{ color: "blue" }}>휴직</span>;
+                    case "F":
+                        return <span style={{ color: "red" }}>퇴직</span>;
                     default:
                         return <span style={{ color: "gray" }}>알 수 없음</span>;
                 }
