@@ -1,11 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { OrderListMainStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { OrderListContext } from "../../../../../../api/Provider/OrderListProvider";
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { Portal } from "../../../../../common/potal/Portal";
+import { OrderListModal } from "../OrderListModal/OrderListModal";
+import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/StyledTable";
+import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
 
-export interface IOrderList {
+export interface IOrder {
     clientId: number;
     clientName: string;
     deliveryDate: string;
@@ -23,32 +28,22 @@ export interface IOrderList {
 }
 
 interface IOrderListResponse {
-    orderList: IOrderList[];
+    orderList: IOrder[];
     orderCnt: number;
 }
 
 export const OrderListMain = () => {
-    const [orderList, setOrderList] = useState<IOrderList[]>([]);
+    const [orderList, setOrderList] = useState<IOrder[]>([]);
     const [orderCount, setOrderCount] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
     const { searchKeyword } = useContext(OrderListContext);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [orderId, setOrderId] = useState<number>();
+    const [detailOrder, setDetailOrder] = useState<IOrder>();
 
     useEffect(() => {
         searchOrderList();
     }, [searchKeyword]);
-
-    const columns = [
-        { key: "id", title: "수주직원" },
-        { key: "orderDate", title: "수주날짜" },
-        { key: "clientName", title: "거래처 이름" },
-        { key: "productName", title: "제품명" },
-        { key: "deliveryDate", title: "납기날짜" },
-        { key: "totalDeliveryCount", title: "총 납품 개수" },
-        { key: "totalSupplyPrice", title: "총 공급 가액" },
-        { key: "totalTax", title: "총세액" },
-        { key: "salesArea", title: "영역구분(scm/영업)" },
-        { key: "orderDetail", title: "수주상세조회" },
-    ] as Column<IOrderList>[];
 
     const searchOrderList = (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -65,15 +60,79 @@ export const OrderListMain = () => {
             });
     };
 
+    const handlerOrderListModal = (id: number) => {
+        setModal(!modal);
+        setOrderId(id);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchOrderList();
+    };
+
     return (
         <OrderListMainStyled>
-            <StyledTable data={orderList} columns={columns} hoverable={true} fullWidth={true} />
+            <>
+                <StyledTable>
+                    <thead>
+                        <tr>
+                            <StyledTh>수주직원</StyledTh>
+                            <StyledTh>수주일</StyledTh>
+                            <StyledTh>거래처</StyledTh>
+                            <StyledTh>제품명</StyledTh>
+                            <StyledTh>납기일</StyledTh>
+                            <StyledTh>총납품개수</StyledTh>
+                            <StyledTh>총공급가액</StyledTh>
+                            <StyledTh>총세액</StyledTh>
+                            <StyledTh>영역구분(scm/영업)</StyledTh>
+                            <StyledTh>수주상세조회</StyledTh>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orderList?.length > 0 ? (
+                            orderList.map((order) => {
+                                return (
+                                    <tr key={order?.id}>
+                                        <StyledTd>{order.orderEmpName}</StyledTd>
+                                        <StyledTd>{order.orderDate}</StyledTd>
+                                        <StyledTd>{order.clientName}</StyledTd>
+                                        <StyledTd>{order.productName}</StyledTd>
+                                        <StyledTd>{order.deliveryDate}</StyledTd>
+                                        <StyledTd>{order.totalDeliveryCount}</StyledTd>
+                                        <StyledTd>{order.totalSupplyPrice}</StyledTd>
+                                        <StyledTd>{order.totalTax}</StyledTd>
+                                        <StyledTd>{order.salesArea}</StyledTd>
+                                        <StyledTd>
+                                            <StyledButton onClick={() => handlerOrderListModal(order?.id)}>
+                                                수주상세보기
+                                            </StyledButton>
+                                        </StyledTd>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <StyledTd colSpan={10}>조회 내역이 없습니다.</StyledTd>
+                            </tr>
+                        )}
+                    </tbody>
+                </StyledTable>
+            </>
             <PageNavigate
                 totalItemsCount={orderCount}
                 onChange={searchOrderList}
                 itemsCountPerPage={5}
                 activePage={cPage}
             />
+            {modal && (
+                <Portal>
+                    <OrderListModal
+                        detailOrder={detailOrder}
+                        setDetailOrder={setDetailOrder}
+                        postSuccess={postSuccess}
+                    />
+                </Portal>
+            )}
         </OrderListMainStyled>
     );
 };
