@@ -14,10 +14,7 @@ import {
 import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const EmployeeSearch = () => {
-    // Context 상태
     const { setSearchKeyword } = useContext(EmployeeSearchContext);
-
-    const employeeName = useRef<HTMLInputElement>();
     const [employeeNameInput, setEmployeeNameInput] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -25,21 +22,19 @@ export const EmployeeSearch = () => {
     const [selectedEmplStatus, setSelectedEmplStatus] = useState("");
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
-
-    // 옵션 데이터 상태
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
     const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
+    const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName", {
+        label: "전체",
+        value: "",
+    });
 
-    // 부서, 직급 옵션 데이터 조회
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
+
     useEffect(() => {
-        const getOptionList = async () => {
-            const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-            if (result) {
-                setDepartmentGroupItem(result.DepartmentGroupList);
-                setGradeGroupItem(result.JobGradeGroupList);
-                console.log(result);
-            }
-        };
         getOptionList();
     }, []);
 
@@ -49,11 +44,18 @@ export const EmployeeSearch = () => {
         }
     }, [selectedEmplStatus]);
 
-    // context에 검색 조건 저장
+    const getOptionList = async () => {
+        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
+        if (result) {
+            setDepartmentGroupItem(result.DepartmentGroupList);
+            setGradeGroupItem(result.JobGradeGroupList);
+        }
+    };
+
     const handleSearchSaveContext = () => {
         setSearchKeyword({
             searchId: employeeNumber,
-            SearchName: employeeName,
+            searchName: employeeNameInput,
             department: selectedDepartment,
             jobGrade: selectedJobGrade,
             searchRegDateStart: startDate,
@@ -64,26 +66,19 @@ export const EmployeeSearch = () => {
 
     const resetSearch = () => {
         setSearchKeyword({});
+        setEmployeeNameInput("");
+        setEmployeeNumber("");
+        setSelectedDepartment("");
+        setSelectedJobGrade("");
+        setSelectedEmplStatus("");
+        setStartDate("");
+        setEndDate("");
     };
 
-    // SelectBox 옵션 변환
-    const departmentOptions = setSelectOption(
-        DepartmentGroupItem,
-        "departmentDetailName", // 라벨 (화면에 표시될 값)
-        "departmentDetailName", // 값 (실제 선택될 값)
-        { label: "전체", value: "" } // 기본 옵션
-    );
-
-    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
-        label: "전체",
-        value: "",
-    });
-
-    // 렌더링
     return (
         <EmployeeSearchStyled>
-            <div className='searchBarBox' style={{ border: "5px solid white" }}>
-                <div className='searchBar' style={{ border: "5px solid white" }}>
+            <div className='searchBarBox'>
+                <div className='searchBar'>
                     <span>부서</span>
                     <StyledSelectBox
                         options={departmentOptions}

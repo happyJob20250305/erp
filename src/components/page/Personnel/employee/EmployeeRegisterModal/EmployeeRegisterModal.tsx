@@ -17,7 +17,6 @@ import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/Vouch
 import DaumPostcode from "react-daum-postcode"; // 추가
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import { validateEmployeeForm } from "../../../../../common/registerCheck";
-import { dateCheck } from "../../../../../common/dateCheck";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -38,32 +37,12 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
     const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
-    //  옵션 데이터 조회
-    useEffect(() => {
-        getOptionList();
-    }, []);
-
-    const getOptionList = async () => {
-        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-        if (result) {
-            setDepartmentGroupItem(result.DepartmentGroupList);
-            setGradeGroupItem(result.JobGradeGroupList);
-        }
-    };
-
-    //  옵션 변환
-    // SelectBox 옵션 변환
     const departmentOptions = setSelectOption(
         DepartmentGroupItem,
         "departmentDetailName", // 라벨 (화면에 표시될 값)
         "departmentDetailName", // 값 (실제 선택될 값)
         { label: "전체", value: "" } // 기본 옵션
     );
-
-    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
-        label: "전체",
-        value: "",
-    });
 
     const educationOptions = [
         { label: "선택", value: "" },
@@ -91,6 +70,23 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         { label: "여성", value: "여성" },
         { label: "남성", value: "남성" },
     ];
+
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+        label: "전체",
+        value: "",
+    });
+
+    useEffect(() => {
+        getOptionList();
+    }, []);
+
+    const getOptionList = async () => {
+        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
+        if (result) {
+            setDepartmentGroupItem(result.DepartmentGroupList);
+            setGradeGroupItem(result.JobGradeGroupList);
+        }
+    };
 
     //  파일 업로드 핸들링
     const handlerFile = (e: React.ChangeEvent<HTMLInputElement>) => {

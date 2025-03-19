@@ -24,7 +24,7 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
     }, [data]);
 
     const PromitionDetailList = async (data: number | null | undefined) => {
-        if (!data) return; // ✅ data가 없으면 실행하지 않음
+        if (!data) return;
 
         const searchParam = new URLSearchParams();
         searchParam.append("currentPage", "1");

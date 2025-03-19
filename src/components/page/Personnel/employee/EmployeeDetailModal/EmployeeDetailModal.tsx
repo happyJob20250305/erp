@@ -27,10 +27,6 @@ export const EmployeeDetailModal = () => {
     const [hp, setHp] = useState("");
     const [finalEducation, setFinalEducation] = useState("");
 
-    const closeModal = () => {
-        setModal(false);
-    };
-
     useEffect(() => {
         employeeDetail();
     }, [employeeDetailModalKeyword]);
@@ -55,23 +51,6 @@ export const EmployeeDetailModal = () => {
         }
     };
 
-    //다음주소
-    const handleComplete = (data: any) => {
-        setIsOpen(false);
-        let fullAddress = data.address;
-        let extraAddress = "";
-
-        if (data.addressType === "R") {
-            if (data.bname !== "") extraAddress += data.bname;
-            if (data.buildingName !== "")
-                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
-        }
-
-        setZipCode(data.zonecode);
-        setAddress(fullAddress);
-    };
-
     const updateEmployee = async () => {
         const formData = new FormData(formRef.current!);
 
@@ -81,6 +60,10 @@ export const EmployeeDetailModal = () => {
         } catch {
             alert("수정 실패");
         }
+    };
+
+    const closeModal = () => {
+        setModal(false);
     };
 
     return (

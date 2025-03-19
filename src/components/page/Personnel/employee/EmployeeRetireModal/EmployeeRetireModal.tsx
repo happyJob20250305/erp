@@ -15,10 +15,7 @@ interface IEmployeeRetireModalProps {
 
 export const EmployeeRetireModal: FC<IEmployeeRetireModalProps> = ({ postSuccess }) => {
     const { dispatchKeyword } = useContext(EmployeeRetirementModalContext);
-
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-
-    // form data 상태 관리
     const formRef = useRef<HTMLFormElement>();
 
     const closeModal = () => {
