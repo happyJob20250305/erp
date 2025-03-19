@@ -11,7 +11,7 @@ import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSel
 
 interface IClientModalProps {
     detailClient: IClient;
-    setDetailClient: (detailSalesPlan?: IClient) => void;
+    setDetailClient: (detailClient?: IClient) => void;
     postSuccess: () => void;
 }
 
