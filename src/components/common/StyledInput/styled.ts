@@ -45,6 +45,12 @@ export const StyledInputStyled = styled.input<InputProps>`
             background-color: #d5dbdb;
           }
         `;
+            case "disable":
+                return `
+          background-color:#FAFAFA;
+          border: 1px solid #CCCCCC;
+          color: #545454
+        `;
             default:
                 return `
           border: 1px solid #ccc;
