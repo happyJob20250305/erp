@@ -12,6 +12,8 @@ export interface IReceivablesList {
 
 export interface IReceivablesListDetail extends IReceivablesList {
     orderDate: string;
+    clientId: number;
+    empId: number;
     orderId: number;
     deliveryDate: string;
     voucherNo: string;

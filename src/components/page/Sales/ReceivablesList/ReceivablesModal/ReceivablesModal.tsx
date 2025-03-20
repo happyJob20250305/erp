@@ -61,8 +61,9 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
 
         params.append("paymentAmount", inputDepositAmount.toString());
         params.append("unpaidAmount", updatedUnpaidAmount.toString());
-        params.append("orderId", orderId.toString());
+        params.append("clientId", String(detail.clientId));
 
+        params.append("orderId", orderId.toString());
         formData.forEach((value, key) => {
             params.append(key, value.toString());
         });
@@ -237,7 +238,12 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                 <tr>
                                     <td>입금액</td>
                                     <td>
-                                        <StyledInput type='text' name='depositAmount' defaultValue='' />
+                                        <StyledInput
+                                            type='text'
+                                            name='depositAmount'
+                                            value={detail?.receivableStatus === "Y" ? "" : undefined}
+                                            disabled={detail?.receivableStatus === "Y"}
+                                        />
                                     </td>
                                 </tr>
                             )}
