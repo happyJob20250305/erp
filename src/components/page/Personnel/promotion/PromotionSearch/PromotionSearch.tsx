@@ -99,9 +99,21 @@ export const PromotionSearch = () => {
                     <div className='searchBar'>
                         {/* 입사일 조회 */}
                         <span>기간별 조회 </span>
-                        <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                        <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                        {/* 검색  */}
+                        <StyledInput
+                            type='date'
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            onKeyDown={(e) => e.preventDefault()}
+                            max={endDate}
+                        />
+                        <StyledInput
+                            type='date'
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            onKeyDown={(e) => e.preventDefault()}
+                            min={startDate}
+                        />
+
                         <StyledButton onClick={handlerSearch}>검색</StyledButton>
                         <img
                             src='/refresh.png'

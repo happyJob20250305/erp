@@ -32,14 +32,12 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
 
     const handleModal = () => setModal(!modal);
 
-    const formatNumber = (num?: number | null) => (num ? num.toLocaleString() : "0");
-
-    const deductionColumns: Column<{ title: string; amount: string }>[] = [
+    const deductionColumns: Column<{ title: string; amount: number }>[] = [
         { key: "title", title: "공제항목" },
-        { key: "amount", title: "금액" },
+        { key: "amount", title: "금액", isMoney: true },
     ];
 
-    const paymentColumns: Column<{ title: string; amount: string }>[] = [
+    const paymentColumns: Column<{ title: string; amount: number }>[] = [
         { key: "title", title: "지급항목" },
         { key: "amount", title: "금액" },
     ];
@@ -47,25 +45,23 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
     const getDeductionData = () =>
         salaryListDetail
             ? [
-                  { title: "국민연금", amount: formatNumber(salaryListDetail.nationalPension) },
-                  { title: "건강보험료", amount: formatNumber(salaryListDetail.healthInsurance) },
-                  { title: "고용보험", amount: formatNumber(salaryListDetail.employmentInsurance) },
-                  { title: "산재보험", amount: formatNumber(salaryListDetail.industrialAccident) },
+                  { title: "국민연금", amount: salaryListDetail.nationalPension },
+                  { title: "건강보험료", amount: salaryListDetail.healthInsurance },
+                  { title: "고용보험", amount: salaryListDetail.employmentInsurance },
+                  { title: "산재보험", amount: salaryListDetail.industrialAccident },
               ]
             : [];
 
     const getPaymentData = () =>
         salaryListDetail
             ? [
-                  { title: "기본급", amount: formatNumber(salaryListDetail.baseSalary) },
+                  { title: "기본급", amount: salaryListDetail.baseSalary },
                   {
                       title: "비고금액",
-                      amount: salaryListDetail.additionalAmount
-                          ? formatNumber(salaryListDetail.additionalAmount)
-                          : "없음",
+                      amount: salaryListDetail.additionalAmount ?? 0, // undefined 또는 null이면 0으로 설정
                   },
-                  { title: "실급여", amount: formatNumber(salaryListDetail.totalSalary) },
-                  { title: "연봉", amount: formatNumber(salaryListDetail.salary) },
+                  { title: "실급여", amount: salaryListDetail.totalSalary },
+                  { title: "연봉", amount: salaryListDetail.salary },
               ]
             : [];
 

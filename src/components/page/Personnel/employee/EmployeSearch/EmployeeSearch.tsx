@@ -102,8 +102,20 @@ export const EmployeeSearch = () => {
                     <StyledButton onClick={() => setSelectedEmplStatus("F")}>퇴직자</StyledButton>
                     <div className='searchBar'>
                         <span>입사일 조회</span>
-                        <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                        <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        <StyledInput
+                            type='date'
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            onKeyDown={(e) => e.preventDefault()}
+                            max={endDate}
+                        />
+                        <StyledInput
+                            type='date'
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            onKeyDown={(e) => e.preventDefault()}
+                            min={startDate}
+                        />
                         <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
                         <img src='/refresh.png' onClick={resetSearch} style={{ width: "30px", height: "30px" }} />
                     </div>
