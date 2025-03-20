@@ -107,6 +107,7 @@ export const Monthly = {
 export const ReceivablesList = {
     search: "/sales/receivableListBody.do",
     detail: "/sales/receivableDetailBody.do",
+    saveDepositAmount: "/sales/insertReceivableHistory.do",
 };
 
 export const Annual = {

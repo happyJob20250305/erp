@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { IAnnual, IAnnualListBodyResponse } from "../../../../../models/interface/sales/IAnnual";
 import { useRecoilState } from "recoil";
-import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Annual } from "../../../../../api/api";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
@@ -12,6 +11,7 @@ import { AnnualStatistics } from "../AnnualStatistics/AnnualStatistics";
 import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { ChartContainer, ChartWrapper, StatisticsWrapper } from "../../Daily/DailyMain/styled";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 
 export const AnnualMain = () => {
     const { searchKeyword } = useContext(AnnualListContext);
@@ -22,10 +22,10 @@ export const AnnualMain = () => {
     const columns = [
         { key: "orderDate", title: "년도" },
         { key: "orderCount", title: "주문 건수" },
-        { key: "totalSupplyPrice", title: "매출" },
-        { key: "totalUnitPrice", title: "매출 원가" },
-        { key: "totalExpenseAmount", title: "지출" },
-        { key: "totalReceivableAmount", title: "미수금" },
+        { key: "totalSupplyPrice", title: "매출", isMoney: true },
+        { key: "totalUnitPrice", title: "매출 원가", isMoney: true },
+        { key: "totalExpenseAmount", title: "지출", isMoney: true },
+        { key: "totalReceivableAmount", title: "미수금", isMoney: true },
     ] as Column<IAnnual>[];
 
     useEffect(() => {

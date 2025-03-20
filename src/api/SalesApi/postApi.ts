@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 
-export const searchApi = async <T>(api: string, param: object): Promise<T | undefined> => {
+export const postApi = async <T>(api: string, param: object, options?: object) => {
     try {
-        const result: AxiosResponse<T> = await axios.post(api, param);
+        const result: AxiosResponse<T> = await axios.post(api, param, options);
+
         if (result.status === 200) {
             return result.data;
         } else {

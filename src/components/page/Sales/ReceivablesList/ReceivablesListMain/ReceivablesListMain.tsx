@@ -2,13 +2,13 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 import { IReceivablesList, IReceivablesListResponse } from "../../../../../models/interface/sales/IReceivablesList";
-import { searchApi } from "../../../../../api/SalesApi/ReceivablesListApi/searchApi";
 import { ReceivablesList } from "../../../../../api/api";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { ReceivablesModal } from "../ReceivablesModal/ReceivablesModal";
 import { Portal } from "../../../../common/potal/Portal";
 import { ReceivablesListContext } from "../../../../../api/Provider/SalesProvider/ReceivablesListProvider";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 
 export const ReceivablesListMain = () => {
     const { searchKeyword } = useContext(ReceivablesListContext);
@@ -28,23 +28,17 @@ export const ReceivablesListMain = () => {
         {
             key: "receivableAmount",
             title: "미수금",
-            render: (value) =>
-                value
-                    ? new Intl.NumberFormat("ko-KR", {
-                          style: "currency",
-                          currency: "KRW",
-                      }).format(value)
-                    : "0",
+            isMoney: true,
         },
         {
             key: "receivableStatus",
             title: "수금상태",
-            render: (value) => (value && value.trim() !== "" ? "수금" : "미수금"),
+            render: (value) => (value == "Y" ? "수금완료" : "미수금"),
         },
         {
             key: "managerName",
             title: "처리자",
-            render: (value) => (value && value.trim() !== "" ? value : "자동처리"),
+            render: (value) => (value === null || value === "" ? "자동처리" : value),
         },
     ] as Column<IReceivablesList>[];
 

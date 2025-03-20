@@ -12,8 +12,22 @@ export const ReceivablesModalStyled = styled.div`
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
 
-    td {
-        padding: 20px;
+    label {
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+    }
+
+    input[type="text"] {
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    textarea {
+        width: 800px;
+        height: 50px;
     }
 
     .container {

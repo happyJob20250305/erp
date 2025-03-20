@@ -1,14 +1,18 @@
 import React, { FC, useEffect, useRef, useState, useMemo } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { IReceivablesDetail, IReceivablesListDetail } from "../../../../../models/interface/sales/IReceivablesList";
 import { ReceivablesModalStyled } from "./styled";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { searchApi } from "../../../../../api/SalesApi/ReceivablesListApi/searchApi";
 import { ReceivablesList } from "../../../../../api/api";
 import { ButtonArea } from "../../../Account/VoucherList/VoucherListModal/styled";
 import { ReceivablesTable } from "./ReceivablesTable";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../../stores/userInfo";
+import { postApi } from "../../../../../api/SalesApi/postApi";
+import { IPostResponse } from "../../../../../models/interface/IPostResponse";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 
 interface IReceivablesListModalProps {
     postSuccess: () => void;
@@ -20,6 +24,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [detail, setDetail] = useState<IReceivablesListDetail>();
     const [detailList, setDetailList] = useState<IReceivablesListDetail[]>([]);
+    const loginUserInfo = useRecoilValue<ILoginInfo>(loginInfoState);
     const formRef = useRef<HTMLFormElement>(null);
 
     const [cPage, setCPage] = useState<number>(0);
@@ -29,7 +34,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
         return () => {
             setOrderId(0);
         };
-    }, []);
+    }, [orderId]);
 
     const receivablesModal = async (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -45,55 +50,102 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
         }
     };
 
+    const saveDepositAmount = async () => {
+        const formData = new FormData(formRef.current);
+
+        const params = new URLSearchParams();
+
+        const unpaidAmount = Number(detail?.totalReceivableAmount) || 0;
+        const inputDepositAmount = Number(formData.get("depositAmount")) || 0;
+        const updatedUnpaidAmount = unpaidAmount - inputDepositAmount;
+
+        params.append("paymentAmount", inputDepositAmount.toString());
+        params.append("unpaidAmount", updatedUnpaidAmount.toString());
+        params.append("orderId", orderId.toString());
+
+        formData.forEach((value, key) => {
+            params.append(key, value.toString());
+        });
+
+        const res = await postApi<IPostResponse>(ReceivablesList.saveDepositAmount, params, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        });
+
+        if (res.result === "success") {
+            console.log(res.result);
+            alert("입금처리가 완료되었습니다.");
+            postSuccess();
+        } else {
+            alert("입금 처리에 실패했습니다.");
+        }
+    };
+
     return (
         <ReceivablesModalStyled>
             <div className='container'>
                 <form ref={formRef}>
-                    <tr>
-                        <td>수주일자</td>
-                        <StyledInput
-                            type='text'
-                            name='orderDate'
-                            defaultValue={detail?.orderDate}
-                            readOnly
-                        ></StyledInput>
-                        <td>납품일자</td>
-                        <StyledInput
-                            type='text'
-                            name='deliveryDate'
-                            defaultValue={detail?.deliveryDate}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
-                    <tr>
-                        <td>처리부서</td>
-                        <StyledInput
-                            type='text'
-                            name='departmentName'
-                            defaultValue={detail?.departmentName}
-                            readOnly
-                        ></StyledInput>
-                        <td>전표번호</td>
-                        <StyledInput
-                            type='text'
-                            name='voucherNo'
-                            defaultValue={detail?.voucherNo}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
+                    <table>
+                        <tbody>
+                            <tr key={orderId}>
+                                <td>수주일자</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='orderDate'
+                                        defaultValue={detail?.orderDate}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>납품일자</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='deliveryDate'
+                                        defaultValue={detail?.deliveryDate}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>처리부서</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='departmentName'
+                                        defaultValue={detail?.departmentName}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>전표번호</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='voucherNo'
+                                        defaultValue={detail?.voucherNo}
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <ReceivablesTable>
-                        <tr>
-                            <td>번호</td>
-                            <td>제품명</td>
-                            <td>수량</td>
-                            <td>공급가</td>
-                            <td>제품단가</td>
-                            <td>공급합계</td>
-                        </tr>
-                        {detailList?.length > 0 ? (
-                            detailList.map((receive) => {
-                                return (
-                                    <tr key={receive.orderId}>
+                        <thead>
+                            <tr>
+                                <td>번호</td>
+                                <td>제품명</td>
+                                <td>수량</td>
+                                <td>공급가</td>
+                                <td>제품단가</td>
+                                <td>공급합계</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detailList?.length > 0 ? (
+                                detailList.map((receive) => (
+                                    <tr key={receive.receivableId}>
                                         <td>{receive?.receivableId}</td>
                                         <td>{receive?.productName}</td>
                                         <td>{receive?.quantity}</td>
@@ -101,104 +153,158 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         <td>{receive?.unitPrice.toString()}</td>
                                         <td>{receive?.totalSupplyPrice.toString()}</td>
                                     </tr>
-                                );
-                            })
-                        ) : (
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} style={{ textAlign: "center" }}>
+                                        데이터가 없습니다.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </ReceivablesTable>
+
+                    <table>
+                        <tbody>
                             <tr>
-                                <td colSpan={6} style={{ textAlign: "center" }}>
-                                    데이터가 없습니다.
+                                <td>총 납품개수</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='totalDeliveryCount'
+                                        defaultValue={detail?.totalDeliveryCount.toString()}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>총 공급가</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='totalSupplyPrice'
+                                        defaultValue={detail?.totalSupplyPrice.toString()}
+                                        readOnly
+                                    />
                                 </td>
                             </tr>
-                        )}
-                    </ReceivablesTable>
-                    <tr>
-                        <td>총 납품개수</td>
-                        <StyledInput
-                            type='text'
-                            name='orderDate'
-                            defaultValue={detail?.totalDeliveryCount.toString()}
-                            readOnly
-                        ></StyledInput>
-                        <td>총 공급가</td>
-                        <StyledInput
-                            type='text'
-                            name='deliveryDate'
-                            defaultValue={detail?.totalSupplyPrice.toString()}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
-                    <tr>
-                        <td>총 세액</td>
-                        <StyledInput
-                            type='text'
-                            name='departmentName'
-                            defaultValue={detail?.departmentName}
-                            readOnly
-                        ></StyledInput>
-                        <td>총 금액(공급가+세액)</td>
-                        <StyledInput
-                            type='text'
-                            name='voucherNo'
-                            defaultValue={detail?.depositAmount.toString()}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
-                    <tr>
-                        <td>수납상태</td>
-                        <StyledInput
-                            type='text'
-                            name='orderDate'
-                            defaultValue={detail?.receivableStatus ? "수금" : "미수금"}
-                            readOnly
-                        ></StyledInput>
-                        <td>미납액</td>
-                        <StyledInput
-                            type='text'
-                            name='deliveryDate'
-                            defaultValue={detail?.totalReceivableAmount.toString()}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
+                            <tr>
+                                <td>총 세액</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='totalTax'
+                                        defaultValue={detail?.totalTax.toString()}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>총 금액(공급가+세액)</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='depositAmount'
+                                        defaultValue={detail?.depositAmount.toString()}
+                                        disabled
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>수납상태</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='receivableStatus'
+                                        value={detail?.receivableStatus === "Y" ? "수금완료" : "미수금"}
+                                        style={{ color: detail?.receivableStatus === "Y" ? "blue" : "red" }}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>미납액</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='totalReceivableAmount'
+                                        value={detail?.totalReceivableAmount?.toString() || ""}
+                                        style={{
+                                            color:
+                                                detail?.totalReceivableAmount && detail.totalReceivableAmount > 0
+                                                    ? "red"
+                                                    : "black",
+                                        }}
+                                        disabled
+                                    />
+                                </td>
+                            </tr>
+                            {loginUserInfo?.userType === "B" && (
+                                <tr>
+                                    <td>입금액</td>
+                                    <td>
+                                        <StyledInput type='text' name='depositAmount' defaultValue='' />
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+
                     <h2>거래처 정보</h2>
-                    <div className='client-info'>
-                        <tr>
-                            <td>거래처명</td>
-                            <StyledInput
-                                type='text'
-                                name='deliveryDate'
-                                defaultValue={detail?.clientName}
-                                readOnly
-                            ></StyledInput>
-                            <td>담당자</td>
-                            <StyledInput
-                                type='text'
-                                name='deliveryDate'
-                                defaultValue={detail?.person}
-                                readOnly
-                            ></StyledInput>
-                            <td>연락처</td>
-                            <StyledInput
-                                type='text'
-                                name='deliveryDate'
-                                defaultValue={detail?.personPh}
-                                readOnly
-                            ></StyledInput>
-                        </tr>
-                    </div>
+                    <table className='client-info'>
+                        <tbody>
+                            <tr>
+                                <td>거래처명</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='clientName'
+                                        defaultValue={detail?.clientName}
+                                        readOnly
+                                    />
+                                </td>
+                                <td>담당자</td>
+                                <td>
+                                    <StyledInput type='text' name='person' defaultValue={detail?.person} readOnly />
+                                </td>
+                                <td>연락처</td>
+                                <td>
+                                    <StyledInput type='text' name='personPh' defaultValue={detail?.personPh} readOnly />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <h2>처리자</h2>
-                    <tr>
-                        <td>처리자</td>
-                        <StyledInput
-                            type='text'
-                            name='deliveryDate'
-                            defaultValue={detail?.managerName ? detail.managerName : "자동처리"}
-                            readOnly
-                        ></StyledInput>
-                    </tr>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>처리자</td>
+                                <td>
+                                    <StyledInput
+                                        type='text'
+                                        name='managerName'
+                                        value={
+                                            detail?.managerName === null || detail?.managerName === ""
+                                                ? "자동처리"
+                                                : detail?.managerName
+                                        }
+                                        readOnly
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <ButtonArea>
-                        <StyledButton type='button' onClick={() => setModal(!modal)}>
-                            나가기
-                        </StyledButton>
+                        {loginUserInfo?.userType === "B" ? (
+                            <>
+                                <StyledButton type='button' onClick={() => setModal(!modal)}>
+                                    취소
+                                </StyledButton>
+                                <StyledButton type='button' onClick={saveDepositAmount}>
+                                    직접입금
+                                </StyledButton>
+                            </>
+                        ) : (
+                            <StyledButton type='button' onClick={() => setModal(!modal)}>
+                                취소
+                            </StyledButton>
+                        )}
                     </ButtonArea>
                 </form>
             </div>
