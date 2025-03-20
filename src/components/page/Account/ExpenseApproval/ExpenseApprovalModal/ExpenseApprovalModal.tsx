@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import { ButtonArea } from "../../VoucherList/VoucherListModal/styled";
+import { ButtonArea, ModalStyledTable } from "../../VoucherList/VoucherListModal/styled";
 import { useReactToPrint } from "react-to-print";
 import { ExpenseApprovalPrint } from "../ExpenseApprovalPrint/ExpenseApprovalPrint";
 import { IExpenseReview } from "../../../../../models/interface/account/expenseReview/IExpenseReview";
@@ -70,7 +70,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
             <ExpenseApprovalModalStyle>
                 <div className='container'>
                     <form ref={formRef}>
-                        <table>
+                        <ModalStyledTable>
                             <tbody>
                                 <tr>
                                     <th scope='row'>결의번호</th>
@@ -91,9 +91,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             disabled
                                         ></StyledInput>
                                     </td>
-                                    <th scope='row'>
-                                        사용일자 <span className='font_red'>*</span>
-                                    </th>
+                                    <th scope='row'>사용일자</th>
                                     <td>
                                         <StyledInput
                                             type='date'
@@ -134,9 +132,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                     </td>
                                 </tr>
                                 <tr id='writer'>
-                                    <th scope='row'>
-                                        계정대분류명 <span className='font_red'>*</span>
-                                    </th>
+                                    <th scope='row'>계정대분류명</th>
                                     <td>
                                         <StyledInput
                                             type='text'
@@ -145,9 +141,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             disabled
                                         ></StyledInput>
                                     </td>
-                                    <th scope='row'>
-                                        계정과목 <span className='font_red'>*</span>
-                                    </th>
+                                    <th scope='row'>계정과목</th>
                                     <td>
                                         <StyledInput
                                             type='text'
@@ -261,7 +255,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </ModalStyledTable>
 
                         <ButtonArea>
                             {expenseDetail.is_approval == "F" && (

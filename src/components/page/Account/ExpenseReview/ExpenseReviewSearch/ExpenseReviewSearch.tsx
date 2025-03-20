@@ -43,14 +43,16 @@ export const ExpenseReviewSearch = () => {
             setAccountDetailList([{ label: "전체", value: "" }]);
         }
         setSelectedDetail("");
+    }, [selectedGroup]);
 
+    useEffect(() => {
         const userTypeApproval = loginInfo.userType === "C" ? "F" : "W";
         setSearchKeyword((prev) => ({
             ...prev,
             searchApproval: userTypeApproval,
         }));
         setSelectedApprove(userTypeApproval);
-    }, [selectedGroup]);
+    }, []);
 
     const searchAccountDetailList = async (selectedGroup: string) => {
         const result = await accountSearchApi<IDetailGroupListBody>(ExpenseReview.searchAccountDetailList, {
