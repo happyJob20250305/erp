@@ -85,7 +85,8 @@ export const DepartmentModal: FC<IDepartmentProps> = ({ detailCode, setDetailCod
                 <form ref={formRef}>
                     <label>
                         부서코드*
-                        <StyledInput type="text" name="detailCode" defaultValue={detail?.detailCode} />
+                        <StyledInput type="text" name="detailCode" variant={detailCode ? "disable" : undefined}
+                            defaultValue={detail?.detailCode} readOnly={detailCode ? true : false} />
                     </label>
                     <label>
                         부서명*
