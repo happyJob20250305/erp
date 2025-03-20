@@ -5,6 +5,8 @@ import { OrderListSearchstyled } from "./styled";
 import { useContext, useEffect, useState } from "react";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
 import { OrderListContext } from "../../../../../../api/Provider/OrderListProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
 
 interface IClient {
     name: string;
@@ -35,6 +37,8 @@ export const OrderListSearch = () => {
     const [selectProductId, setSelectProductId] = useState<string>("");
 
     const { setSearchKeyword } = useContext(OrderListContext);
+
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {
         getClientName();
@@ -118,6 +122,7 @@ export const OrderListSearch = () => {
                 <StyledInput type='date' onChange={(e) => setSelectDeliveryDate(e.target.value)} />
             </label>
             <StyledButton onClick={handlerSearchOrderInfo}>조회</StyledButton>
+            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
         </OrderListSearchstyled>
     );
 };

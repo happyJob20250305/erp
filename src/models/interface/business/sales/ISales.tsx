@@ -60,7 +60,7 @@ export interface IProduct {
     industry_code: string;
     name: string;
     product_code: string;
-    product_id: number;
+    id: number;
 }
 
 export interface IProductResponse {
