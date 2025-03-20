@@ -528,7 +528,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                     나가기
                                 </StyledButton>
                             </div>
-                            <input type='hidden' name='estimateId' value={""} readOnly />
+                            <input type='hidden' name='orderId' value={""} readOnly />
                         </form>
                     </>
                 )}
