@@ -18,20 +18,6 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
 
     const [employeeNumber, setEmployeeNumber] = useState<number>();
 
-    //  <StyledTd>{salary.salaryId}</StyledTd>
-    //                             <StyledTd>{salary.employeeName}</StyledTd>
-    //                             <StyledTd>{salary.salary?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.baseSalary?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.nationalPension?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.healthInsurance?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.industrialAccident?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.employmentInsurance?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>
-    //                                 {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
-    //                             </StyledTd>
-    //                             <StyledTd>{salary.paymentDate?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
-
     const columns: Column<ISalaryDetail>[] = [
         { key: "employeeName", title: "사원명" },
         { key: "salary", title: "직급" },
@@ -67,7 +53,6 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
             if (result) {
                 // result.salaryDetail을 State에 저장
                 setSalaryDetail(result.salaryDetail);
-                console.log(result.salaryDetail);
             }
         } catch (error) {
             console.error("급여 리스트 조회 실패:", error);
@@ -75,7 +60,7 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     };
 
     const closeDetail = () => {
-        setSalaryDetail([]); // ⬅️ `null` 대신 빈 배열로 변경
+        setSalaryDetail([]);
     };
 
     return (
@@ -85,14 +70,7 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
                     <StyledButton size='small' onClick={closeDetail}>
                         닫기
                     </StyledButton>
-                    <StyledTable
-                        columns={columns}
-                        data={salaryDetail}
-                        striped
-                        // bordered
-                        hoverable
-                        fullWidth
-                    />
+                    <StyledTable columns={columns} data={salaryDetail} striped hoverable fullWidth />
                 </SalalyManagerDetailStyled>
             )}
         </>

@@ -227,7 +227,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='workingYear'
-                                        value={response?.detail?.workingYear || ""}
+                                        value={`${response?.detail?.workingYear ?? 0}년`}
                                         readOnly
                                     />
                                 </td>
@@ -253,7 +253,18 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='emplStatus'
-                                        value={response?.detail?.emplStatus || ""}
+                                        value={(() => {
+                                            switch (response?.detail?.emplStatus) {
+                                                case "W":
+                                                    return "재직";
+                                                case "O":
+                                                    return "휴직";
+                                                case "F":
+                                                    return "퇴직";
+                                                default:
+                                                    return "알 수 없음";
+                                            }
+                                        })()}
                                         readOnly
                                     />
                                 </td>
@@ -282,7 +293,14 @@ export const EmployeeDetailModal = () => {
                                     <StyledInput
                                         name='workingYear'
                                         value={
-                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`] || ""
+                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
+                                                ? new Intl.NumberFormat("ko-KR", {
+                                                      style: "currency",
+                                                      currency: "KRW",
+                                                  }).format(
+                                                      response.salaryClassList[`year${response.detail.workingYear}`]
+                                                  )
+                                                : ""
                                         }
                                         readOnly
                                     />
