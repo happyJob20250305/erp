@@ -39,6 +39,7 @@ export const OrderListMain = () => {
     const { searchKeyword } = useContext(OrderListContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [orderId, setOrderId] = useState<number>();
+    const [clientId, setClientId] = useState<number>();
     const [detailOrder, setDetailOrder] = useState<IOrder>();
 
     useEffect(() => {
@@ -60,9 +61,10 @@ export const OrderListMain = () => {
             });
     };
 
-    const handlerOrderListModal = (id: number) => {
+    const handlerOrderListModal = (id: number, clientId: number) => {
         setModal(!modal);
         setOrderId(id);
+        setClientId(clientId);
     };
 
     const postSuccess = () => {
@@ -103,7 +105,9 @@ export const OrderListMain = () => {
                                         <StyledTd>{order.totalTax}</StyledTd>
                                         <StyledTd>{order.salesArea}</StyledTd>
                                         <StyledTd>
-                                            <StyledButton onClick={() => handlerOrderListModal(order?.id)}>
+                                            <StyledButton
+                                                onClick={() => handlerOrderListModal(order?.id, order?.clientId)}
+                                            >
                                                 수주상세보기
                                             </StyledButton>
                                         </StyledTd>
@@ -127,8 +131,10 @@ export const OrderListMain = () => {
             {modal && (
                 <Portal>
                     <OrderListModal
-                        detailOrder={detailOrder}
-                        setDetailOrder={setDetailOrder}
+                        orderId={orderId}
+                        setOrderId={setOrderId}
+                        clientId={clientId}
+                        setClientId={setClientId}
                         postSuccess={postSuccess}
                     />
                 </Portal>
