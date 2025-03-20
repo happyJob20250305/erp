@@ -146,7 +146,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
                       // key 요소가 활용 되고 있는지 확인 필요
                       //   key: productIdx,
-                      value: productValue.product_id,
+                      value: productValue.id,
                       label: productValue.name,
                   };
               })
