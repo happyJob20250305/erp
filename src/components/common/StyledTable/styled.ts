@@ -8,6 +8,8 @@ export const Table = styled.table.withConfig({
     border-collapse: collapse;
     ${({ bordered }) => (bordered ? "border: 1px solid #ddd;" : "")}
     text-align : center;
+    margin-bottom: 40px;
+    margin-top: 50px;
 `;
 
 export const Thead = styled.thead`

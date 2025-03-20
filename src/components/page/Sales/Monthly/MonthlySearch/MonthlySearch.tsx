@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { MonthlySearchStyled } from "./styled";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { MonthlyListContext } from "../../../../../api/Provider/SalesProvider/MonthlyProvider";
 
 export const MonthlySearch = () => {
-    const navigate = useNavigate();
-
+    const { setSearchKeyword } = useContext(MonthlyListContext);
     const getCurrentMonth = () => {
         const now = new Date();
         const year = now.getFullYear();
@@ -17,12 +16,10 @@ export const MonthlySearch = () => {
     const [searchEdMonth, setSearchEdMonth] = useState<string>(getCurrentMonth);
 
     const monthlySearch = () => {
-        const query: string[] = [];
-        searchStMonth && query.push(`searchStDate=${searchStMonth}`);
-        searchEdMonth && query.push(`searchEdDate=${searchEdMonth}`);
-
-        const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-        navigate(`/react/sales/monthly${queryString}`);
+        setSearchKeyword({
+            searchStDate: searchStMonth,
+            searchEdDate: searchEdMonth,
+        });
     };
     useEffect(() => {
         monthlySearch();

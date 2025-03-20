@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
-import { useNavigate } from "react-router-dom";
 import { DailySearchStyled } from "./styled";
 import axios from "axios";
+import { DailyListContext } from "../../../../../api/Provider/SalesProvider/DailyProvider";
 
 export const DailySearch = () => {
+    const { setSearchKeyword } = useContext(DailyListContext);
     const [selectedClient, setSelectedClient] = useState<string>("");
     const [clientOptions, setClientOptions] = useState<{ label: string; value: string }[]>([]);
-    const navigate = useNavigate();
 
     const getCurrentDate = () => {
         const now = new Date();
@@ -34,12 +34,10 @@ export const DailySearch = () => {
 
     //검색기능
     const dailySearch = () => {
-        const query: string[] = [];
-        !searchDate || query.push(`orderDate=${searchDate}`);
-        !selectedClient || query.push(`clientId=${selectedClient}`);
-
-        const queryString = query.length > 0 ? `?${query.join("&")}` : "";
-        navigate(`/react/sales/daily${queryString}`);
+        setSearchKeyword({
+            orderDate: searchDate,
+            clientId: selectedClient,
+        });
     };
 
     const getDay = (value: number) => {

@@ -3,17 +3,17 @@ export const Login = {
 };
 
 export const Employee = {
-    employeeList: "/personnel/employeeList.do",
+    employeeList: "/personnel/employeeListBody",
     getJobRolesByDepartment: "/personnel/getJobRolesByDepartment.do",
     employeeSave: "/personnel/employeeSave.do",
     employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
-    employeeDetail: "/personnel/employeeDetail.do",
+    employeeDetail: "/personnel/employeeDetailBody",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
     employeeUpdate: "/personnel/employeeUpdate.do",
 };
 
 export const Promotion = {
-    promitionList: "/personnel/promotionList.do",
+    promitionList: "/personnel/promotionListBody",
     promitionDetailList: "/personnel/promotionDetail.do",
 };
 
@@ -42,7 +42,7 @@ export const AttendanceList = {
 };
 
 export const SalaryManager = {
-    salaryList: "/personnel/salaryList.do",
+    salaryList: "/personnel/salaryListBody",
     empnoSalaryList: "/personnel/salaryDetail.do",
     salarySave: "/personnel/salarySave.do",
     allPaymentStatusUpdate: "/personnel/allPaymentStatusUpdate.do",
@@ -95,13 +95,13 @@ export const VoucherList = {
 };
 
 export const Daily = {
-    search: "/sales/dailyList.do",
+    search: "/sales/dailyListBody.do",
 };
 
 export const Monthly = {
-    search: "/sales/monthlyList.do",
-    detail: "/sales/monthlyTopProduct.do",
-    detailClient: "/sales/monthlyTopClient.do",
+    search: "/sales/monthlyListBody.do",
+    detail: "/sales/monthlyTopProductBody.do",
+    detailClient: "/sales/monthlyTopClientBody.do",
 };
 
 export const ReceivablesList = {
@@ -110,9 +110,9 @@ export const ReceivablesList = {
 };
 
 export const Annual = {
-    search: "/sales/annualList.do",
-    detail: "/sales/annualTopProduct.do",
-    detailClient: "/sales/annualTopClient.do",
+    search: "/sales/annualListBody.do",
+    detail: "/sales/annualTopProductBody.do",
+    detailClient: "/sales/annualTopClientBody.do",
 };
 
 export const CommonCode = {

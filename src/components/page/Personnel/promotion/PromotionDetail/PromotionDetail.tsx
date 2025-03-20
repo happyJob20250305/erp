@@ -18,10 +18,14 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
         { key: "jobGrade", title: "발령내용" },
     ] as unknown as Column<IPromotionDetail>[];
     useEffect(() => {
-        PromitionDetailList(data);
+        if (data) {
+            PromitionDetailList(data);
+        }
     }, [data]);
 
-    const PromitionDetailList = async (data: number) => {
+    const PromitionDetailList = async (data: number | null | undefined) => {
+        if (!data) return;
+
         const searchParam = new URLSearchParams();
         searchParam.append("currentPage", "1");
         searchParam.append("pageSize", "5");

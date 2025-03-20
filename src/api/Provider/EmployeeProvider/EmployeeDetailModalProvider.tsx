@@ -1,34 +1,18 @@
 import { createContext, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
 
 interface IEmployeeDetailModalKeywordContext {
-    employeeId: string;
-    setEmployeeId: Dispatch<SetStateAction<string>>;
-    jobGradeCode: string;
-    setJobGradeCode: Dispatch<SetStateAction<string>>;
-    departmentCode: string;
-    setdepartmentCode: Dispatch<SetStateAction<string>>;
+    employeeDetailModalKeyword?: object;
+    setEmployeeDetailModalKeyword?: React.Dispatch<React.SetStateAction<object>>;
 }
 
-const defaultValue: IEmployeeDetailModalKeywordContext = {
-    employeeId: "",
-    setEmployeeId: () => {},
-    jobGradeCode: "",
-    setJobGradeCode: () => {},
-    departmentCode: "",
-    setdepartmentCode: () => {},
-};
-export const EmployeeDetailModalContext = createContext<IEmployeeDetailModalKeywordContext>(defaultValue);
+export const EmployeeDetailModalContext = createContext<IEmployeeDetailModalKeywordContext>({});
 
 // Provider 컴포넌트
 export const EmployeeDetailProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [employeeId, setEmployeeId] = useState<string>("");
-    const [jobGradeCode, setJobGradeCode] = useState<string>("");
-    const [departmentCode, setdepartmentCode] = useState<string>("");
+    const [employeeDetailModalKeyword, setEmployeeDetailModalKeyword] = useState<object>({});
 
     return (
-        <EmployeeDetailModalContext.Provider
-            value={{ employeeId, setEmployeeId, jobGradeCode, setJobGradeCode, departmentCode, setdepartmentCode }}
-        >
+        <EmployeeDetailModalContext.Provider value={{ employeeDetailModalKeyword, setEmployeeDetailModalKeyword }}>
             {children}
         </EmployeeDetailModalContext.Provider>
     );

@@ -1,6 +1,6 @@
-import React from "react";
 import { IDaily } from "../../../../../models/interface/sales/IDaily";
-import { StyledTable, StyledTd, StyledTh } from "../../../../common/styled/StyledTable";
+import { StyledTable, StyledTd } from "../../../../common/styled/StyledTable";
+import { DailyStatisticsStyled, StyledTh } from "./styled";
 
 interface DailyStatisticsProps {
     dailyStatistics: IDaily;
@@ -22,7 +22,7 @@ export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
     const { totalSupplyPrice, totalExpenseAmount, totalRevenueAmount } = dailyStatistics;
 
     return (
-        <StyledTable>
+        <DailyStatisticsStyled>
             <thead>
                 <tr>
                     <StyledTh></StyledTh>
@@ -32,17 +32,17 @@ export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
             <tbody>
                 <tr>
                     <StyledTd>매출총액 ①</StyledTd>
-                    <StyledTd>{totalSupplyPrice.toString()} 원</StyledTd>
+                    <StyledTd>{totalSupplyPrice.toString()} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>지출총액 ②</StyledTd>
-                    <StyledTd>{totalExpenseAmount.toString()} 원</StyledTd>
+                    <StyledTd>{totalExpenseAmount.toString()} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>손익총계 (①-②)</StyledTd>
-                    <StyledTd>{totalRevenueAmount.toString()} 원</StyledTd>
+                    <StyledTd>{totalRevenueAmount.toString()} </StyledTd>
                 </tr>
             </tbody>
-        </StyledTable>
+        </DailyStatisticsStyled>
     );
 };
