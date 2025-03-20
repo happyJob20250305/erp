@@ -1,11 +1,16 @@
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
 import { EstimateListMainStyled } from "./styled";
-import { Column, StyledTable } from "../../../../../common/StyledTable/StyledTable";
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 import { EstimateListContext } from "../../../../../../api/Provider/EstimateListProvider";
+import { Portal } from "../../../../../common/potal/Portal";
+import { EstimateListModal } from "../EstimateListModal/EstimateListModal";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/StyledTable";
+import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
 
-export interface IEstimateList {
+export interface IEstimate {
     id: number;
     clientId: number;
     empId: number;
@@ -22,33 +27,25 @@ export interface IEstimateList {
 }
 
 export interface IEstimateListResponse {
-    estimateList: IEstimateList[];
+    estimateList: IEstimate[];
     estimateCnt: number;
 }
 
 export const EstimateListMain = () => {
-    const [estimateList, setEstimateList] = useState<IEstimateList[]>([]);
+    const [estimateList, setEstimateList] = useState<IEstimate[]>([]);
     const [estimateCount, setEstimateCount] = useState<number>(0);
     const [cPage, setCpage] = useState<number>(0);
 
     const { searchKeyword } = useContext(EstimateListContext);
 
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [estimateId, setEstimateId] = useState<number>();
+    const [clientId, setClientId] = useState<number>();
+    const [detailEstimate, setDetailEstimate] = useState<IEstimate>();
+
     useEffect(() => {
         searchEstimateList();
     }, [searchKeyword]);
-    const columns = [
-        { key: "estimateEmpName", title: "견적직원" },
-        { key: "estimateDate", title: "견적날짜" },
-        { key: "clientName", title: "거래처" },
-        { key: "productName", title: "제품명" },
-        { key: "deliveryDate", title: "납기날짜" },
-        { key: "totalDeliveryCount", title: "총 납품 개수" },
-        { key: "totalSupplyPrice", title: "총 공급 가액" },
-        { key: "totalTax", title: "총 세액" },
-        { key: "salesArea", title: "총 세액" },
-        { key: "clientName", title: "영역구분(scm/영업)" },
-        { key: "estimateDetail", title: "견적서상세조회" },
-    ] as Column<IEstimateList>[];
 
     const searchEstimateList = (currentPage?: number) => {
         currentPage = currentPage || 1;
@@ -65,15 +62,85 @@ export const EstimateListMain = () => {
                 setCpage(currentPage);
             });
     };
+
+    const handlerOrderListModal = (id: number, clientId: number) => {
+        setModal(!modal);
+        setEstimateId(id);
+        setClientId(clientId);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchEstimateList();
+    };
     return (
         <EstimateListMainStyled>
-            <StyledTable data={estimateList} columns={columns} hoverable={true} fullWidth={true} />
+            <>
+                <StyledTable>
+                    <thead>
+                        <tr>
+                            <StyledTh>견적직원</StyledTh>
+                            <StyledTh>견적일</StyledTh>
+                            <StyledTh>거래처</StyledTh>
+                            <StyledTh>제품명</StyledTh>
+                            <StyledTh>납기일</StyledTh>
+                            <StyledTh>총납품개수</StyledTh>
+                            <StyledTh>총공급가액</StyledTh>
+                            <StyledTh>총세액</StyledTh>
+                            <StyledTh>영역구분(scm/영업)</StyledTh>
+                            <StyledTh>견적상세조회</StyledTh>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {estimateList?.length > 0 ? (
+                            estimateList.map((estimate) => {
+                                return (
+                                    <tr key={estimate?.id}>
+                                        <StyledTd>{estimate?.estimateEmpName}</StyledTd>
+                                        <StyledTd>{estimate?.estimateDate}</StyledTd>
+                                        <StyledTd>{estimate?.clientName}</StyledTd>
+                                        <StyledTd>{estimate?.productName}</StyledTd>
+                                        <StyledTd>{estimate?.deliveryDate}</StyledTd>
+                                        <StyledTd>{estimate?.totalDeliveryCount}</StyledTd>
+                                        <StyledTd>{estimate?.totalSupplyPrice}</StyledTd>
+                                        <StyledTd>{estimate?.totalTax}</StyledTd>
+                                        <StyledTd>{estimate?.salesArea}</StyledTd>
+                                        <StyledTd>
+                                            <StyledButton
+                                                onClick={() => handlerOrderListModal(estimate?.id, estimate?.clientId)}
+                                            >
+                                                견적상세보기
+                                            </StyledButton>
+                                        </StyledTd>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <StyledTd colSpan={10}>조회 내역이 없습니다.</StyledTd>
+                            </tr>
+                        )}
+                    </tbody>
+                </StyledTable>
+            </>
             <PageNavigate
                 totalItemsCount={estimateCount}
                 onChange={searchEstimateList}
                 itemsCountPerPage={5}
                 activePage={cPage}
             />
+
+            {modal && (
+                <Portal>
+                    <EstimateListModal
+                        estimateId={estimateId}
+                        setEstimateId={setEstimateId}
+                        clientId={clientId}
+                        setClientId={setClientId}
+                        postSuccess={postSuccess}
+                    />
+                </Portal>
+            )}
         </EstimateListMainStyled>
     );
 };

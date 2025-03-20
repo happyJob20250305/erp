@@ -5,6 +5,8 @@ import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSel
 import { EstimateListSearchStyled } from "./styled";
 import axios, { AxiosResponse } from "axios";
 import { EstimateListContext } from "../../../../../../api/Provider/EstimateListProvider";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
 
 interface IClient {
     name: string;
@@ -35,6 +37,8 @@ export const EstimateListSearch = () => {
     const [selectProductId, setSelectProductId] = useState<string>("");
 
     const { setSearchKeyword } = useContext(EstimateListContext);
+
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {
         getClientName();
@@ -113,6 +117,7 @@ export const EstimateListSearch = () => {
                 <StyledInput type='date' onChange={(e) => setSelectDeliveryDate(e.target.value)} />
             </label>
             <StyledButton onClick={handlerSearchEstimateList}>조회</StyledButton>
+            <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
         </EstimateListSearchStyled>
     );
 };
