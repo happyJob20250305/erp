@@ -16,7 +16,15 @@ import { IEmployeeRegisterResponse } from "../../../../../models/interface/perso
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
 import DaumPostcode from "react-daum-postcode"; // 추가
 import { setSelectOption } from "../../../../../common/setSelectOption";
-import { validateEmployeeForm } from "../../../../../common/registerCheck";
+import {
+    formatPhoneNumber,
+    formatRegistrationNumber,
+    generateBirthdayFromRegNumber,
+    validateAge,
+    validateBankAccount,
+    validateEmail,
+    validateRequiredFields,
+} from "../../../../../common/registerCheck";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -36,6 +44,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [zipCode, setZipCode] = useState("");
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [registrationNumber, setRegistrationNumber] = useState("");
+    const [birthday, setBirthday] = useState("");
     const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
     const departmentOptions = setSelectOption(
         DepartmentGroupItem,
@@ -80,11 +91,40 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         getOptionList();
     }, []);
 
+    useEffect(() => {
+        if (registrationNumber.length === 14) {
+            const generatedBirthday = generateBirthdayFromRegNumber(registrationNumber);
+            setBirthday(generatedBirthday); // ✅ 즉시 반영
+        } else {
+            setBirthday(""); // ❌ 14자리가 아니면 초기화
+        }
+    }, [registrationNumber]); // ✅ 주민번호가 변경될 때마다 실행
+
     const getOptionList = async () => {
         const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
         if (result) {
             setDepartmentGroupItem(result.DepartmentGroupList);
             setGradeGroupItem(result.JobGradeGroupList);
+        }
+    };
+
+    //핸드폰 번호 입력 핸들러
+    const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhoneNumber(formatPhoneNumber(e.target.value));
+    };
+
+    //주민번호 입력 핸들러
+    const handleRegistrationNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formattedRegNum = formatRegistrationNumber(e.target.value);
+        setRegistrationNumber(formattedRegNum);
+
+        // 주민번호 앞자리로 생년월일 자동 입력
+        if (formattedRegNum.length === 14) {
+            // 주민번호가 완전하게 입력된 경우
+            const generatedBirthday = generateBirthdayFromRegNumber(formattedRegNum);
+            if (generatedBirthday) {
+                setBirthday(generatedBirthday); // 생년월일 상태 업데이트
+            }
         }
     };
 
@@ -99,24 +139,52 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const saveEmployee = async () => {
         const formData = new FormData(formRef.current!);
 
-        // 필수 항목 검증
-        const employeeName = formData.get("employeeName")?.toString().trim();
-        const registrationNumber = formData.get("registrationNumber")?.toString().trim();
-        const hp = formData.get("hp")?.toString().trim();
+        // 필수 입력 항목 리스트
+        const requiredFields = [
+            "employeeName",
+            "registrationNumber",
+            "email",
+            "hp",
+            "bankAccount",
+            "regDate",
+            "sex",
+            "finalEducation",
+            "zipCode",
+            "bank",
+            "bankAccount",
+            "regDate",
+            "departmentDetailName",
+            "jobGradeDetailName",
+            "jobRoleDetailName",
+            "paymentDate",
+        ];
+
+        // 1. 필수 입력값 검사
+        if (!validateRequiredFields(formData, requiredFields)) return;
+
         const email = formData.get("email")?.toString().trim();
+        const hp = formData.get("hp")?.toString().trim();
+        const bankAccount = formData.get("bankAccount")?.toString().trim();
         const birthday = formData.get("birthday")?.toString().trim();
+        const registrationNumber = formData.get("registrationNumber")?.toString().trim();
 
-        const employeeData = {
-            employeeName,
-            registrationNumber,
-            hp,
-            email,
-            birthday,
-        };
-
-        if (!validateEmployeeForm(employeeData)) {
-            return;
+        // 2. 주민번호와 생년월일 자동 생성
+        if (registrationNumber) {
+            const generatedBirthday = generateBirthdayFromRegNumber(registrationNumber);
+            if (generatedBirthday !== birthday) {
+                alert("주민번호와 생년월일이 일치하지 않습니다.");
+                return;
+            }
         }
+
+        // 3. 이메일 형식 검사
+        if (!validateEmail(email!)) return;
+
+        // 4. 계좌번호 검사
+        if (!validateBankAccount(bankAccount!)) return;
+
+        // 5. 생년월일 만 20세 이상 확인
+        if (!validateAge(birthday!)) return;
 
         try {
             const result = await postApi<IEmployeeRegisterResponse>(Employee.employeeSave, formData);
@@ -164,14 +232,19 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </td>
                                 <th>주민번호</th>
                                 <td>
-                                    <StyledInput type='text' name='registrationNumber' />
+                                    <StyledInput
+                                        type='text'
+                                        name='registrationNumber'
+                                        value={registrationNumber}
+                                        onChange={handleRegistrationNumberChange}
+                                    />
                                 </td>
                             </tr>
                             {/* 2 */}
                             <tr>
                                 <th>생년월일</th>
                                 <td>
-                                    <StyledInput type='date' name='birthday' />
+                                    <StyledInput type='date' name='birthday' value={birthday} readOnly />
                                 </td>
                                 <th>성별</th>
                                 <td>
@@ -203,7 +276,12 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             <tr>
                                 <th>연락처</th>
                                 <td>
-                                    <StyledInput type='tel' name='hp' />
+                                    <StyledInput
+                                        type='tel'
+                                        name='hp'
+                                        value={phoneNumber}
+                                        onChange={handlePhoneNumberChange}
+                                    />
                                 </td>
                                 <th>우편번호</th>
                                 <td>

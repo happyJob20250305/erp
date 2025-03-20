@@ -10,6 +10,8 @@ import { SalaryManager } from "../../../../../api/api";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { SalalyManagerDetailStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import { IDepartmentGroupItem, IJobGradeGroupItem } from "../../../../../models/interface/personnel/salary/IOptionList";
 
 export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
     // data는 props로부터 전달받은 employeeNumber라고 가정
@@ -18,32 +20,18 @@ export const SalaryManagerDetail = ({ data }: SalaryManagerDetailProps) => {
 
     const [employeeNumber, setEmployeeNumber] = useState<number>();
 
-    //  <StyledTd>{salary.salaryId}</StyledTd>
-    //                             <StyledTd>{salary.employeeName}</StyledTd>
-    //                             <StyledTd>{salary.salary?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.baseSalary?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.nationalPension?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.healthInsurance?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.industrialAccident?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.employmentInsurance?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>
-    //                                 {salary.additionalAmount ? salary.additionalAmount.toLocaleString() : "없음"}
-    //                             </StyledTd>
-    //                             <StyledTd>{salary.paymentDate?.toLocaleString() ?? "0"}</StyledTd>
-    //                             <StyledTd>{salary.paymentDate || "없음"}</StyledTd>
-
     const columns: Column<ISalaryDetail>[] = [
         { key: "employeeName", title: "사원명" },
         { key: "salary", title: "직급" },
         { key: "baseSalary", title: "부서명" },
         { key: "nationalPension", title: "사번" },
-        { key: "healthInsurance", title: "연봉" },
-        { key: "baseSalary", title: "기본급" },
-        { key: "nationalPension", title: "국민연금" },
-        { key: "healthInsurance", title: "건강보험료" },
-        { key: "industrialAccident", title: "산재보험" },
-        { key: "employmentInsurance", title: "고용보험" },
-        { key: "additionalAmount", title: "비고금액" },
+        { key: "healthInsurance", title: "연봉", isMoney: true },
+        { key: "baseSalary", title: "기본급", isMoney: true },
+        { key: "nationalPension", title: "국민연금", isMoney: true },
+        { key: "healthInsurance", title: "건강보험료", isMoney: true },
+        { key: "industrialAccident", title: "산재보험", isMoney: true },
+        { key: "employmentInsurance", title: "고용보험", isMoney: true },
+        { key: "additionalAmount", title: "비고금액", isMoney: true },
         { key: "paymentDate", title: "지급일" },
     ];
     useEffect(() => {

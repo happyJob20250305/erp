@@ -37,8 +37,6 @@ export const EmployeeMain = () => {
             key: "emplStatus",
             title: "재직 상태",
             render: (value) => {
-                console.log("value");
-                console.log(value);
                 switch (value) {
                     case "W":
                         return <span>재직</span>;
