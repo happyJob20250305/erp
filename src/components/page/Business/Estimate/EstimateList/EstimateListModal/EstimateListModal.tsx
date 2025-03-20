@@ -1,10 +1,5 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
-import { OrderListModalStyled } from "./styled";
+import { FC, useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../../stores/modalState";
-import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
-import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
 import { IGetClient, IGetClientResponse } from "../../../Client/ClientList/ClientListMain/ClientListMain";
 import {
     IMaincategory,
@@ -16,12 +11,17 @@ import {
     ISubcategory,
     ISubcategoryResponse,
 } from "../../../../../../models/interface/business/sales/ISales";
+import { modalState } from "../../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
+import { EstimateListModalStyled } from "./styled";
 import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/StyledTable";
-import { IOrder } from "../OrderListMain/OrderListMain";
+import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
+import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
+import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
+import { IEstimate } from "../EstimateListMain/EstimateListMain";
 
-interface IOrderInfo {
-    orderId: number;
+interface IEstimateInfo {
+    estimateId: number;
     productId: number;
     productName: string;
     quantity: string;
@@ -29,7 +29,7 @@ interface IOrderInfo {
     unitPrice: string;
 }
 
-export interface IClientOrder {
+export interface IClientEstimate {
     zip: string;
     bizNum: string;
     memo: string;
@@ -46,15 +46,9 @@ export interface IClientOrder {
     custUpdateDate: string;
 }
 
-// interface IOrderListModalProps {
-//     detailOrder: IOrder;
-//     setDetailOrder: (detailOrder?: IOrder) => void;
-//     postSuccess: () => void;
-// }
-
-interface IOrderListModalProps {
-    orderId: number;
-    setOrderId: React.Dispatch<React.SetStateAction<number>>;
+interface IEstimateListModalProps {
+    estimateId: number;
+    setEstimateId: React.Dispatch<React.SetStateAction<number>>;
     clientId: number;
     setClientId: React.Dispatch<React.SetStateAction<number>>;
     postSuccess: () => void;
@@ -64,11 +58,9 @@ interface IPostResponse {
     result: "success" | "fail";
 }
 
-interface IArrOrderInfo extends IOrderInfo {}
-
-export const OrderListModal: FC<IOrderListModalProps> = ({
-    orderId,
-    setOrderId,
+export const EstimateListModal: FC<IEstimateListModalProps> = ({
+    estimateId,
+    setEstimateId,
     clientId,
     setClientId,
     postSuccess,
@@ -88,18 +80,15 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
     const [selectSubcategory, setSelectSubcategory] = useState<string>("");
     const [selectProduct, setSelectProduct] = useState<number>();
 
-    const productIdRef = useRef<string>("");
     const quantityRef = useRef<HTMLInputElement>(null);
     const supplyPriceRef = useRef<HTMLInputElement>(null);
     const unitPriceRef = useRef<HTMLInputElement>(null);
 
-    const [orderList, setOrderList] = useState<IOrderInfo[]>([]);
+    const [estimateList, setEstimateList] = useState<IEstimateInfo[]>([]);
 
-    const [infoClient, setInfoClient] = useState<IClientOrder>();
-    const [InfoOrder, setInfoOrder] = useState<IOrder>();
-    const [detailOrder, setDetailOrder] = useState<IOrderInfo[]>([]);
-
-    const [totalAmount, setTotalAmount] = useState<string>("0");
+    const [infoClient, setInfoClient] = useState<IClientEstimate>();
+    const [InfoEstimate, setInfoEstimate] = useState<IEstimate>();
+    const [detailEstimate, setDetailEstimate] = useState<IEstimateInfo[]>([]);
 
     useEffect(() => {
         getClientList();
@@ -108,23 +97,15 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
         getSubCategoryList();
         getProductList();
 
-        orderId && detailOrderList();
-
-        // const totalAmountNum = detailOrder.reduce((acc: number, order: IOrderInfo) => {
-        //     return acc + parseInt(order?.supplyPrice) * parseInt(order?.quantity) * 1.1;
-        // }, 0);
-
-        // const totalAmountStr = totalAmountNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        // setTotalAmount(totalAmountStr);
+        // orderId && detailOrderList();
 
         return () => {
-            setOrderId(0);
-            setClientId(0);
+            // setOrderId(0);
+            // setClientId(0);
         };
     }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
 
-    const orderSalesAreaOptions = [
+    const estimateAreaOptions = [
         { label: "영업", value: "영업" },
         { label: "SCM", value: "SCM" },
     ];
@@ -229,12 +210,12 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
             });
     };
 
-    const insertOrderList = () => {
+    const insertEstimateList = () => {
         console.log("selectProduct:" + selectProduct);
-        setOrderList([
-            ...orderList,
+        setEstimateList([
+            ...estimateList,
             {
-                orderId: 0,
+                estimateId: 0,
                 productId: selectProduct,
                 productName: "",
                 quantity: quantityRef.current.value,
@@ -243,16 +224,17 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
             },
         ]);
     };
-    const saveOrderList = () => {
+
+    const saveEstimateList = () => {
         const formData = new FormData(formRef.current);
         const params: any = {};
         formData.forEach((value, key) => {
             params[key] = value;
         });
-        params.orderList = orderList;
+        params.estimateList = estimateList;
 
         axios
-            .post("/business/order-information-list/saveOrderBody.do", { ...params })
+            .post("/business/order-information-list/saveEstimateBody.do", { ...params })
             .then((res: AxiosResponse) => {
                 if (res.data.result === "success") {
                     console.log("Response:", res);
@@ -266,31 +248,31 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
             });
     };
 
-    const deleteOrder = (order: IOrderInfo, index: number) => {
-        orderList.splice(orderList.indexOf(order, index));
-        setOrderList([...orderList]);
+    const deleteOrder = (estimate: IEstimateInfo, index: number) => {
+        estimateList.splice(estimateList.indexOf(estimate, index));
+        setEstimateList([...estimateList]);
     };
 
     const deleteAllOrder = () => {
-        setOrderList([]);
+        setEstimateList([]);
     };
 
-    const detailOrderList = () => {
+    const detailEstimateList = () => {
         axios
-            .post("/business/order-information-list/orderDetailBody.do", {
-                orderId: orderId,
+            .post("/business/order-information-list/estimateDetailBody.do", {
+                estimateId: estimateId,
                 clientId: clientId,
             })
             .then((res: AxiosResponse) => {
                 setInfoClient(res.data.client);
-                setInfoOrder(res.data.order);
-                setDetailOrder(res.data.orderDetail);
+                setInfoEstimate(res.data.estimate);
+                setDetailEstimate(res.data.estimateDetail);
             });
     };
     return (
-        <OrderListModalStyled>
+        <EstimateListModalStyled>
             <div className='container'>
-                {orderId ? (
+                {estimateId ? (
                     <>
                         <label>
                             공급 받는 자
@@ -350,8 +332,8 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <StyledTd>{InfoOrder?.orderDate}</StyledTd>
-                                        <StyledTd>{InfoOrder?.deliveryDate}</StyledTd>
+                                        <StyledTd>{InfoEstimate?.estimateDate}</StyledTd>
+                                        <StyledTd>{InfoEstimate?.deliveryDate}</StyledTd>
                                     </tr>
                                 </tbody>
                             </StyledTable>
@@ -374,16 +356,18 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {detailOrder.map((order, index) => {
+                                    {detailEstimate.map((estimate, index) => {
                                         return (
                                             <tr key={index}>
-                                                <StyledTd>{order?.orderId}</StyledTd>
-                                                <StyledTd>{order?.productName}</StyledTd>
-                                                <StyledTd>{order?.quantity}</StyledTd>
-                                                <StyledTd>{order?.supplyPrice}</StyledTd>
-                                                <StyledTd>{parseInt(order?.supplyPrice) * 0.1}</StyledTd>
+                                                <StyledTd>{estimate?.estimateId}</StyledTd>
+                                                <StyledTd>{estimate?.productName}</StyledTd>
+                                                <StyledTd>{estimate?.quantity}</StyledTd>
+                                                <StyledTd>{estimate?.supplyPrice}</StyledTd>
+                                                <StyledTd>{parseInt(estimate?.supplyPrice) * 0.1}</StyledTd>
                                                 <StyledTd>
-                                                    {parseInt(order?.supplyPrice) * parseInt(order?.quantity) * 1.1}
+                                                    {parseInt(estimate?.supplyPrice) *
+                                                        parseInt(estimate?.quantity) *
+                                                        1.1}
                                                 </StyledTd>
                                             </tr>
                                         );
@@ -392,8 +376,8 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                             </StyledTable>
                         </label>
                         {/* <label>
-                            총액 :<div>\{totalAmount}</div>
-                        </label> */}
+                                    총액 :<div>\{totalAmount}</div>
+                                </label> */}
                         <div className={"button-container"}>
                             <StyledButton type='button' onClick={() => setModal(!modal)}>
                                 나가기
@@ -415,7 +399,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                             <label>
                                 영업구분
                                 <StyledSelectBox
-                                    options={orderSalesAreaOptions}
+                                    options={estimateAreaOptions}
                                     value={selectOrderSalesArea}
                                     onChange={setSelectOrderSalesArea}
                                     name='orderSalesArea'
@@ -487,16 +471,16 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {orderList?.length > 0 ? (
-                                            orderList.map((order, index) => {
+                                        {estimateList?.length > 0 ? (
+                                            estimateList.map((estimate, index) => {
                                                 return (
                                                     <tr key={index}>
-                                                        <StyledTd>{order.productName}</StyledTd>
-                                                        <StyledTd>{order.unitPrice}</StyledTd>
-                                                        <StyledTd>{order.quantity}</StyledTd>
-                                                        <StyledTd>{order.supplyPrice}</StyledTd>
+                                                        <StyledTd>{estimate.productName}</StyledTd>
+                                                        <StyledTd>{estimate.unitPrice}</StyledTd>
+                                                        <StyledTd>{estimate.quantity}</StyledTd>
+                                                        <StyledTd>{estimate.supplyPrice}</StyledTd>
                                                         <StyledTd>
-                                                            <StyledButton onClick={() => deleteOrder(order, index)}>
+                                                            <StyledButton onClick={() => deleteOrder(estimate, index)}>
                                                                 추가삭제
                                                             </StyledButton>
                                                         </StyledTd>
@@ -518,21 +502,21 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                             </>
 
                             <div className={"button-container"}>
-                                <StyledButton type='button' onClick={insertOrderList}>
+                                <StyledButton type='button' onClick={insertEstimateList}>
                                     추가
                                 </StyledButton>
-                                <StyledButton type='button' onClick={saveOrderList}>
+                                <StyledButton type='button' onClick={saveEstimateList}>
                                     등록
                                 </StyledButton>
                                 <StyledButton type='button' onClick={() => setModal(!modal)}>
                                     나가기
                                 </StyledButton>
                             </div>
-                            <input type='hidden' name='orderId' value={""} readOnly />
+                            <input type='hidden' name='estimateId' value={""} readOnly />
                         </form>
                     </>
                 )}
             </div>
-        </OrderListModalStyled>
+        </EstimateListModalStyled>
     );
 };
