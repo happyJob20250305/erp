@@ -28,13 +28,13 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         { key: "jobGradeDetailName", title: "직급" },
         { key: "departmentDetailName", title: "부서명" },
         { key: "employeeNumber", title: "사번" },
-        { key: "salary", title: "연봉" },
-        { key: "baseSalary", title: "기본급" },
-        { key: "nationalPension", title: "국민연금" },
-        { key: "healthInsurance", title: "건강보험료" },
-        { key: "industrialAccident", title: "산재보험" },
-        { key: "employmentInsurance", title: "고용보험" },
-        { key: "additionalAmount", title: "비고금액" },
+        { key: "salary", title: "연봉", isMoney: true },
+        { key: "baseSalary", title: "기본급", isMoney: true },
+        { key: "nationalPension", title: "국민연금", isMoney: true },
+        { key: "healthInsurance", title: "건강보험료", isMoney: true },
+        { key: "industrialAccident", title: "산재보험", isMoney: true },
+        { key: "employmentInsurance", title: "고용보험", isMoney: true },
+        { key: "additionalAmount", title: "비고금액", isMoney: true },
         { key: "actions", title: "지급" },
     ];
 
@@ -65,22 +65,6 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         }
     };
 
-    const salarySave = async (paymentData: string) => {
-        const searchParam = new URLSearchParams(search);
-        searchParam.append("paymentDate", paymentData);
-
-        const result = await postApi<string>(SalaryManager.salarySave, searchParam);
-        alert("급여가 생성되었습니다.");
-    };
-
-    const allPaymentStatus = async (paymentStatus: string) => {
-        const searchParam = new URLSearchParams(search);
-        searchParam.append("paymentStatus", paymentStatus);
-
-        const result = await postApi<string>(SalaryManager.allPaymentStatusUpdate, searchParam);
-        alert("전부 지급 처리 되었습니다.");
-    };
-
     const handlePayment = async (salaryId: number, baseSalary: number) => {
         if (window.confirm("지급하시겠습니까?")) {
             try {
@@ -89,8 +73,13 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                 searchParam.append("baseSalary", baseSalary.toString());
 
                 await postApi<string>(SalaryManager.paymentStatusUpdate, searchParam);
+
                 alert("지급완료 되었습니다.");
-                loadSalaryList();
+
+                // ✅ 특정 항목만 업데이트
+                setSalaryList((prevList) =>
+                    prevList.map((salary) => (salary.salaryId === salaryId ? { ...salary, paymentStatus: 1 } : salary))
+                );
             } catch (error) {
                 alert("지급 처리 중 오류가 발생했습니다.");
             }
@@ -120,6 +109,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                             <StyledButton
                                 size='small'
                                 onClick={(e) => {
+                                    e.stopPropagation();
                                     handlePayment(row.salaryId, row.baseSalary);
                                 }}
                             >

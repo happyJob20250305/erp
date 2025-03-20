@@ -89,14 +89,27 @@ export const SalaryManagerSearch = () => {
     // };
 
     const salarySave = async (selectedPaymentDate: string) => {
-        const searchParam = new URLSearchParams(selectedPaymentDate);
-        searchParam.append("paymentDate", selectedPaymentDate);
+        if (!selectedPaymentDate) {
+            alert("급여 계산할 월을 선택해주세요.");
+            return;
+        }
 
-        const result = await postApi<string>(SalaryManager.salarySave, searchParam);
-        alert("급여가 생성되었습니다.");
-        setSearchKeyword({
-            searchPaymentMonth: selectedMonth,
-        });
+        try {
+            const searchParam = new URLSearchParams();
+            searchParam.append("paymentDate", selectedPaymentDate);
+
+            await postApi<string>(SalaryManager.salarySave, searchParam);
+
+            alert("급여가 생성되었습니다.");
+
+            // ✅ 급여 생성 후 해당 월의 급여만 검색하도록 설정
+            setSearchKeyword({
+                searchPaymentMonth: selectedPaymentDate, // 선택한 월로 검색 필터 설정
+            });
+        } catch (error) {
+            console.error("급여 생성 오류:", error);
+            alert("급여 생성 중 오류가 발생했습니다.");
+        }
     };
 
     // 지급되고 나서 리스트 초기화 되어야 함

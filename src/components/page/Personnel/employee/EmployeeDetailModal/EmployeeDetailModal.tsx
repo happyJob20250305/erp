@@ -4,14 +4,22 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
-import { Employee } from "../../../../../api/api";
-import { postApi } from "../../../../../api/PersonnelApi/postApi";
+import { Employee, SalaryOptionList } from "../../../../../api/api";
+import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
 import {
     IEmployeeDetailResponse,
     ISalaryClass,
 } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
 import { EmployeeModalStyled } from "./styled";
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
+import { SelectBox } from "../../../../common/StyledSelectBox/styled";
+import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
+import { setSelectOption } from "../../../../../common/setSelectOption";
+import {
+    IDepartmentGroupItem,
+    IGroupListResponse,
+    IJobGradeGroupItem,
+} from "../../../../../models/interface/personnel/salary/IOptionList";
 
 export const EmployeeDetailModal = () => {
     const formRef = useRef<HTMLFormElement>(null);
@@ -26,6 +34,50 @@ export const EmployeeDetailModal = () => {
     const [email, setEmail] = useState("");
     const [hp, setHp] = useState("");
     const [finalEducation, setFinalEducation] = useState("");
+    const [emplStatus, setEmplStatus] = useState<string | undefined>(undefined); // 초기값을 undefined로 설정
+    const [department, setDepartment] = useState<string | undefined>(undefined);
+    const [jobGrade, setJobGrade] = useState<string | undefined>(undefined);
+    const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
+    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
+
+    const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName");
+
+    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName");
+    const statusOptions = [
+        { value: "W", label: "재직" },
+        { value: "O", label: "휴직" },
+        { value: "F", label: "퇴직" },
+    ];
+
+    useEffect(() => {
+        getOptionList();
+    }, []);
+
+    const getOptionList = async () => {
+        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
+        if (result) {
+            setDepartmentGroupItem(result.DepartmentGroupList);
+            setGradeGroupItem(result.JobGradeGroupList);
+        }
+    };
+
+    const handleStatusChange = (selectedValue: string) => {
+        setEmplStatus(selectedValue);
+    };
+    const handleDepartmentChange = (selectedValue: string) => {
+        console.log("부서 변경됨:", selectedValue); // ✅ 값 변경 확인
+        setDepartment(selectedValue);
+    };
+
+    const handleJobGrateChange = (selectedValue: string) => {
+        setJobGrade(selectedValue);
+    };
+
+    useEffect(() => {
+        if (response?.detail?.emplStatus) {
+            setEmplStatus(response.detail.emplStatus);
+        }
+    }, [response]); // response가 변경될 때 emplStatus 업데이트
 
     useEffect(() => {
         employeeDetail();
@@ -53,7 +105,8 @@ export const EmployeeDetailModal = () => {
 
     const updateEmployee = async () => {
         const formData = new FormData(formRef.current!);
-
+        formData.append("emplStatus", emplStatus);
+        formData.append("department", department);
         try {
             const retuls = await postApi<IEmployeeDetailResponse>(Employee.employeeUpdate, formData);
             alert("수정되었습니다.");
@@ -195,6 +248,16 @@ export const EmployeeDetailModal = () => {
                             <tr>
                                 <th>부서*</th>
                                 <td>
+                                    {/* <StyledSelectBox
+                                        options={statusOptions}
+                                        value={emplStatus}
+                                        onChange={handleStatusChange}
+                                    /> */}
+                                    {/* <StyledSelectBox
+                                        options={departmentOptions}
+                                        value={department || ""}
+                                        onChange={handleDepartmentChange}
+                                    /> */}
                                     <StyledInput
                                         name='departmentDetailName'
                                         value={response?.detail?.departmentDetailName || ""}
@@ -202,6 +265,11 @@ export const EmployeeDetailModal = () => {
                                 </td>
                                 <th>직급*</th>
                                 <td>
+                                    {/* <StyledSelectBox
+                                        options={jobGradeOptions}
+                                        value={response?.detail?.jobGradeDetailName|| ""}
+                                        onChange={handleDepartmentChange}
+                                    /> */}
                                     <StyledInput
                                         name='jobGradeDetailName'
                                         value={response?.detail?.jobGradeDetailName || ""}
@@ -251,21 +319,10 @@ export const EmployeeDetailModal = () => {
                                 </td>
                                 <th>재직 구분</th>
                                 <td>
-                                    <StyledInput
-                                        name='emplStatus'
-                                        value={(() => {
-                                            switch (response?.detail?.emplStatus) {
-                                                case "W":
-                                                    return "재직";
-                                                case "O":
-                                                    return "휴직";
-                                                case "F":
-                                                    return "퇴직";
-                                                default:
-                                                    return "알 수 없음";
-                                            }
-                                        })()}
-                                        readOnly
+                                    <StyledSelectBox
+                                        options={statusOptions}
+                                        value={emplStatus}
+                                        onChange={handleStatusChange}
                                     />
                                 </td>
                             </tr>
@@ -275,7 +332,6 @@ export const EmployeeDetailModal = () => {
                                     <StyledInput
                                         name='departmentDetailName'
                                         value={response?.detail?.departmentDetailName || ""}
-                                        readOnly
                                     />
                                 </td>
                                 <th>직급코드</th>
