@@ -18,7 +18,7 @@ export const EmployeeDetailModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [response, setResponse] = useState<IEmployeeDetailResponse>();
     const [salaryClassList, setSalaryClassList] = useState<ISalaryClass>();
-    const { employeeId, jobGradeCode, departmentCode } = useContext(EmployeeDetailModalContext);
+    const { employeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const [zipCode, setZipCode] = useState("");
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
@@ -27,16 +27,9 @@ export const EmployeeDetailModal = () => {
     const [hp, setHp] = useState("");
     const [finalEducation, setFinalEducation] = useState("");
 
-    const closeModal = () => {
-        setModal(false);
-    };
-
     useEffect(() => {
-        // if (employeeId && jobGradeCode && departmentCode) {
-        // 값이 모두 존재할 때만 호출
-        employeeDetailList();
-        // }
-    }, [employeeId, jobGradeCode, departmentCode]);
+        employeeDetail();
+    }, [employeeDetailModalKeyword]);
 
     useEffect(() => {
         if (response?.detail) {
@@ -48,39 +41,14 @@ export const EmployeeDetailModal = () => {
         }
     }, [response]);
 
-    const employeeDetailList = async () => {
-        const searchParam = new URLSearchParams();
-        searchParam.append("employeeId", employeeId);
-        searchParam.append("jobGradeCode", jobGradeCode);
-        searchParam.append("departmentCode", departmentCode);
-
-        try {
-            const result = await postApi<IEmployeeDetailResponse>(Employee.employeeDetail, searchParam);
-            if (result) {
-                setResponse(result);
-                setSalaryClassList(result.salaryClassList);
-                console.log(result.detail.employeeId);
-            }
-        } catch (error) {
-            console.error("Error fetching employee details:", error);
+    const employeeDetail = async () => {
+        const result = await postApi<IEmployeeDetailResponse>(Employee.employeeDetail, {
+            ...employeeDetailModalKeyword,
+        });
+        if (result) {
+            setResponse(result);
+            setSalaryClassList(result.salaryClassList);
         }
-    };
-
-    //다음주소
-    const handleComplete = (data: any) => {
-        setIsOpen(false);
-        let fullAddress = data.address;
-        let extraAddress = "";
-
-        if (data.addressType === "R") {
-            if (data.bname !== "") extraAddress += data.bname;
-            if (data.buildingName !== "")
-                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
-        }
-
-        setZipCode(data.zonecode);
-        setAddress(fullAddress);
     };
 
     const updateEmployee = async () => {
@@ -92,6 +60,10 @@ export const EmployeeDetailModal = () => {
         } catch {
             alert("수정 실패");
         }
+    };
+
+    const closeModal = () => {
+        setModal(false);
     };
 
     return (

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
@@ -11,47 +11,35 @@ import {
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
 import { PromotionSearchContext } from "../../../../../api/Provider/PromitionProvider/PromotionSearhProvider";
-import context from "react-bootstrap/esm/AccordionContext";
 import { setSelectOption } from "../../../../../common/setSelectOption";
 
 export const PromotionSearch = () => {
-    // context 상태 및 업데이트 함수 가져오기
-    const {
-        searchEmployeeNumber,
-        setSearchEmployeeNumber,
-        searchEmployeeName,
-        setSearchEmployeeName,
-        department,
-        setDepartment,
-        jobGrade,
-        setJobGrade,
-        searchRegDateStart,
-        setSearchRegDateStart,
-        searchRegDateEnd,
-        setSearchRegDateEnd,
-    } = useContext(PromotionSearchContext);
+    const { setSearchKeyword } = useContext(PromotionSearchContext);
 
-    // Input 관리 (ref 대신 state 추천)
+    const employeeName = useRef<HTMLInputElement>();
     const [employeeNameInput, setEmployeeNameInput] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState("");
-    // 셀렉트 박스 선택 값 (별도 상태로 관리)
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
-    //start date
     const [startDate, setStartDate] = useState<string>("");
-    //end date
     const [endDate, setEndDate] = useState<string>("");
-
-    //DepartmentGroupItem
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
-
-    //JobGradeGroupItem
     const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
 
-    // 컴포넌트 마운트 시점에 옵션 목록 조회
     useEffect(() => {
         getOptionList();
     }, []);
+
+    const handlerSearch = () => {
+        setSearchKeyword({
+            searchName: employeeNameInput,
+            searchId: employeeNumber,
+            department: selectedDepartment,
+            jobGrade: selectedJobGrade,
+            searchRegDateStart: startDate,
+            searchRegDateEnd: endDate,
+        });
+    };
 
     const getOptionList = async () => {
         const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
@@ -63,25 +51,16 @@ export const PromotionSearch = () => {
         }
     };
 
-    const handleSearchcSaveContext = () => {
-        setSearchEmployeeName(employeeNameInput);
-        setSearchEmployeeNumber(employeeNumber);
-        setSearchRegDateEnd(endDate);
-        setSearchRegDateStart(startDate);
-        setDepartment(selectedDepartment);
-        setJobGrade(selectedJobGrade);
-    };
-
     const resetSearch = () => {
-        setSearchEmployeeName("");
-        setSearchEmployeeNumber("");
-        setSearchRegDateEnd("");
-        setSearchRegDateStart("");
-        setDepartment("");
-        setJobGrade("");
+        setSearchKeyword({}); // 검색 컨텍스트 초기화
+        setEmployeeNameInput(""); // 이름 초기화
+        setEmployeeNumber(""); // 사번 초기화
+        setSelectedDepartment(""); // 부서 선택 초기화
+        setSelectedJobGrade(""); // 직급 선택 초기화
+        setStartDate(""); // 날짜 초기화
+        setEndDate(""); // 날짜 초기화
     };
 
-    // SelectBox 옵션 변환
     const departmentOptions = setSelectOption(
         DepartmentGroupItem,
         "departmentDetailName", // 라벨 (화면에 표시될 값)
@@ -96,8 +75,8 @@ export const PromotionSearch = () => {
     return (
         <>
             <PromotionSearchStyled>
-                <div className='searchBarBox' style={{ border: "5px solid white" }}>
-                    <div className='searchBar' style={{ border: "5px solid white" }}>
+                <div className='searchBarBox'>
+                    <div className='searchBar'>
                         {/* 부서 : department */}
                         <span>부서</span>
                         <StyledSelectBox
@@ -123,7 +102,7 @@ export const PromotionSearch = () => {
                         <StyledInput type='date' value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                         <StyledInput type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                         {/* 검색  */}
-                        <StyledButton onClick={handleSearchcSaveContext}>검색</StyledButton>
+                        <StyledButton onClick={handlerSearch}>검색</StyledButton>
                         <img
                             src='/refresh.png'
                             onClick={resetSearch}

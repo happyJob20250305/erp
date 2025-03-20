@@ -3,17 +3,17 @@ export const Login = {
 };
 
 export const Employee = {
-    employeeList: "/personnel/employeeList.do",
+    employeeList: "/personnel/employeeListBody",
     getJobRolesByDepartment: "/personnel/getJobRolesByDepartment.do",
     employeeSave: "/personnel/employeeSave.do",
     employeeStatusUpdate: "/personnel/employeeStatusUpdate.do",
-    employeeDetail: "/personnel/employeeDetail.do",
+    employeeDetail: "/personnel/employeeDetailBody",
     emplStatusUpdate: "/personnel/emplStatusUpdate.do",
     employeeUpdate: "/personnel/employeeUpdate.do",
 };
 
 export const Promotion = {
-    promitionList: "/personnel/promotionList.do",
+    promitionList: "/personnel/promotionListBody",
     promitionDetailList: "/personnel/promotionDetail.do",
 };
 
@@ -42,7 +42,7 @@ export const AttendanceList = {
 };
 
 export const SalaryManager = {
-    salaryList: "/personnel/salaryList.do",
+    salaryList: "/personnel/salaryListBody",
     empnoSalaryList: "/personnel/salaryDetail.do",
     salarySave: "/personnel/salarySave.do",
     allPaymentStatusUpdate: "/personnel/allPaymentStatusUpdate.do",

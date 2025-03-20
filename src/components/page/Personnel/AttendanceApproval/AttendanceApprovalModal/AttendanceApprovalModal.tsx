@@ -9,23 +9,24 @@ import { AttendanceApproval } from "../../../../../api/api";
 import { IPostResponse } from "../../../../../models/interface/IPostResponse";
 import { IAttendanceDetail } from "../../../../../models/interface/personnel/attendance/IAttendanceDetail";
 import { postApi } from "../../../../../api/PersonnelApi/postApi";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../../stores/userInfo";
 
 interface AttendanceApprovalProps {
     id: number,
     setId: React.Dispatch<React.SetStateAction<number>>,
     postSuccess: () => void,
-    loginUserType: string,
-    loginUserEmpid: string
 }
 
 interface AttendanceApprovalDetailResponse {
     detail: IAttendanceDetail
 }
 
-export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess, loginUserType, loginUserEmpid }) => {
+export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId, postSuccess }) => {
     const [modal, setModal] = useRecoilState<Boolean>(modalState);
     const [attendanceApprovalDetail, setAttendanceApprovalDetail] = useState<IAttendanceDetail>();
     const formRef = useRef<HTMLFormElement>(null);
+    const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
     useEffect(() => {
         id && searchDetail();
@@ -52,7 +53,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
 
         const result = await postApi<IPostResponse>(AttendanceApproval.rejectAttendance, {
             reqId: id,
-            userIdx: loginUserEmpid,
+            userIdx: userInfo.empId,
             appReason: formData.get("appReason").toString()
         })
 
@@ -65,7 +66,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
     const firstApproveAttendance = async () => {
         const result = await postApi<IPostResponse>(AttendanceApproval.firstApproveAttendance, {
             reqId: id,
-            userIdx: loginUserEmpid,
+            userIdx: userInfo.empId,
         })
 
         if (result.result === "success") {
@@ -84,7 +85,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
         const result = await postApi<IPostResponse>(AttendanceApproval.approveRejectAttendance, {
             id: attAppId,
             reqId: id,
-            userIdx: loginUserEmpid,
+            userIdx: userInfo.empId,
             appReason: formData.get("appReason").toString()
         })
 
@@ -97,7 +98,7 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
     const secondApproveAttendance = async () => {
         const result = await postApi<IPostResponse>(AttendanceApproval.secondApproveAttendance, {
             reqId: id,
-            userIdx: loginUserEmpid,
+            userIdx: userInfo.empId,
         })
 
         if (result.result === "success") {
@@ -160,20 +161,20 @@ export const AttendanceApprovalModal: FC<AttendanceApprovalProps> = ({ id, setId
                     </label>
                     <div className={"button-container"}>
                         {
-                            (loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "검토 대기"))
+                            (userInfo.userType === "A" && (attendanceApprovalDetail?.reqStatus === "검토 대기"))
                             && <button type='button' onClick={firstApproveAttendance}>승인</button>
                         }
                         {
-                            (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
+                            (userInfo.userType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
                             && <button type='button' onClick={secondApproveAttendance}>승인</button>
                         }
                         {
-                            (loginUserType === "A" && ((attendanceApprovalDetail?.reqStatus === "검토 대기")))
+                            (userInfo.userType === "A" && ((attendanceApprovalDetail?.reqStatus === "검토 대기")))
                             && <button type='button' onClick={rejectAttendance}>반려</button>
                         }
                         {
-                            ((loginUserType === "A" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
-                                || (loginUserType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기")))
+                            ((userInfo.userType === "A" && (attendanceApprovalDetail?.reqStatus === "승인 대기"))
+                                || (userInfo.userType === "C" && (attendanceApprovalDetail?.reqStatus === "승인 대기")))
                             && <button type='button' onClick={() => { approveRejectAttendance(attendanceApprovalDetail?.attAppId) }}>반려</button>
                         }
                         <button type='button' onClick={() => { setModal(!modal) }}>나가기</button>

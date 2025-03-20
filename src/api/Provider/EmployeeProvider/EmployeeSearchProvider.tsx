@@ -1,69 +1,19 @@
-import { createContext, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
+import React, { createContext, FC, useState } from "react";
 
-interface IEmployeeSearchKeywordContext {
-    searchId: string;
-    setSearchId: Dispatch<SetStateAction<string>>;
-    searchName: string;
-    setSearchName: Dispatch<SetStateAction<string>>;
-    searchRegDateStart: string;
-    setSearchRegDateStart: Dispatch<SetStateAction<string>>;
-    searchRegDateEnd: string;
-    setSearchRegDateEnd: Dispatch<SetStateAction<string>>;
-    department: string;
-    setDepartment: Dispatch<SetStateAction<string>>;
-    jobGrade: string;
-    setJobGrade: Dispatch<SetStateAction<string>>;
-    emplStatus: string;
-    setEmplStatus: Dispatch<SetStateAction<string>>;
+//초기값의 타입
+interface ISearchKeyword {
+    searchKeyword?: object;
+    setSearchKeyword?: React.Dispatch<React.SetStateAction<object>>;
 }
 
-const defaultValue: IEmployeeSearchKeywordContext = {
-    searchId: "",
-    setSearchId: () => {},
-    searchName: "",
-    setSearchName: () => {},
-    searchRegDateStart: "",
-    setSearchRegDateStart: () => {},
-    searchRegDateEnd: "",
-    setSearchRegDateEnd: () => {},
-    department: "",
-    setDepartment: () => {},
-    jobGrade: "",
-    setJobGrade: () => {},
-    emplStatus: "",
-    setEmplStatus: () => {},
-};
+// 다른 컴포넌트에서 사용이 가능한 context를 만든다.
+export const EmployeeSearchContext = createContext<ISearchKeyword>({});
 
-export const EmployeeSearchContext = createContext<IEmployeeSearchKeywordContext>(defaultValue);
-
-export const EmployeeSearchProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [searchId, setSearchId] = useState<string>("");
-    const [searchName, setSearchName] = useState<string>("");
-    const [searchRegDateStart, setSearchRegDateStart] = useState<string>("");
-    const [searchRegDateEnd, setSearchRegDateEnd] = useState<string>("");
-    const [department, setDepartment] = useState<string>("");
-    const [jobGrade, setJobGrade] = useState<string>("");
-    const [emplStatus, setEmplStatus] = useState<string>("");
+export const EmployeeSearchProvider: FC<{ children: React.ReactNode | React.ReactNode[] }> = ({ children }) => {
+    const [searchKeyword, setSearchKeyword] = useState<object>({});
 
     return (
-        <EmployeeSearchContext.Provider
-            value={{
-                searchId,
-                setSearchId,
-                searchName,
-                setSearchName,
-                searchRegDateStart,
-                setSearchRegDateStart,
-                searchRegDateEnd,
-                setSearchRegDateEnd,
-                jobGrade,
-                setJobGrade,
-                department,
-                setDepartment,
-                emplStatus,
-                setEmplStatus,
-            }}
-        >
+        <EmployeeSearchContext.Provider value={{ searchKeyword, setSearchKeyword }}>
             {children}
         </EmployeeSearchContext.Provider>
     );

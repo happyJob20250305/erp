@@ -1,48 +1,32 @@
 import { createContext, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
 
-interface IEmployeeRetirementModalContext {
-    // employeeId, employeeName, resignationDate
-    retireEmployeeId: string;
-    setRetireEmployeeId: Dispatch<SetStateAction<string>>;
-    retireEmployeeNumber: string;
-    setRetireEmployeeNumber: Dispatch<SetStateAction<string>>;
-    retireEmployeeName: string;
-    setRetireEmployeeName: Dispatch<SetStateAction<string>>;
-    regDate: string;
-    setRegDate: Dispatch<SetStateAction<string>>;
+interface IEmployeeRetirementModal {
+    retireEmployeeId?: string;
+    retireEmployeeNumber?: string;
+    retireEmployeeName?: string;
+    regDate?: string;
 }
 
-const defaultValue: IEmployeeRetirementModalContext = {
-    retireEmployeeId: "",
-    setRetireEmployeeId: () => {},
-    retireEmployeeNumber: "",
-    setRetireEmployeeNumber: () => {},
-    retireEmployeeName: "",
-    setRetireEmployeeName: () => {},
-    regDate: "",
-    setRegDate: () => {},
-};
+interface IEmployeeRetireKeyword {
+    dispatchKeyword?: IEmployeeRetirementModal;
+    setDispachKeyword?: React.Dispatch<React.SetStateAction<IEmployeeRetirementModal>>;
+}
 
-export const EmployeeRetirementModalContext = createContext<IEmployeeRetirementModalContext>(defaultValue);
+export const EmployeeRetirementModalContext = createContext<IEmployeeRetireKeyword>({});
 
 // Provider 컴포넌트
 export const EmployeeRetirementModalProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [retireEmployeeId, setRetireEmployeeId] = useState<string>("");
-    const [retireEmployeeNumber, setRetireEmployeeNumber] = useState<string>("");
-    const [retireEmployeeName, setRetireEmployeeName] = useState<string>("");
-    const [regDate, setRegDate] = useState<string>("");
-
+    const [dispatchKeyword, setDispachKeyword] = useState<IEmployeeRetirementModal>({
+        retireEmployeeId: "",
+        retireEmployeeNumber: "",
+        retireEmployeeName: "",
+        regDate: "",
+    });
     return (
         <EmployeeRetirementModalContext.Provider
             value={{
-                retireEmployeeId,
-                setRetireEmployeeId,
-                retireEmployeeNumber,
-                setRetireEmployeeNumber,
-                retireEmployeeName,
-                setRetireEmployeeName,
-                regDate,
-                setRegDate,
+                dispatchKeyword,
+                setDispachKeyword,
             }}
         >
             {children}

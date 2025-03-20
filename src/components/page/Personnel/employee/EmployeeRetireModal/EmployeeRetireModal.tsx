@@ -14,20 +14,8 @@ interface IEmployeeRetireModalProps {
 }
 
 export const EmployeeRetireModal: FC<IEmployeeRetireModalProps> = ({ postSuccess }) => {
-    const {
-        retireEmployeeId,
-        setRetireEmployeeId,
-        retireEmployeeNumber,
-        setRetireEmployeeNumber,
-        retireEmployeeName,
-        setRetireEmployeeName,
-        regDate,
-        setRegDate,
-    } = useContext(EmployeeRetirementModalContext);
-
+    const { dispatchKeyword } = useContext(EmployeeRetirementModalContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-
-    // form data 상태 관리
     const formRef = useRef<HTMLFormElement>();
 
     const closeModal = () => {
@@ -59,21 +47,29 @@ export const EmployeeRetireModal: FC<IEmployeeRetireModalProps> = ({ postSuccess
                                 <tr>
                                     <th>사원번호</th>
                                     <td>
-                                        <StyledInput value={retireEmployeeNumber} readOnly />
-                                        <StyledInput type='hidden' name='employeeId' value={retireEmployeeId} />
+                                        <StyledInput value={dispatchKeyword.retireEmployeeNumber} readOnly />
+                                        <StyledInput
+                                            type='hidden'
+                                            name='employeeId'
+                                            value={dispatchKeyword.retireEmployeeId}
+                                        />
                                         <StyledInput type='hidden' name='emplStatus' value='F' />
                                         <StyledInput type='hidden' name='salary' value='' />
                                     </td>
                                     <th>사원명</th>
                                     <td>
-                                        <StyledInput value={retireEmployeeName} name='employeeNumber' readOnly />
+                                        <StyledInput
+                                            value={dispatchKeyword.retireEmployeeName}
+                                            name='employeeNumber'
+                                            readOnly
+                                        />
                                     </td>
                                 </tr>
                                 {/* 2 */}
                                 <tr>
                                     <th>입사일자</th>
                                     <td>
-                                        <StyledInput value={regDate} name='regData' readOnly />
+                                        <StyledInput value={dispatchKeyword.regDate} name='regData' readOnly />
                                     </td>
                                     <th>퇴직금</th>
                                     <td>

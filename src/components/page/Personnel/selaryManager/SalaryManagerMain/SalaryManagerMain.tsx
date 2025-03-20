@@ -20,29 +20,8 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
     const [salaryCnt, setSalaryCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(1);
 
-    const {
-        searchEmployeeName,
-        department,
-        jobGrade,
-        searchPaymentStatus,
-        searchPaymentMonth,
-        paymentData,
-        paymentStatus,
-    } = useContext(SalaryManagerContext);
+    const { searchKeyword } = useContext(SalaryManagerContext);
 
-    //   <StyledTh>번호</StyledTh>
-    //                         <StyledTh>사원명</StyledTh>
-    //                         <StyledTh>직급</StyledTh>
-    //                         <StyledTh>부서명</StyledTh>
-    //                         <StyledTh>사번</StyledTh>
-    //                         <StyledTh>연봉</StyledTh>
-    //                         <StyledTh>기본급</StyledTh>
-    //                         <StyledTh>국민연금</StyledTh>
-    //                         <StyledTh>건강보험료</StyledTh>
-    //                         <StyledTh>산재보험</StyledTh>
-    //                         <StyledTh>고용보험</StyledTh>
-    //                         <StyledTh>비고금액</StyledTh>
-    //                         <StyledTh>지급</StyledTh>
     // 테이블 컬럼 정의
     const columns: Column<ISalaryListDetail>[] = [
         { key: "employeeName", title: "사원명" },
@@ -59,40 +38,31 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         { key: "actions", title: "지급" },
     ];
 
-    useEffect(() => {
-        if (paymentData) salarySave(paymentData);
-    }, [paymentData]);
+    // useEffect(() => {
+    //     salarySave(searchKeyword.paymentDate);
+    // }, [Pdata]);
+
+    // useEffect(() => {
+    //     if (paymentStatus) allPaymentStatus(paymentStatus);
+    // }, [paymentStatus]);
 
     useEffect(() => {
-        if (paymentStatus) allPaymentStatus(paymentStatus);
-    }, [paymentStatus]);
+        loadSalaryList();
+    }, [cPage, searchKeyword]);
 
-    useEffect(() => {
-        loadSalaryList(cPage);
-    }, [cPage, searchEmployeeName, department, jobGrade, searchPaymentStatus, searchPaymentMonth]);
+    const loadSalaryList = async (currentPage?: number) => {
+        currentPage = currentPage || 1;
 
-    const loadSalaryList = async (currentPage: number) => {
-        const searchParam = new URLSearchParams(search);
-        searchParam.append("currentPage", currentPage.toString());
-        searchParam.append("pageSize", "5");
-
-        if (searchEmployeeName) searchParam.append("searchEmployeeName", searchEmployeeName);
-        if (department) searchParam.append("department", department);
-        if (jobGrade) searchParam.append("jobGrade", jobGrade);
-        if (searchPaymentStatus !== null) searchParam.append("searchPaymentStatus", searchPaymentStatus.toString());
-        if (searchPaymentMonth) searchParam.append("searchPaymentMonth", searchPaymentMonth);
-
-        const result = await searchApi<ISalaryListDetailResponse>(SalaryManager.salaryList, searchParam);
+        const result = await searchApi<ISalaryListDetailResponse>(SalaryManager.salaryList, {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        });
 
         if (result) {
             setSalaryList(result.salaryList);
             setSalaryCnt(result.salaryCnt);
-        } else {
-            setSalaryList([]);
-            setSalaryCnt(0);
         }
-
-        setCPage(currentPage);
     };
 
     const salarySave = async (paymentData: string) => {
@@ -120,7 +90,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
 
                 await postApi<string>(SalaryManager.paymentStatusUpdate, searchParam);
                 alert("지급완료 되었습니다.");
-                loadSalaryList(cPage);
+                loadSalaryList();
             } catch (error) {
                 alert("지급 처리 중 오류가 발생했습니다.");
             }
@@ -137,67 +107,11 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         <>
             <div>총 개수 : {salaryCnt}</div>
 
-            {/* <StyledTable>
-                <thead>
-                    <tr>
-                        <StyledTh>번호</StyledTh>
-                        <StyledTh>사원명</StyledTh>
-                        <StyledTh>직급</StyledTh>
-                        <StyledTh>부서명</StyledTh>
-                        <StyledTh>사번</StyledTh>
-                        <StyledTh>연봉</StyledTh>
-                        <StyledTh>기본급</StyledTh>
-                        <StyledTh>국민연금</StyledTh>
-                        <StyledTh>건강보험료</StyledTh>
-                        <StyledTh>산재보험</StyledTh>
-                        <StyledTh>고용보험</StyledTh>
-                        <StyledTh>비고금액</StyledTh>
-                        <StyledTh>지급</StyledTh>
-                    </tr>
-                </thead>
-                <tbody>
-                    {salaryList.length ? (
-                        salaryList.map((salary) => (
-                            <tr key={salary.salaryId} onClick={() => handlerSearch(salary.employeeNumber)}>
-                                <StyledTd>{salary.employeeId}</StyledTd>
-                                <StyledTd>{salary.employeeName}</StyledTd>
-                                <StyledTd>{salary.jobGradeDetailName}</StyledTd>
-                                <StyledTd>{salary.departmentDetailName || "없음"}</StyledTd>
-                                <StyledTd>{salary.employeeNumber}</StyledTd>
-                                <StyledTd>{salary.salary?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.baseSalary?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.nationalPension?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.healthInsurance?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.industrialAccident?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.employmentInsurance?.toLocaleString() || "0"}</StyledTd>
-                                <StyledTd>{salary.additionalAmount?.toLocaleString() || "없음"}</StyledTd>
-                                <StyledTd>
-                                    <StyledButton
-                                        size='small'
-                                        disabled={salary.paymentStatus === 1}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handlePayment(salary.salaryId, salary.baseSalary);
-                                        }}
-                                    >
-                                        {salary.paymentStatus === 0 ? "지급미완료" : "지급완료"}
-                                    </StyledButton>
-                                </StyledTd>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <StyledTd colSpan={13}>데이터가 없습니다.</StyledTd>
-                        </tr>
-                    )}
-                </tbody>
-            </StyledTable> */}
             <div className='table-container'>
                 <StyledTable
                     columns={columns}
                     data={salaryList}
                     striped
-                    // bordered
                     hoverable
                     fullWidth
                     onCellClick={(row) => handlerSearch(row.employeeNumber)}
