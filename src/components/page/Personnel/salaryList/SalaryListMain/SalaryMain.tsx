@@ -39,7 +39,7 @@ export const SalaryMain = ({ data }: SararyMainProps) => {
 
     const paymentColumns: Column<{ title: string; amount: number }>[] = [
         { key: "title", title: "지급항목" },
-        { key: "amount", title: "금액" },
+        { key: "amount", title: "금액", isMoney: true },
     ];
 
     const getDeductionData = () =>

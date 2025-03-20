@@ -137,8 +137,8 @@ export const SalaryManagerSearch = () => {
 
     return (
         <SalalyManagerSearchStyled>
-            <div className='searchBarBox' style={{ border: "5px solid white" }}>
-                <div className='searchBar' style={{ border: "5px solid white" }}>
+            <div className='search-group'>
+                <div className='search-bar'>
                     {/* 급여 계산  */}
                     <span>급여 계산</span>
                     <StyledInput
@@ -150,7 +150,22 @@ export const SalaryManagerSearch = () => {
                     {/* 일괄 지급 */}
                     <StyledButton onClick={allPaymentStatusUpdate}>일괄 지급</StyledButton>
                 </div>
-                <div className='searchBar' style={{ border: "5px solid white" }}>
+                <div className='search-bar'>
+                    {/* 급여년월 searchPaymentMonth */}
+                    <span>급여년월</span>
+                    <StyledInput
+                        type='month'
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                    />
+
+                    {/* 지급 여부 : searchPamentStatus */}
+                    <span>지급 여부 </span>
+                    <StyledSelectBox
+                        options={paymentStatusOptions}
+                        value={selectedPaymentStatus?.toString()}
+                        onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
+                    />
                     {/* 직급 : jobGrade */}
                     <span>직급</span>
                     <StyledSelectBox
@@ -170,23 +185,8 @@ export const SalaryManagerSearch = () => {
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                 </div>
 
-                <div className='searchBar' style={{ border: "5px solid white" }}>
-                    {/* 급여년월 searchPaymentMonth */}
-                    <span>급여년월</span>
-                    <StyledInput
-                        type='month'
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                    />
-
-                    {/* 지급 여부 : searchPamentStatus */}
-                    <span>지급 여부 </span>
-                    <StyledSelectBox
-                        options={paymentStatusOptions}
-                        value={selectedPaymentStatus?.toString()}
-                        onChange={(val) => setSelectedPaymentStatus(val ? Number(val) : null)}
-                    />
-                    {/* 검색  */}
+                {/* 검색  */}
+                <div className='button-container'>
                     <StyledButton onClick={handleSearch}>검색</StyledButton>
 
                     <img
