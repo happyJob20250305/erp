@@ -5,9 +5,6 @@ import { DailyStatisticsStyled, StyledTd, StyledTh } from "./styled";
 interface DailyStatisticsProps {
     dailyStatistics: IDaily;
 }
-const formatBigInt = (value: bigint) => {
-    return new Intl.NumberFormat("ko-KR").format(value);
-};
 
 export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
     if (!dailyStatistics) {

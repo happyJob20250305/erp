@@ -2,13 +2,13 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 import { IReceivablesList, IReceivablesListResponse } from "../../../../../models/interface/sales/IReceivablesList";
-import { searchApi } from "../../../../../api/SalesApi/ReceivablesListApi/searchApi";
 import { ReceivablesList } from "../../../../../api/api";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { ReceivablesModal } from "../ReceivablesModal/ReceivablesModal";
 import { Portal } from "../../../../common/potal/Portal";
 import { ReceivablesListContext } from "../../../../../api/Provider/SalesProvider/ReceivablesListProvider";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 
 export const ReceivablesListMain = () => {
     const { searchKeyword } = useContext(ReceivablesListContext);

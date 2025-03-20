@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Daily } from "../../../../../api/api";
-import { searchApi } from "../../../../../api/SalesApi/DailyApi/searchApi";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { DailyChart } from "../DailyChart/DailyChart";
 import { Chart, registerables } from "chart.js";
@@ -9,6 +8,7 @@ import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/
 import { ChartContainer, ChartWrapper, StatisticsWrapper } from "./styled";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { DailyListContext } from "../../../../../api/Provider/SalesProvider/DailyProvider";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 Chart.register(...registerables);
 
 export const DailyMain = () => {
@@ -61,8 +61,8 @@ export const DailyMain = () => {
                     <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>
                 </StatisticsWrapper>
             </ChartContainer>
+            <span>※ 검색일자를 기준으로 최근 5일간의 데이터입니다.</span>
             <StyledTable columns={columns} data={dailyList} hoverable={true} fullWidth={true} />
-
             <PageNavigate
                 totalItemsCount={dailyCount}
                 onChange={searchDailyList}

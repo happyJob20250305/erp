@@ -7,11 +7,11 @@ import {
     IAnnualProductDetail,
 } from "../../../../../models/interface/sales/IAnnual";
 import { Annual } from "../../../../../api/api";
-import { searchApi } from "../../../../../api/SalesApi/AnnualApi/searchApi";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { AnnualModalStyled, AnnualStyledTable, StyledTd, StyledTh } from "./styled";
 import { AnnualListContext } from "../../../../../api/Provider/SalesProvider/AnnualProvider";
+import { searchApi } from "../../../../../api/SalesApi/searchApi";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
