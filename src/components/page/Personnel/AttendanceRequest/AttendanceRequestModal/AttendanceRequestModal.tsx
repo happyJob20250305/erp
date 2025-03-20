@@ -179,17 +179,17 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                 <form ref={formRef}>
                     <label>
                         근무부서
-                        <StyledInput type='text' name="deptName" disabled={true}
+                        <StyledInput type='text' name="deptName" variant="disable"
                             defaultValue={id ? attendanceRequestDetail?.deptName : loginInfo?.detail_name} readOnly />
                     </label>
                     <label>
                         성명
-                        <StyledInput type='text' name="name" disabled={true}
+                        <StyledInput type='text' name="name" variant="disable"
                             defaultValue={id ? attendanceRequestDetail?.name : loginInfo?.usr_nm} readOnly />
                     </label>
                     <label>
                         사번
-                        <StyledInput type='text' name="number" disabled={true}
+                        <StyledInput type='text' name="number" variant="disable"
                             defaultValue={id ? attendanceRequestDetail?.number : loginInfo?.usr_idx} readOnly />
                     </label>
                     <label>
@@ -197,7 +197,7 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                         {
                             id ?
                                 (
-                                    <StyledInput type='text' name="reqType" disabled={true}
+                                    <StyledInput type='text' name="reqType" variant="disable"
                                         defaultValue={attendanceRequestDetail?.reqType} readOnly />
                                 )
                                 :
@@ -230,7 +230,7 @@ export const AttendanceRequestModal: FC<AttendanceRequestProps> = ({ id, setId, 
                     </label>
                     <label>
                         신청일
-                        <StyledInput type='text' name="reqdate" disabled={true}
+                        <StyledInput type='text' name="reqdate" variant="disable"
                             defaultValue={id ? attendanceRequestDetail?.reqdate : dateString} readOnly />
                     </label>
                     <div className={"button-container"}>
