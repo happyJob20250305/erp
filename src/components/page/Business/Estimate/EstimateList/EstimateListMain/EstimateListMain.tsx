@@ -41,7 +41,6 @@ export const EstimateListMain = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [estimateId, setEstimateId] = useState<number>();
     const [clientId, setClientId] = useState<number>();
-    const [detailEstimate, setDetailEstimate] = useState<IEstimate>();
 
     useEffect(() => {
         searchEstimateList();
@@ -56,7 +55,6 @@ export const EstimateListMain = () => {
                 pageSize: 5,
             })
             .then((res: AxiosResponse<IEstimateListResponse>) => {
-                console.log("res.data:" + res.data.estimateList);
                 setEstimateList(res.data.estimateList);
                 setEstimateCount(res.data.estimateCnt);
                 setCpage(currentPage);
@@ -80,10 +78,10 @@ export const EstimateListMain = () => {
                     <thead>
                         <tr>
                             <StyledTh>견적직원</StyledTh>
-                            <StyledTh>견적일</StyledTh>
+                            <StyledTh>견적날짜</StyledTh>
                             <StyledTh>거래처</StyledTh>
                             <StyledTh>제품명</StyledTh>
-                            <StyledTh>납기일</StyledTh>
+                            <StyledTh>납기날짜</StyledTh>
                             <StyledTh>총납품개수</StyledTh>
                             <StyledTh>총공급가액</StyledTh>
                             <StyledTh>총세액</StyledTh>
@@ -109,7 +107,7 @@ export const EstimateListMain = () => {
                                             <StyledButton
                                                 onClick={() => handlerOrderListModal(estimate?.id, estimate?.clientId)}
                                             >
-                                                견적상세보기
+                                                견적서상세보기
                                             </StyledButton>
                                         </StyledTd>
                                     </tr>
