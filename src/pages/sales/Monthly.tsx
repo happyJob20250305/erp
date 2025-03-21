@@ -7,7 +7,7 @@ export const Monthly = () => {
     return (
         <MonthlyListProvider>
             <ContentBox variant='primary' fontSize='large'>
-                매출관리
+                월별 매출현황
             </ContentBox>
             <MonthlySearch />
             <MonthlyMain />

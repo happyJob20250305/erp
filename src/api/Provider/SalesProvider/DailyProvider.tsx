@@ -16,3 +16,5 @@ export const DailyListProvider: FC<{ children: React.ReactNode | React.ReactNode
         <DailyListContext.Provider value={{ searchKeyword, setSearchKeyword }}>{children}</DailyListContext.Provider>
     );
 };
+
+

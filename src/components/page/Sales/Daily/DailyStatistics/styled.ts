@@ -39,3 +39,7 @@ export const StyledTd = styled.td`
     border: 1px solid #ddd;
     width: 40%;
 `;
+
+export const ColoredTd = styled(StyledTd)<{ isPositive: boolean }>`
+    color: ${(props) => (props.isPositive ? "blue" : "red")};
+`;

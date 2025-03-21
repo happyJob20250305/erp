@@ -1,4 +1,5 @@
 import { IAnnual } from "../../../../../models/interface/sales/IAnnual";
+import { ColoredTd } from "../../Daily/DailyStatistics/styled";
 import { AnnualStatisticsStyled, StyledTd, StyledTh } from "./styled";
 
 interface AnnualStatisticsProps {
@@ -67,10 +68,10 @@ export const AnnualStatistics = ({ annualStatistics }: AnnualStatisticsProps) =>
                 </tr>
                 <tr>
                     <StyledTd>손익 총계 (①-②-③)</StyledTd>
-                    <StyledTd>
+                    <ColoredTd isPositive={totalProfit > BigInt(0)}>
                         {totalProfit < 0 ? " ▼" : " ▲"}
                         {formatBigInt(totalProfit)}
-                    </StyledTd>
+                    </ColoredTd>
                 </tr>
             </tbody>
         </AnnualStatisticsStyled>

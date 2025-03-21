@@ -6,26 +6,35 @@ interface DailyChartProps {
 }
 
 export const DailyChart = ({ dailyListChart }: DailyChartProps) => {
-    const sortedDailyData = [...dailyListChart].sort(
-        (a, b) => new Date(a.salesDate).getTime() - new Date(b.salesDate).getTime()
-    );
+    const groupedData: Record<string, { supply: number; expense: number; receivable: number }> = {};
+
+    dailyListChart.forEach(({ salesDate, totalSupplyPrice, totalExpenseAmount, totalReceivableAmount }) => {
+        if (!groupedData[salesDate]) {
+            groupedData[salesDate] = { supply: 0, expense: 0, receivable: 0 };
+        }
+        groupedData[salesDate].supply += Number(totalSupplyPrice);
+        groupedData[salesDate].expense += Number(totalExpenseAmount);
+        groupedData[salesDate].receivable += Number(totalReceivableAmount);
+    });
+
+    const sortedDates = Object.keys(groupedData).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     const chartData = {
-        labels: sortedDailyData.map((daily) => daily.salesDate),
+        labels: sortedDates,
         datasets: [
             {
                 label: "매출",
-                data: sortedDailyData.map((daily) => daily.totalSupplyPrice.toString()),
+                data: sortedDates.map((date) => groupedData[date].supply),
                 backgroundColor: "rgba(255, 99, 132, 1)",
             },
             {
                 label: "지출",
-                data: sortedDailyData.map((daily) => daily.totalExpenseAmount.toString()),
+                data: sortedDates.map((date) => groupedData[date].expense),
                 backgroundColor: "rgba(153, 102, 255, 1)",
             },
             {
                 label: "미수금",
-                data: sortedDailyData.map((daily) => daily.totalReceivableAmount.toString()),
+                data: sortedDates.map((date) => groupedData[date].receivable),
                 backgroundColor: "rgba(54, 162, 235, 1)",
             },
         ],

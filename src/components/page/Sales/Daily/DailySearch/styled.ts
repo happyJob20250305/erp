@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const DailySearchStyled = styled.div`
     display: flex;
+    justify-content: flex-end;
 
     margin-top: 20px;
     margin-left: 350px;
