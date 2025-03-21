@@ -65,22 +65,6 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
         }
     };
 
-    // const loadSingleSalary = async (salaryId: number, baseSalary: number) => {
-    //       const searchParam = new URLSearchParams(search);
-    //       searchParam.append("salaryId", salaryId.toString());
-    //       searchParam.append("baseSalary", baseSalary.toString());
-
-    //     const result = await searchApi<ISalaryListDetailResponse>(SalaryManager.salaryList, {
-    //         salaryId,
-    //     });
-
-    //     if (result && result.salaryList.length > 0) {
-    //         setSalaryList((prevList) =>
-    //             prevList.map((salary) => (salary.salaryId === salaryId ? result.salaryList[0] : salary))
-    //         );
-    //     }
-    // };
-
     const handlePayment = async (salaryId: number, baseSalary: number) => {
         if (window.confirm("지급하시겠습니까?")) {
             try {
@@ -91,11 +75,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
                 await postApi<string>(SalaryManager.paymentStatusUpdate, searchParam);
 
                 alert("지급완료 되었습니다.");
-
-                // ✅ 특정 항목만 업데이트
-                setSalaryList((prevList) =>
-                    prevList.map((salary) => (salary.salaryId === salaryId ? { ...salary, paymentStatus: 1 } : salary))
-                );
+                loadSalaryList(cPage);
             } catch (error) {
                 alert("지급 처리 중 오류가 발생했습니다.");
             }
