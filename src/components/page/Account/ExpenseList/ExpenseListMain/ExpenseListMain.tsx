@@ -68,6 +68,7 @@ export const ExpenseListMain = () => {
                 data={expenseList}
                 columns={columns}
                 fullWidth={true}
+                hoverable={true}
                 renderAction={(row) => approvalCode(row.is_approval)}
                 onCellClick={(row) => {
                     handlerModal(row);
