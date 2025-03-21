@@ -4,17 +4,11 @@ import { EmployeeRegisterModalStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { FC, useEffect, useRef, useState } from "react";
-import {
-    IDepartmentGroupItem,
-    IGroupListResponse,
-    IJobGradeGroupItem,
-} from "../../../../../models/interface/personnel/salary/IOptionList";
-import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { Employee, SalaryOptionList } from "../../../../../api/api";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
+import { Employee } from "../../../../../api/api";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { IEmployeeRegisterResponse } from "../../../../../models/interface/personnel/employee/IEmployeeRegisterResponse";
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
-import DaumPostcode from "react-daum-postcode"; // 추가
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import {
     formatPhoneNumber,
@@ -26,7 +20,14 @@ import {
     validateRequiredFields,
 } from "../../../../../common/registerCheck";
 import { IJobRole, IJobRoleResponse } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
-import { bankOptions, educationOptions, sexOptionse } from "../../../../../common/employeeModalOptions";
+import {
+    bankOptions,
+    educationOptions,
+    fetchDepartmentOptions,
+    fetchJobGradeOptions,
+    sexOptionse,
+} from "../../../../../common/employeeModalOptions";
+import { DaumAddressModal } from "../../../../../common/DaumAddressModal";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -35,8 +36,6 @@ interface IEmployeeRegisterModalProps {
 export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuccess }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const formRef = useRef<HTMLFormElement>(null);
-    const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
-    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobRole[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -51,19 +50,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [birthday, setBirthday] = useState("");
     const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
     const [selectedJobGRoleDetailName, setSelectedJobRoleDetailName] = useState<string>("");
-
     const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
-    const departmentOptions = setSelectOption(
-        DepartmentGroupItem,
-        "departmentDetailName", // 라벨 (화면에 표시될 값)
-        "departmentDetailName", // 값 (실제 선택될 값)
-        { label: "전체", value: "" } // 기본 옵션
-    );
-
-    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
-        label: "전체",
-        value: "",
-    });
+    const [departmentOptions, setDepartmentOptions] = useState([]);
+    const [jobGradeOptions, setJobGradeOptions] = useState([]);
 
     const jobRoleGroupOptions = setSelectOption(jobRoleGroupList, "jobRoleDetailName", "jobRoleDetailName", {
         label: "전체",
@@ -71,10 +60,14 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     });
 
     useEffect(() => {
-        getOptionList();
+        (async () => {
+            const dep = await fetchDepartmentOptions();
+            const grade = await fetchJobGradeOptions();
+            setDepartmentOptions(dep);
+            setJobGradeOptions(grade);
+        })();
     }, []);
 
-    // const [selectedDepartment, setSelectedDepartment] = useState("");
     useEffect(() => {
         if (selectedDepartment) {
             getJobDetailCode(selectedDepartment);
@@ -84,19 +77,11 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     useEffect(() => {
         if (registrationNumber.length === 14) {
             const generatedBirthday = generateBirthdayFromRegNumber(registrationNumber);
-            setBirthday(generatedBirthday); // ✅ 즉시 반영
+            setBirthday(generatedBirthday);
         } else {
-            setBirthday(""); // ❌ 14자리가 아니면 초기화
+            setBirthday("");
         }
-    }, [registrationNumber]); // ✅ 주민번호가 변경될 때마다 실행
-
-    const getOptionList = async () => {
-        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-        if (result) {
-            setDepartmentGroupItem(result.DepartmentGroupList);
-            setGradeGroupItem(result.JobGradeGroupList);
-        }
-    };
+    }, [registrationNumber]);
 
     // jobGradeDetailName;
 
@@ -331,20 +316,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
                             {/* 주소 검색 모달 (조건부 렌더링) */}
                             {isOpen && (
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "20%",
-                                        left: "30%",
-                                        width: "500px",
-                                        height: "600px",
-                                        zIndex: 100,
-                                        border: "1px solid #ccc",
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
-                                    <DaumPostcode onComplete={handleComplete} autoClose />
-                                </div>
+                                <DaumAddressModal onComplete={handleComplete} onClose={() => setIsOpen(false)} />
                             )}
 
                             {/* 6 */}

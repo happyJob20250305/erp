@@ -4,8 +4,8 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
-import { Employee, SalaryOptionList } from "../../../../../api/api";
-import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
+import { Employee } from "../../../../../api/api";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import {
     IEmployeeDetailResponse,
     IJobRole,
@@ -17,13 +17,10 @@ import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/Vouch
 import { SelectBox } from "../../../../common/StyledSelectBox/styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { setSelectOption } from "../../../../../common/setSelectOption";
-import {
-    IDepartmentGroupItem,
-    IGroupListResponse,
-    IJobGradeGroupItem,
-} from "../../../../../models/interface/personnel/salary/IOptionList";
+import { IDepartmentGroupItem, IJobGradeGroupItem } from "../../../../../models/interface/personnel/salary/IOptionList";
 import { bankOptions, educationOptions, statusOptions } from "../../../../../common/employeeModalOptions";
 import DaumPostcode from "react-daum-postcode"; // 추가
+import { DaumAddressModal } from "../../../../../common/DaumAddressModal";
 export const EmployeeDetailModal = () => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -38,11 +35,8 @@ export const EmployeeDetailModal = () => {
     const [hp, setHp] = useState("");
     const [finalEducation, setFinalEducation] = useState("");
     const [emplStatus, setEmplStatus] = useState<string | undefined>(undefined); // 초기값을 undefined로 설정
-    const [department, setDepartment] = useState<string | undefined>(undefined);
-    const [jobGrade, setJobGrade] = useState<string | undefined>(undefined);
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
     const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
-    const [selectedJobGRoleDetailName, setSelectedJobRoleDetailName] = useState<string>("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -89,7 +83,6 @@ export const EmployeeDetailModal = () => {
             setDepartmentGroupItem(result.departmentGroupList);
             setGradeGroupItem(result.jobGradeGroupList);
 
-            // ⚠ jobGradeDetailName이 있는 경우에만 호출
             if (result.detail.jobGradeDetailName) {
                 getJobDetailCode(result.detail.jobGradeDetailName);
             }
@@ -130,7 +123,6 @@ export const EmployeeDetailModal = () => {
         try {
             const retuls = await postApi<IEmployeeDetailResponse>(Employee.employeeUpdate, formData);
             alert("수정되었습니다.");
-            closeModal();
         } catch {
             alert("수정 실패");
         }
@@ -334,20 +326,7 @@ export const EmployeeDetailModal = () => {
                             </tr>
                             {/* 주소 검색 모달 (조건부 렌더링) */}
                             {isOpen && (
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "20%",
-                                        left: "30%",
-                                        width: "500px",
-                                        height: "600px",
-                                        zIndex: 100,
-                                        border: "1px solid #ccc",
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
-                                    <DaumPostcode onComplete={handleComplete} autoClose />
-                                </div>
+                                <DaumAddressModal onComplete={handleComplete} onClose={() => setIsOpen(false)} />
                             )}
                             <tr>
                                 <th>은행*</th>

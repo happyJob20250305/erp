@@ -6,7 +6,9 @@ import {
 } from "../models/interface/personnel/salary/IOptionList";
 import { setSelectOption } from "./setSelectOption";
 import { postApiNoPram } from "../api/PersonnelApi/postApi";
-import { SalaryOptionList } from "../api/api";
+import { Employee, SalaryOptionList } from "../api/api";
+import { IJobRoleResponse } from "../models/interface/personnel/employee/IEmployeeDetailModal";
+import { postApi } from "../api/SystemApi/postApi";
 
 export const educationOptions = [
     { label: "선택", value: "" },
@@ -58,4 +60,13 @@ export const fetchJobGradeOptions = async () => {
               value: "",
           })
         : [];
+};
+
+export const fetchJobRoleOptions = async (departmentDetailName: string) => {
+    const params = new URLSearchParams();
+    params.append("departmentDetailName", departmentDetailName);
+
+    const response = await postApi<IJobRoleResponse>(Employee.getJobRolesByDepartment, params);
+
+    return response.jobRoleGroupList;
 };

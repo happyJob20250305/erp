@@ -7,7 +7,6 @@ import { EmployeeMainStyled } from "./styled";
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
 import { Employee } from "../../../../../api/api";
 import { modalState, modalTypeState } from "../../../../../stores/modalState";
-import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
 import { EmployeeDetailModal } from "../EmployeeDetailModal/EmployeeDetailModal";
 import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
@@ -120,7 +119,7 @@ export const EmployeeMain = () => {
                             handleEmployeeDetail(row.employeeId, row.jobGradeCode, row.departmentCode);
                         }}
                         renderAction={(row) =>
-                            row.emplStatus === "W" ? (
+                            row.emplStatus === "W" || row.emplStatus === "O" ? (
                                 <StyledButton
                                     size='small'
                                     onClick={(e) => {
