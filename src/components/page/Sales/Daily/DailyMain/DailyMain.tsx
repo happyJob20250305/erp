@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Daily } from "../../../../../api/api";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { DailyChart } from "../DailyChart/DailyChart";
 import { Chart, registerables } from "chart.js";
 import { DailyStatistics } from "../DailyStatistics/DailyStatistics";
 import { IDaily, IDailyListBodyResponse } from "../../../../../models/interface/sales/IDaily";
@@ -9,11 +8,13 @@ import { ChartContainer, ChartWrapper, StatisticsWrapper } from "./styled";
 import { Column, StyledTable } from "../../../../common/StyledTable/StyledTable";
 import { DailyListContext } from "../../../../../api/Provider/SalesProvider/DailyProvider";
 import { searchApi } from "../../../../../api/SalesApi/searchApi";
+import { DailyChart } from "../DailyChart/DailyChart";
 Chart.register(...registerables);
 
 export const DailyMain = () => {
     const { searchKeyword } = useContext(DailyListContext);
     const [dailyList, setDailyList] = useState<IDaily[]>([]);
+    const [dailyListChart, setDailyListChart] = useState<IDaily[]>([]);
     const [dailyCount, setDailyCount] = useState<number>(0);
     const [dailyStatistics, setDailyStatistics] = useState<IDaily>(null);
     const [cPage, setCpage] = useState<number>(0);
@@ -46,6 +47,7 @@ export const DailyMain = () => {
         if (result) {
             setDailyList(result.dailyList);
             setDailyCount(result.dailyListCnt);
+            setDailyListChart(result.dailyListChart);
             setDailyStatistics(result.dailyStatistics);
             setCpage(currentPage);
         }
@@ -55,7 +57,7 @@ export const DailyMain = () => {
         <>
             <ChartContainer>
                 <ChartWrapper>
-                    <DailyChart dailyListChart={dailyList} />
+                    <DailyChart dailyListChart={dailyListChart} />
                 </ChartWrapper>
                 <StatisticsWrapper>
                     <DailyStatistics dailyStatistics={dailyStatistics}></DailyStatistics>

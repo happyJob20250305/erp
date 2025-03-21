@@ -15,4 +15,5 @@ export interface IDailyListBodyResponse {
     dailyList: IDaily[];
     dailyListCnt: number;
     dailyStatistics: IDaily;
+    dailyListChart: IDaily[];
 }

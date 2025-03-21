@@ -6,6 +6,7 @@ export const AnnualSearchStyled = styled.div`
     align-items: center;
     margin-top: 20px;
     margin-left: 650px;
+    justify-content: flex-end;
 
     label {
         margin-right: 20px;

@@ -1,4 +1,5 @@
 import { IMonthly } from "../../../../../models/interface/sales/IMonthly";
+import { ColoredTd } from "../../Daily/DailyStatistics/styled";
 import { MonthlyStatisticsStyled, StyledTd, StyledTh } from "./styled";
 
 interface MonthlyStatisticsProps {
@@ -68,10 +69,10 @@ export const MonthlyStatistics = ({ monthlyStatistics }: MonthlyStatisticsProps)
                 </tr>
                 <tr>
                     <StyledTd>손익 총계 (①-②-③)</StyledTd>
-                    <StyledTd>
+                    <ColoredTd isPositive={totalProfit > BigInt(0)}>
                         {totalProfit < 0 ? " ▼" : " ▲"}
                         {formatBigInt(totalProfit)}
-                    </StyledTd>
+                    </ColoredTd>
                 </tr>
             </tbody>
         </MonthlyStatisticsStyled>

@@ -7,7 +7,7 @@ export const Annual = () => {
     return (
         <AnnualListProvider>
             <ContentBox variant='primary' fontSize='large'>
-                매출관리
+                연별 매출현황
             </ContentBox>
             <AnnualSearch />
             <AnnualMain />

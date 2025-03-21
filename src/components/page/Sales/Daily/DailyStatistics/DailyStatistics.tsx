@@ -1,10 +1,14 @@
 import { IDaily } from "../../../../../models/interface/sales/IDaily";
 import { StyledTable } from "../../../../common/styled/StyledTable";
-import { DailyStatisticsStyled, StyledTd, StyledTh } from "./styled";
+import { ColoredTd, DailyStatisticsStyled, StyledTd, StyledTh } from "./styled";
 
 interface DailyStatisticsProps {
     dailyStatistics: IDaily;
 }
+
+const formatBigInt = (value: bigint) => {
+    return new Intl.NumberFormat("ko-KR").format(value);
+};
 
 export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
     if (!dailyStatistics) {
@@ -19,7 +23,8 @@ export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
         );
     }
 
-    const { totalSupplyPrice, totalExpenseAmount, totalRevenueAmount } = dailyStatistics;
+    const { totalSupplyPrice, totalExpenseAmount } = dailyStatistics;
+    const totalRevenueAmount: bigint = BigInt(totalSupplyPrice) - BigInt(totalExpenseAmount);
 
     return (
         <DailyStatisticsStyled>
@@ -32,15 +37,17 @@ export const DailyStatistics = ({ dailyStatistics }: DailyStatisticsProps) => {
             <tbody>
                 <tr>
                     <StyledTd>매출총액 ①</StyledTd>
-                    <StyledTd>{totalSupplyPrice.toString()} </StyledTd>
+                    <StyledTd>{formatBigInt(totalSupplyPrice)} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>지출총액 ②</StyledTd>
-                    <StyledTd>{totalExpenseAmount.toString()} </StyledTd>
+                    <StyledTd>{formatBigInt(totalExpenseAmount)} </StyledTd>
                 </tr>
                 <tr>
                     <StyledTd>손익총계 (①-②)</StyledTd>
-                    <StyledTd>{totalRevenueAmount.toString()} </StyledTd>
+                    <ColoredTd isPositive={totalRevenueAmount > BigInt(0)}>
+                        {formatBigInt(totalRevenueAmount)}
+                    </ColoredTd>
                 </tr>
             </tbody>
         </DailyStatisticsStyled>
