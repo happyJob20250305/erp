@@ -44,16 +44,15 @@ export const EstimateListSearch = () => {
         getClientName();
         getProductName();
     }, []);
+
     const getClientName = () => {
         axios.post("/business/estimate-list/clientNamesBody.do").then((res: AxiosResponse<IClientResponse>) => {
-            console.log("res.data.clientNamesList:" + res.data.clientNameList);
             setClientList(res.data.clientNameList);
         });
     };
 
     const getProductName = () => {
         axios.post("/business/estimate-list/productNamesBody.do").then((res: AxiosResponse<IProductResponse>) => {
-            console.log("res.data.productNamesList:" + res.data.productNameList);
             setProductList(res.data.productNameList);
         });
     };
