@@ -25,6 +25,8 @@ import {
     validateEmail,
     validateRequiredFields,
 } from "../../../../../common/registerCheck";
+import { IJobRole, IJobRoleResponse } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
+import { IJobRoleGroupResponse } from "../../../../../models/interface/personnel/employee/IJobRoleGroup";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -34,7 +36,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const formRef = useRef<HTMLFormElement>(null);
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
-    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
+    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobRole[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -47,6 +49,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [phoneNumber, setPhoneNumber] = useState("");
     const [registrationNumber, setRegistrationNumber] = useState("");
     const [birthday, setBirthday] = useState("");
+    const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
+    const [selectedJobGRoleDetailName, setSelectedJobRoleDetailName] = useState<string>("");
+
     const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
     const departmentOptions = setSelectOption(
         DepartmentGroupItem,
@@ -87,9 +92,20 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
         value: "",
     });
 
+    const jobRoleGroupOptions = setSelectOption(jobRoleGroupList, "jobRoleDetailName", "jobRoleDetailName", {
+        label: "전체",
+        value: "",
+    });
+
     useEffect(() => {
         getOptionList();
     }, []);
+
+    // const [selectedDepartment, setSelectedDepartment] = useState("");
+    useEffect(() => {
+        console.log(selectedDepartment);
+        getJobDetailCode(selectedDepartment);
+    }, [selectedDepartment]);
 
     useEffect(() => {
         if (registrationNumber.length === 14) {
@@ -106,6 +122,15 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
             setDepartmentGroupItem(result.DepartmentGroupList);
             setGradeGroupItem(result.JobGradeGroupList);
         }
+    };
+
+    // jobGradeDetailName;
+
+    const getJobDetailCode = async (jobGradeDetailName) => {
+        const params = new URLSearchParams();
+        params.append("departmentDetailName", jobGradeDetailName);
+        const jobDetailCode = await postApi<IJobRoleResponse>(Employee.getJobRolesByDepartment, params);
+        setRoleGroupList(jobDetailCode.jobRoleGroupList);
     };
 
     //핸드폰 번호 입력 핸들러
@@ -403,10 +428,20 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     <StyledInput type='hidden' name='jobGradeDetailName' value={selectedJobGrade} />
                                 </td>
                                 <th>
-                                    직무<span style={{ color: "red" }}>*</span>
+                                    직무
+                                    <span style={{ color: "red" }}>*</span>
                                 </th>
                                 <td>
-                                    <StyledInput type='text' name='jobRoleDetailName' />
+                                    <StyledSelectBox
+                                        options={jobRoleGroupOptions}
+                                        value={selectedJobGRoleDetailName}
+                                        onChange={setSelectedJobRoleDetailName}
+                                    />
+                                    <StyledInput
+                                        type='hidden'
+                                        name='jobRoleDetailName'
+                                        value={selectedJobGRoleDetailName}
+                                    />
                                 </td>
                             </tr>
                             {/* 10 */}

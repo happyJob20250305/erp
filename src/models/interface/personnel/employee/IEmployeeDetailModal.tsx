@@ -70,3 +70,16 @@ export interface IEmployeeDetailResponse {
     detail: IEmployeeDetail;
     jobGradeGroupList: IJobGradeGroup[];
 }
+
+export interface IJobRole {
+    departmentCode: string | null;
+    departmentDetailName: string | null;
+    jobGradeCode: string | null;
+    jobGradeDetailName: string | null;
+    jobRoleCode: string;
+    jobRoleDetailName: string;
+}
+
+export interface IJobRoleResponse {
+    jobRoleGroupList: IJobRole[];
+}
