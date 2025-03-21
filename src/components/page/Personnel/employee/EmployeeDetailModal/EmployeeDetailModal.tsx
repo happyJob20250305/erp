@@ -4,10 +4,12 @@ import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { modalState } from "../../../../../stores/modalState";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
-import { Employee, SalaryOptionList } from "../../../../../api/api";
-import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
+import { Employee } from "../../../../../api/api";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
 import {
     IEmployeeDetailResponse,
+    IJobRole,
+    IJobRoleResponse,
     ISalaryClass,
 } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
 import { EmployeeModalStyled } from "./styled";
@@ -15,12 +17,10 @@ import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/Vouch
 import { SelectBox } from "../../../../common/StyledSelectBox/styled";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { setSelectOption } from "../../../../../common/setSelectOption";
-import {
-    IDepartmentGroupItem,
-    IGroupListResponse,
-    IJobGradeGroupItem,
-} from "../../../../../models/interface/personnel/salary/IOptionList";
-
+import { IDepartmentGroupItem, IJobGradeGroupItem } from "../../../../../models/interface/personnel/salary/IOptionList";
+import { bankOptions, educationOptions, statusOptions } from "../../../../../common/employeeModalOptions";
+import DaumPostcode from "react-daum-postcode"; // 추가
+import { DaumAddressModal } from "../../../../../common/DaumAddressModal";
 export const EmployeeDetailModal = () => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -35,43 +35,22 @@ export const EmployeeDetailModal = () => {
     const [hp, setHp] = useState("");
     const [finalEducation, setFinalEducation] = useState("");
     const [emplStatus, setEmplStatus] = useState<string | undefined>(undefined); // 초기값을 undefined로 설정
-    const [department, setDepartment] = useState<string | undefined>(undefined);
-    const [jobGrade, setJobGrade] = useState<string | undefined>(undefined);
     const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
     const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
-
+    const [selectedDepartment, setSelectedDepartment] = useState("");
+    const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const { setEmployeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName");
-
     const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName");
-    const statusOptions = [
-        { value: "W", label: "재직" },
-        { value: "O", label: "휴직" },
-        { value: "F", label: "퇴직" },
-    ];
+    const jobRoleGroupOptions = setSelectOption(jobRoleGroupList, "jobRoleDetailName", "jobRoleDetailName", {
+        label: "전체",
+        value: "",
+    });
 
     useEffect(() => {
-        getOptionList();
-    }, []);
-
-    const getOptionList = async () => {
-        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-        if (result) {
-            setDepartmentGroupItem(result.DepartmentGroupList);
-            setGradeGroupItem(result.JobGradeGroupList);
-        }
-    };
-
-    const handleStatusChange = (selectedValue: string) => {
-        setEmplStatus(selectedValue);
-    };
-    const handleDepartmentChange = (selectedValue: string) => {
-        console.log("부서 변경됨:", selectedValue); // ✅ 값 변경 확인
-        setDepartment(selectedValue);
-    };
-
-    const handleJobGrateChange = (selectedValue: string) => {
-        setJobGrade(selectedValue);
-    };
+        getJobDetailCode(selectedDepartment);
+    }, [selectedDepartment]);
 
     useEffect(() => {
         if (response?.detail?.emplStatus) {
@@ -97,16 +76,50 @@ export const EmployeeDetailModal = () => {
         const result = await postApi<IEmployeeDetailResponse>(Employee.employeeDetail, {
             ...employeeDetailModalKeyword,
         });
-        if (result) {
+
+        if (result && result.detail) {
             setResponse(result);
             setSalaryClassList(result.salaryClassList);
+            setDepartmentGroupItem(result.departmentGroupList);
+            setGradeGroupItem(result.jobGradeGroupList);
+
+            if (result.detail.jobGradeDetailName) {
+                getJobDetailCode(result.detail.jobGradeDetailName);
+            }
+        } else {
+            console.warn("사원 상세 정보가 존재하지 않음");
         }
     };
 
+    const handleComplete = (data: any) => {
+        setIsOpen(false);
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+            if (data.bname !== "") extraAddress += data.bname;
+            if (data.buildingName !== "")
+                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
+        }
+
+        setZipCode(data.zonecode);
+        setAddress(fullAddress);
+    };
+
+    // jobGradeDetailName;
+    const getJobDetailCode = async (jobGradeDetailName) => {
+        const params = new URLSearchParams();
+        params.append("departmentDetailName", jobGradeDetailName);
+        // params.append("zipCode", zipCode);
+        const jobDetailCode = await postApi<IJobRoleResponse>(Employee.getJobRolesByDepartment, params);
+        setRoleGroupList(jobDetailCode.jobRoleGroupList);
+    };
+
+    //사원 수정
     const updateEmployee = async () => {
         const formData = new FormData(formRef.current!);
-        formData.append("emplStatus", emplStatus);
-        formData.append("department", department);
+
         try {
             const retuls = await postApi<IEmployeeDetailResponse>(Employee.employeeUpdate, formData);
             alert("수정되었습니다.");
@@ -117,6 +130,18 @@ export const EmployeeDetailModal = () => {
 
     const closeModal = () => {
         setModal(false);
+        if (employeeDetailModalKeyword) {
+            setEmployeeDetailModalKeyword({});
+        }
+    };
+
+    //  파일 업로드 핸들링
+    const handlerFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const previewUrl = URL.createObjectURL(file);
+        setImageUrl(previewUrl); // 미리보기용 이미지 주소 세팅
     };
 
     return (
@@ -132,9 +157,20 @@ export const EmployeeDetailModal = () => {
                                     rowSpan={12}
                                     style={{ width: "180px", textAlign: "center", verticalAlign: "middle" }}
                                 >
-                                    {response?.detail?.profileLogicalPath ? (
+                                    {imageUrl ? (
                                         <img
-                                            src={response?.detail?.profileLogicalPath}
+                                            src={imageUrl}
+                                            alt='미리보기'
+                                            style={{
+                                                width: "150px",
+                                                height: "150px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
+                                        />
+                                    ) : response?.detail?.profileLogicalPath ? (
+                                        <img
+                                            src={response.detail.profileLogicalPath}
                                             alt='프로필'
                                             style={{
                                                 width: "150px",
@@ -155,7 +191,10 @@ export const EmployeeDetailModal = () => {
                                             이미지 없음
                                         </div>
                                     )}
+
+                                    <input type='file' name='file' onChange={handlerFile} />
                                 </td>
+
                                 <th>사번</th>
                                 <td>
                                     <StyledInput
@@ -163,6 +202,7 @@ export const EmployeeDetailModal = () => {
                                         value={response?.detail?.employeeId || ""}
                                         type='hidden'
                                         readOnly
+                                        variant='disable'
                                     />
                                     <StyledInput name='number' value={response?.detail?.number || ""} readOnly />
                                 </td>
@@ -172,6 +212,7 @@ export const EmployeeDetailModal = () => {
                                         name='employeeName'
                                         value={response?.detail?.employeeName || ""}
                                         readOnly
+                                        variant='disable'
                                     />
                                 </td>
                             </tr>
@@ -182,24 +223,35 @@ export const EmployeeDetailModal = () => {
                                         name='registrationNumber'
                                         value={response?.detail?.registrationNumber || ""}
                                         readOnly
+                                        variant='disable'
                                     />
                                 </td>
                                 <th>성별</th>
                                 <td>
-                                    <StyledInput name='sex' value={response?.detail?.sex || ""} readOnly />
+                                    <StyledInput
+                                        name='sex'
+                                        variant='disable'
+                                        value={response?.detail?.sex || ""}
+                                        readOnly
+                                    />
                                 </td>
                             </tr>
                             <tr>
                                 <th>생년월일</th>
                                 <td>
-                                    <StyledInput name='birthday' value={response?.detail?.birthday || ""} readOnly />
+                                    <StyledInput
+                                        name='birthday'
+                                        variant='disable'
+                                        value={response?.detail?.birthday || ""}
+                                        readOnly
+                                    />
                                 </td>
                                 <th>최종학력*</th>
                                 <td>
-                                    <StyledInput
+                                    <StyledSelectBox
+                                        options={educationOptions}
                                         name='finalEducation'
-                                        value={finalEducation}
-                                        onChange={(e) => setFinalEducation(e.target.value)}
+                                        defaultValue={response?.detail?.finalEducation || ""}
                                     />
                                 </td>
                             </tr>
@@ -217,6 +269,43 @@ export const EmployeeDetailModal = () => {
                                     <StyledInput name='hp' value={hp} onChange={(e) => setHp(e.target.value)} />
                                 </td>
                             </tr>
+
+                            <tr>
+                                <th>연봉*</th>
+                                <td>
+                                    <StyledInput
+                                        name='workingYear'
+                                        variant='disable'
+                                        value={
+                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
+                                                ? new Intl.NumberFormat("ko-KR", {
+                                                      style: "currency",
+                                                      currency: "KRW",
+                                                  }).format(
+                                                      response.salaryClassList[`year${response.detail.workingYear}`]
+                                                  )
+                                                : ""
+                                        }
+                                        readOnly
+                                    ></StyledInput>
+                                </td>
+                                <th>우편번호*</th>
+                                <td>
+                                    <StyledInput
+                                        name='zipCode'
+                                        defaultValue={response?.detail?.zipCode}
+                                        onChange={(e) => setZipCode(e.target.value)}
+                                    />
+                                    <StyledButton
+                                        type='button'
+                                        onClick={() => setIsOpen(true)}
+                                        style={{ marginLeft: "10px" }}
+                                    >
+                                        주소 검색<span style={{ color: "red" }}>*</span>
+                                    </StyledButton>
+                                </td>
+                            </tr>
+
                             <tr>
                                 <th>주소*</th>
                                 <td>
@@ -235,10 +324,18 @@ export const EmployeeDetailModal = () => {
                                     />
                                 </td>
                             </tr>
+                            {/* 주소 검색 모달 (조건부 렌더링) */}
+                            {isOpen && (
+                                <DaumAddressModal onComplete={handleComplete} onClose={() => setIsOpen(false)} />
+                            )}
                             <tr>
                                 <th>은행*</th>
                                 <td>
-                                    <StyledInput name='bank' value={response?.detail?.bank || ""} />
+                                    <StyledSelectBox
+                                        options={bankOptions}
+                                        name='bank'
+                                        defaultValue={response?.detail?.bank || ""}
+                                    />
                                 </td>
                                 <th>계좌번호*</th>
                                 <td>
@@ -248,43 +345,37 @@ export const EmployeeDetailModal = () => {
                             <tr>
                                 <th>부서*</th>
                                 <td>
-                                    {/* <StyledSelectBox
-                                        options={statusOptions}
-                                        value={emplStatus}
-                                        onChange={handleStatusChange}
-                                    /> */}
-                                    {/* <StyledSelectBox
+                                    <StyledSelectBox
                                         options={departmentOptions}
-                                        value={department || ""}
-                                        onChange={handleDepartmentChange}
-                                    /> */}
-                                    <StyledInput
                                         name='departmentDetailName'
-                                        value={response?.detail?.departmentDetailName || ""}
+                                        defaultValue={response?.detail?.departmentDetailName || ""}
+                                        onChange={setSelectedDepartment}
                                     />
                                 </td>
                                 <th>직급*</th>
                                 <td>
-                                    {/* <StyledSelectBox
+                                    <StyledSelectBox
                                         options={jobGradeOptions}
-                                        value={response?.detail?.jobGradeDetailName|| ""}
-                                        onChange={handleDepartmentChange}
-                                    /> */}
-                                    <StyledInput
+                                        defaultValue={response?.detail?.jobGradeDetailName || ""}
                                         name='jobGradeDetailName'
-                                        value={response?.detail?.jobGradeDetailName || ""}
                                     />
                                 </td>
                             </tr>
                             <tr>
                                 <th>입사일</th>
                                 <td>
-                                    <StyledInput name='regDate' value={response?.detail?.regDate || ""} readOnly />
+                                    <StyledInput
+                                        name='regDate'
+                                        variant='disable'
+                                        value={response?.detail?.regDate || ""}
+                                        readOnly
+                                    />
                                 </td>
                                 <th>퇴사일</th>
                                 <td>
                                     <StyledInput
                                         name='resignationDate'
+                                        variant='disable'
                                         value={response?.detail?.resignationDate || ""}
                                         readOnly
                                     />
@@ -295,6 +386,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='workingYear'
+                                        variant='disable'
                                         value={`${response?.detail?.workingYear ?? 0}년`}
                                         readOnly
                                     />
@@ -303,6 +395,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='severancePay'
+                                        variant='disable'
                                         value={response?.detail?.severancePay || "미정"}
                                         readOnly
                                     />
@@ -313,6 +406,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='departmentCode '
+                                        variant='disable'
                                         value={response?.detail?.departmentCode || ""}
                                         readOnly
                                     />
@@ -321,43 +415,26 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledSelectBox
                                         options={statusOptions}
-                                        value={emplStatus}
-                                        onChange={handleStatusChange}
+                                        defaultValue={emplStatus}
+                                        name='emplStatus'
                                     />
                                 </td>
                             </tr>
                             <tr>
                                 <th>직무</th>
                                 <td>
-                                    <StyledInput
-                                        name='departmentDetailName'
-                                        value={response?.detail?.departmentDetailName || ""}
+                                    <StyledSelectBox
+                                        options={jobRoleGroupOptions}
+                                        defaultValue={response?.detail?.jobRoleDetailName || ""}
+                                        name='jobRoleDetailName'
                                     />
                                 </td>
                                 <th>직급코드</th>
                                 <td>
                                     <StyledInput
                                         name='jobGradeCode'
+                                        variant='disable'
                                         value={response?.detail?.jobGradeCode || ""}
-                                        readOnly
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>연봉</th>
-                                <td colSpan={3}>
-                                    <StyledInput
-                                        name='workingYear'
-                                        value={
-                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
-                                                ? new Intl.NumberFormat("ko-KR", {
-                                                      style: "currency",
-                                                      currency: "KRW",
-                                                  }).format(
-                                                      response.salaryClassList[`year${response.detail.workingYear}`]
-                                                  )
-                                                : ""
-                                        }
                                         readOnly
                                     />
                                 </td>

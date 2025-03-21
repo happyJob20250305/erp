@@ -1,26 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { EmployeeSearchStyled } from "./styled";
 import { EmployeeSearchContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeSearchProvider";
-import { postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { SalaryOptionList } from "../../../../../api/api";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
-import {
-    IDepartmentGroupItem,
-    IGroupListResponse,
-    IJobGradeGroupItem,
-} from "../../../../../models/interface/personnel/salary/IOptionList";
-import { setSelectOption } from "../../../../../common/setSelectOption";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
+import { modalState, modalTypeState } from "../../../../../stores/modalState";
 import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
 import { Portal } from "../../../../common/potal/Portal";
+import { fetchDepartmentOptions, fetchJobGradeOptions } from "../../../../../common/employeeModalOptions";
 
 export const EmployeeSearch = () => {
     const { setSearchKeyword } = useContext(EmployeeSearchContext);
     const [modal, setModal] = useRecoilState(modalState);
-    const [modalType, setModalType] = useState<string>("");
+    const [modalType, setModalType] = useRecoilState(modalTypeState);
     const [employeeNameInput, setEmployeeNameInput] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -28,20 +21,16 @@ export const EmployeeSearch = () => {
     const [selectedEmplStatus, setSelectedEmplStatus] = useState("");
     const [startDate, setStartDate] = useState<string>("");
     const [endDate, setEndDate] = useState<string>("");
-    const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
-    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
-    const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName", {
-        label: "전체",
-        value: "",
-    });
-
-    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
-        label: "전체",
-        value: "",
-    });
+    const [departmentOptions, setDepartmentOptions] = useState([]);
+    const [jobGradeOptions, setJobGradeOptions] = useState([]);
 
     useEffect(() => {
-        getOptionList();
+        (async () => {
+            const dep = await fetchDepartmentOptions();
+            const grade = await fetchJobGradeOptions();
+            setDepartmentOptions(dep);
+            setJobGradeOptions(grade);
+        })();
     }, []);
 
     useEffect(() => {
@@ -49,14 +38,6 @@ export const EmployeeSearch = () => {
             handleSearchSaveContext();
         }
     }, [selectedEmplStatus]);
-
-    const getOptionList = async () => {
-        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-        if (result) {
-            setDepartmentGroupItem(result.DepartmentGroupList);
-            setGradeGroupItem(result.JobGradeGroupList);
-        }
-    };
 
     const handleSearchSaveContext = () => {
         setSearchKeyword({
@@ -82,7 +63,7 @@ export const EmployeeSearch = () => {
     };
 
     //등록 모달
-    const handleModal = () => {
+    const handleRegisterModal = () => {
         setModal(true);
         setModalType("registerModal");
     };
@@ -133,7 +114,7 @@ export const EmployeeSearch = () => {
                     />
                     <div className='button-container'>
                         <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
-                        <StyledButton onClick={handleModal}>사원 등록</StyledButton>
+                        <StyledButton onClick={handleRegisterModal}>사원 등록</StyledButton>
                         <img src='/refresh.png' onClick={resetSearch} style={{ width: "25px", height: "25px" }} />
                     </div>
                 </div>

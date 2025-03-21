@@ -6,8 +6,7 @@ import { Portal } from "../../../../common/potal/Portal";
 import { EmployeeMainStyled } from "./styled";
 import { IEmployee, IEmployeeResponse } from "../../../../../models/interface/personnel/employee/IEmployeeList";
 import { Employee } from "../../../../../api/api";
-import { modalState } from "../../../../../stores/modalState";
-import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
+import { modalState, modalTypeState } from "../../../../../stores/modalState";
 import { EmployeeDetailModal } from "../EmployeeDetailModal/EmployeeDetailModal";
 import { EmployeeRetireModal } from "../EmployeeRetireModal/EmployeeRetireModal";
 import { EmployeeDetailModalContext } from "../../../../../api/Provider/EmployeeProvider/EmployeeDetailModalProvider";
@@ -20,7 +19,7 @@ export const EmployeeMain = () => {
     const [employeeList, setEmployeeList] = useState<IEmployee[]>([]);
     const [employeeCnt, setEmployeeCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(1);
-    const [modalType, setModalType] = useState<string>("");
+    const [modalType, setModalType] = useRecoilState(modalTypeState);
     const [modal, setModal] = useRecoilState(modalState);
     const { setEmployeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const { searchKeyword } = useContext(EmployeeSearchContext);
@@ -120,7 +119,7 @@ export const EmployeeMain = () => {
                             handleEmployeeDetail(row.employeeId, row.jobGradeCode, row.departmentCode);
                         }}
                         renderAction={(row) =>
-                            row.emplStatus === "W" ? (
+                            row.emplStatus === "W" || row.emplStatus === "O" ? (
                                 <StyledButton
                                     size='small'
                                     onClick={(e) => {
@@ -147,11 +146,7 @@ export const EmployeeMain = () => {
                 />
             </EmployeeMainStyled>
             {/*  모달들 */}
-            {modalType === "registerModal" && modal && (
-                <Portal>
-                    <EmployeeRegisterModal postSuccess={postSuccess} />
-                </Portal>
-            )}
+
             {modalType === "detailModal" && modal && (
                 <Portal>
                     <EmployeeDetailModal />

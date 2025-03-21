@@ -4,17 +4,11 @@ import { EmployeeRegisterModalStyled } from "./styled";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 import { FC, useEffect, useRef, useState } from "react";
-import {
-    IDepartmentGroupItem,
-    IGroupListResponse,
-    IJobGradeGroupItem,
-} from "../../../../../models/interface/personnel/salary/IOptionList";
-import { postApi, postApiNoPram } from "../../../../../api/PersonnelApi/postApi";
-import { Employee, SalaryOptionList } from "../../../../../api/api";
+import { postApi } from "../../../../../api/PersonnelApi/postApi";
+import { Employee } from "../../../../../api/api";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { IEmployeeRegisterResponse } from "../../../../../models/interface/personnel/employee/IEmployeeRegisterResponse";
 import { ButtonArea, ModalStyledTable } from "../../../Account/VoucherList/VoucherListModal/styled";
-import DaumPostcode from "react-daum-postcode"; // 추가
 import { setSelectOption } from "../../../../../common/setSelectOption";
 import {
     formatPhoneNumber,
@@ -25,6 +19,15 @@ import {
     validateEmail,
     validateRequiredFields,
 } from "../../../../../common/registerCheck";
+import { IJobRole, IJobRoleResponse } from "../../../../../models/interface/personnel/employee/IEmployeeDetailModal";
+import {
+    bankOptions,
+    educationOptions,
+    fetchDepartmentOptions,
+    fetchJobGradeOptions,
+    sexOptionse,
+} from "../../../../../common/employeeModalOptions";
+import { DaumAddressModal } from "../../../../../common/DaumAddressModal";
 
 interface IEmployeeRegisterModalProps {
     postSuccess: () => void;
@@ -33,8 +36,6 @@ interface IEmployeeRegisterModalProps {
 export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuccess }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const formRef = useRef<HTMLFormElement>(null);
-    const [DepartmentGroupItem, setDepartmentGroupItem] = useState<IDepartmentGroupItem[]>([]);
-    const [JobGradeGroupItem, setGradeGroupItem] = useState<IJobGradeGroupItem[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedJobGrade, setSelectedJobGrade] = useState("");
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -47,65 +48,48 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
     const [phoneNumber, setPhoneNumber] = useState("");
     const [registrationNumber, setRegistrationNumber] = useState("");
     const [birthday, setBirthday] = useState("");
+    const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
+    const [selectedJobGRoleDetailName, setSelectedJobRoleDetailName] = useState<string>("");
     const [isOpen, setIsOpen] = useState(false); // 모달 오픈 상태
-    const departmentOptions = setSelectOption(
-        DepartmentGroupItem,
-        "departmentDetailName", // 라벨 (화면에 표시될 값)
-        "departmentDetailName", // 값 (실제 선택될 값)
-        { label: "전체", value: "" } // 기본 옵션
-    );
+    const [departmentOptions, setDepartmentOptions] = useState([]);
+    const [jobGradeOptions, setJobGradeOptions] = useState([]);
 
-    const educationOptions = [
-        { label: "선택", value: "" },
-        { label: "고등학교 졸업", value: "고등학교 졸업" },
-        { label: "전문대학 졸업", value: "전문대학 졸업" },
-        { label: "대학교 졸업", value: "대학교 졸업" },
-        { label: "대학원 졸업", value: "대학원 졸업" },
-    ];
-
-    const bankOptions = [
-        { label: "선택", value: "" },
-        { label: "국민은행", value: "국민은행" },
-        { label: "신한은행", value: "신한은행" },
-        { label: "우리은행", value: "우리은행" },
-        { label: "하나은행", value: "하나은행" },
-        { label: "농협은행", value: "농협은행" },
-        { label: "기업은행", value: "기업은행" },
-        { label: "카카오뱅크", value: "카카오뱅크" },
-        { label: "토스뱅크", value: "토스뱅크" },
-        { label: "새마을금고", value: "새마을금고" },
-    ];
-
-    const sexOptionse = [
-        { label: "선택", value: "" },
-        { label: "여성", value: "여성" },
-        { label: "남성", value: "남성" },
-    ];
-
-    const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName", {
+    const jobRoleGroupOptions = setSelectOption(jobRoleGroupList, "jobRoleDetailName", "jobRoleDetailName", {
         label: "전체",
         value: "",
     });
 
     useEffect(() => {
-        getOptionList();
+        (async () => {
+            const dep = await fetchDepartmentOptions();
+            const grade = await fetchJobGradeOptions();
+            setDepartmentOptions(dep);
+            setJobGradeOptions(grade);
+        })();
     }, []);
+
+    useEffect(() => {
+        if (selectedDepartment) {
+            getJobDetailCode(selectedDepartment);
+        }
+    }, [selectedDepartment]);
 
     useEffect(() => {
         if (registrationNumber.length === 14) {
             const generatedBirthday = generateBirthdayFromRegNumber(registrationNumber);
-            setBirthday(generatedBirthday); // ✅ 즉시 반영
+            setBirthday(generatedBirthday);
         } else {
-            setBirthday(""); // ❌ 14자리가 아니면 초기화
+            setBirthday("");
         }
-    }, [registrationNumber]); // ✅ 주민번호가 변경될 때마다 실행
+    }, [registrationNumber]);
 
-    const getOptionList = async () => {
-        const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
-        if (result) {
-            setDepartmentGroupItem(result.DepartmentGroupList);
-            setGradeGroupItem(result.JobGradeGroupList);
-        }
+    // jobGradeDetailName;
+
+    const getJobDetailCode = async (jobGradeDetailName) => {
+        const params = new URLSearchParams();
+        params.append("departmentDetailName", jobGradeDetailName);
+        const jobDetailCode = await postApi<IJobRoleResponse>(Employee.getJobRolesByDepartment, params);
+        setRoleGroupList(jobDetailCode.jobRoleGroupList);
     };
 
     //핸드폰 번호 입력 핸들러
@@ -332,20 +316,7 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
                             {/* 주소 검색 모달 (조건부 렌더링) */}
                             {isOpen && (
-                                <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "20%",
-                                        left: "30%",
-                                        width: "500px",
-                                        height: "600px",
-                                        zIndex: 100,
-                                        border: "1px solid #ccc",
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
-                                    <DaumPostcode onComplete={handleComplete} autoClose />
-                                </div>
+                                <DaumAddressModal onComplete={handleComplete} onClose={() => setIsOpen(false)} />
                             )}
 
                             {/* 6 */}
@@ -376,17 +347,17 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </th>
                                 <td>
                                     <StyledInput type='date' name='regDate' />
-                                </td>{" "}
+                                </td>
                                 <th>
                                     부서<span style={{ color: "red" }}>*</span>
                                 </th>
                                 <td>
                                     <StyledSelectBox
+                                        name='departmentDetailName'
                                         options={departmentOptions}
                                         value={selectedDepartment}
                                         onChange={setSelectedDepartment}
                                     />
-                                    <StyledInput type='hidden' name='departmentDetailName' value={selectedDepartment} />
                                 </td>
                             </tr>
 
@@ -396,17 +367,27 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </th>
                                 <td>
                                     <StyledSelectBox
+                                        name='jobGradeDetailName'
                                         options={jobGradeOptions}
                                         value={selectedJobGrade}
                                         onChange={setSelectedJobGrade}
                                     />
-                                    <StyledInput type='hidden' name='jobGradeDetailName' value={selectedJobGrade} />
                                 </td>
                                 <th>
-                                    직무<span style={{ color: "red" }}>*</span>
+                                    직무
+                                    <span style={{ color: "red" }}>*</span>
                                 </th>
                                 <td>
-                                    <StyledInput type='text' name='jobRoleDetailName' />
+                                    <StyledSelectBox
+                                        options={jobRoleGroupOptions}
+                                        value={selectedJobGRoleDetailName}
+                                        onChange={setSelectedJobRoleDetailName}
+                                    />
+                                    <StyledInput
+                                        type='hidden'
+                                        name='jobRoleDetailName'
+                                        value={selectedJobGRoleDetailName}
+                                    />
                                 </td>
                             </tr>
                             {/* 10 */}
