@@ -4,7 +4,7 @@ import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { ClientListModalStyled } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
-import { IClient, IClientResponse } from "../ClientListMain/ClientListMain";
+import { IClient } from "../ClientListMain/ClientListMain";
 import axios, { AxiosResponse } from "axios";
 import { useDaumPostcodePopup } from "react-daum-postcode";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
@@ -28,6 +28,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
     const [custUpdateDate, setCustUpdateDate] = useState<string>(detailClient?.cust_update_date || "");
     const [zipCode, setZipCode] = useState<string>(detailClient?.zip || "");
     const [address, setAddress] = useState<string>(detailClient?.addr || "");
+    const [detailAddr, setDetailAddr] = useState<string>(detailClient?.detail_addr || "");
 
     const [isEmailLocal, setIsEmailLocal] = useState<string>(detailClient?.email.split("@")[0] || "");
     const [selectEmailDomain, setSelectEmailDomain] = useState<string>(detailClient?.email.split("@")[1] || "");
@@ -93,9 +94,6 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
             fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
         } else fullAddress = jibunAddress;
 
-        // console.log("zonecode:" + zonecode);
-        // console.log("fullAddress:" + fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
-
         setZipCode(zonecode);
         setAddress(fullAddress);
     };
@@ -115,54 +113,22 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
         return resultEmailAddr;
     };
 
-    // const handlerBank = (e: string) => {
-    //     if (e !== "직접입력") {
-    //         setSelectBank(e);
-    //     } else {
-    //         // const inputTagofBank =
-    //         console.log("e:" + e);
-    //     }
-    // };
     const insertClient = () => {
         const formData = new FormData(formRef.current);
-        console.log("formData:" + formData.get("zip"));
 
         axios
-            .post(
-                "/business/client-list/insertClientListBody.do",
-                formData,
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-                //     {
-                //     zip: "08390",
-                //     biz_num: "987-45-61230",
-                //     memo: "250318-2 거래처 등록 테스트",
-                //     bank: "신한",
-                //     person: "푸드",
-                //     ph: "031-987-6543",
-                //     person_ph: "031-123-4567",
-                //     detail_addr: "지하 1층 B108호",
-                //     client_id: "",
-                //     addr: "서울 구로구 디지털로 288",
-                //     client_name: "멘치까스",
-                //     email: "itsthe@naver.com",
-                //     bank_account: "110-1234-567890",
-                //     cust_update_date: "",
-                // }
-            )
+            .post("/business/client-list/insertClientListBody.do", formData, {
+                headers: { "Content-Type": "application/json" },
+            })
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("저장되었습니다.");
                     postSuccess();
                 } else if (res.data.result === "exist") {
-                    console.log("Response:", res);
                     alert("이미 존재하는 거래처 이름입니다.");
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -176,13 +142,11 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
             })
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("수정되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -192,7 +156,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
             <div className='container'>
                 <form ref={formRef}>
                     <label>
-                        업체명*
+                        거래처*
                         <StyledInput
                             type='text'
                             name='client_name'
@@ -226,17 +190,13 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </label>
                     <label>
                         상세주소*
-                        <StyledInput
-                            type='text'
-                            name='detail_addr'
-                            defaultValue={detailClient?.detail_addr}
-                        ></StyledInput>
+                        <StyledInput type='text' name='detail_addr' defaultValue={detailAddr}></StyledInput>
                     </label>
                     <label>
                         이메일*
                         <StyledInput
                             type='text'
-                            name='email_local'
+                            name='firstEmail'
                             defaultValue={isEmailLocal}
                             onChange={(e) => setIsEmailLocal(e.target.value)}
                         ></StyledInput>
@@ -244,7 +204,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                             options={emailAddrOptions}
                             value={selectEmailDomain}
                             onChange={setSelectEmailDomain}
-                            name='email_domain'
+                            name='selectemailaddr'
                         />
                         <input type='hidden' name='email' defaultValue={isEmailAddr} />
                     </label>
@@ -254,24 +214,18 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </label>
                     <label>
                         은행*
-                        {/* <StyledSelectBox
-                            options={bankOptions}
-                            value={selectBank}
-                            onChange={(e: string) => handlerBank(e)}
-                            name='bank_select'
-                        /> */}
                         <StyledSelectBox
                             options={bankOptions}
                             value={selectBank}
                             onChange={setSelectBank}
                             name='bank'
                         />
-                        {/* <StyledInput type='hidden' name='bank' value={selectBank} ref={bankRef}></StyledInput> */}
                         <StyledInput
                             type='text'
                             name='bank_account'
                             defaultValue={detailClient?.bank_account}
                         ></StyledInput>
+                        <input type='hidden' name='ISBN' defaultValue={detailClient?.bank_account.split("-")[0]} />
                     </label>
                     <label>
                         메모*
