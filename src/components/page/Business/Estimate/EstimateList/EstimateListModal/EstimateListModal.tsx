@@ -21,12 +21,14 @@ import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { IEstimate } from "../EstimateListMain/EstimateListMain";
 
 interface IEstimateInfo {
-    estimateId: number;
     productId: number;
     productName: string;
     quantity: string;
     supplyPrice: string;
     unitPrice: string;
+    majorCategoryId: string;
+    manufacturerId: string;
+    subCategoryId: string;
 }
 
 export interface IClientEstimate {
@@ -54,9 +56,9 @@ interface IEstimateListModalProps {
     postSuccess: () => void;
 }
 
-interface IPostResponse {
-    result: "success" | "fail";
-}
+// interface IPostResponse {
+//     result: "success" | "fail";
+// }
 
 export const EstimateListModal: FC<IEstimateListModalProps> = ({
     estimateId,
@@ -97,11 +99,11 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
         getSubCategoryList();
         getProductList();
 
-        // orderId && detailOrderList();
+        estimateId && detailEstimateList();
 
         return () => {
-            // setOrderId(0);
-            // setClientId(0);
+            setEstimateId(0);
+            setClientId(0);
         };
     }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
 
@@ -162,7 +164,6 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
         { value: "", label: "선택" },
         ...(productList?.length > 0
             ? productList.map((productValue: IProduct) => {
-                  console.log(`product_id: ${productValue.id} / product_name: ${productValue.name}`);
                   return {
                       value: productValue.id,
                       label: productValue.name,
@@ -173,7 +174,6 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
 
     const getClientList = () => {
         axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
-            // axios.post("/order-information-list/clientNamesBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
@@ -211,16 +211,23 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
     };
 
     const insertEstimateList = () => {
-        console.log("selectProduct:" + selectProduct);
+        const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
+            return manuFacturerList.industryCode === selectManuFacturer;
+        };
+
+        const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
+
         setEstimateList([
             ...estimateList,
             {
-                estimateId: 0,
                 productId: selectProduct,
                 productName: "",
                 quantity: quantityRef.current.value,
                 supplyPrice: supplyPriceRef.current.value,
                 unitPrice: unitPriceRef.current.value,
+                manufacturerId: selectManuFacturerId.manufacturer_id.toString(),
+                majorCategoryId: selectMaincategory,
+                subCategoryId: selectSubcategory,
             },
         ]);
     };
@@ -234,16 +241,14 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
         params.estimateList = estimateList;
 
         axios
-            .post("/business/order-information-list/saveEstimateBody.do", { ...params })
+            .post("/business/estimate-list/saveEstimateBody.do", { ...params })
             .then((res: AxiosResponse) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("저장되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -259,7 +264,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
 
     const detailEstimateList = () => {
         axios
-            .post("/business/order-information-list/estimateDetailBody.do", {
+            .post("/business/estimate-list/estimateDetailBody.do", {
                 estimateId: estimateId,
                 clientId: clientId,
             })
@@ -322,11 +327,11 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                             </StyledTable>
                         </label>
                         <label>
-                            수주 내용
+                            견적 내용
                             <StyledTable>
                                 <thead>
                                     <tr>
-                                        <StyledTh>수주날짜</StyledTh>
+                                        <StyledTh>견적날짜</StyledTh>
                                         <StyledTh>납기날짜</StyledTh>
                                     </tr>
                                 </thead>
@@ -339,16 +344,15 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                             </StyledTable>
                             <ol>
                                 <li>귀사의 일이 번창하시길 기원합니다.</li>
-                                <li>하기와 같이 수주내용을 보내드리오니 확인해주시기 바랍니다.</li>
+                                <li>하기와 같이 견적내용을 보내드리오니 확인해주시기 바랍니다.</li>
                             </ol>
                         </label>
                         <label>
-                            수주 상세 내용
+                            견적 상세 내용
                             <StyledTable>
                                 <thead>
                                     <tr>
-                                        <StyledTh>견적서 번호</StyledTh>
-                                        <StyledTh>제품이름</StyledTh>
+                                        <StyledTh>제품</StyledTh>
                                         <StyledTh>납품개수</StyledTh>
                                         <StyledTh>제품단가</StyledTh>
                                         <StyledTh>세액</StyledTh>
@@ -359,8 +363,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                     {detailEstimate.map((estimate, index) => {
                                         return (
                                             <tr key={index}>
-                                                <StyledTd>{estimate?.estimateId}</StyledTd>
-                                                <StyledTd>{estimate?.productName}</StyledTd>
+                                                <StyledTd>{estimate?.productId}</StyledTd>
                                                 <StyledTd>{estimate?.quantity}</StyledTd>
                                                 <StyledTd>{estimate?.supplyPrice}</StyledTd>
                                                 <StyledTd>{parseInt(estimate?.supplyPrice) * 0.1}</StyledTd>
@@ -391,7 +394,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                 거래처
                                 <StyledSelectBox
                                     options={clientOptions}
-                                    value={Number(selectclient)}
+                                    value={selectclient}
                                     onChange={setSelectClient}
                                     name='clientId'
                                 />
@@ -402,12 +405,12 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                     options={estimateAreaOptions}
                                     value={selectOrderSalesArea}
                                     onChange={setSelectOrderSalesArea}
-                                    name='orderSalesArea'
+                                    name='estimateSalesArea'
                                 />
                             </label>
                             <label>
                                 납기날짜
-                                <StyledInput type='date' name='orderDeliveryDate' />
+                                <StyledInput type='date' name='estimateDeliveryDate' />
                             </label>
                             <label>
                                 제조업체
@@ -444,7 +447,6 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                     onChange={(value: number) => setSelectProduct(value)}
                                     name='product_id'
                                 />
-                                {/* <StyledInput type='text' name='product_id' value={0}></StyledInput> */}
                             </label>
                             <label>
                                 제품단가
@@ -463,7 +465,10 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                 <StyledTable>
                                     <thead>
                                         <tr>
-                                            <StyledTh>제품명</StyledTh>
+                                            <StyledTh>제조업체</StyledTh>
+                                            <StyledTh>대분류</StyledTh>
+                                            <StyledTh>소분류</StyledTh>
+                                            <StyledTh>제품</StyledTh>
                                             <StyledTh>제품단가</StyledTh>
                                             <StyledTh>수량</StyledTh>
                                             <StyledTh>공급가액</StyledTh>
@@ -475,7 +480,10 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                             estimateList.map((estimate, index) => {
                                                 return (
                                                     <tr key={index}>
-                                                        <StyledTd>{estimate.productName}</StyledTd>
+                                                        <StyledTd>{estimate?.manufacturerId}</StyledTd>
+                                                        <StyledTd>{estimate?.majorCategoryId}</StyledTd>
+                                                        <StyledTd>{estimate?.subCategoryId}</StyledTd>
+                                                        <StyledTd>{estimate.productId}</StyledTd>
                                                         <StyledTd>{estimate.unitPrice}</StyledTd>
                                                         <StyledTd>{estimate.quantity}</StyledTd>
                                                         <StyledTd>{estimate.supplyPrice}</StyledTd>
@@ -489,7 +497,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                             })
                                         ) : (
                                             <tr>
-                                                <StyledTd colSpan={5}>추가내역이 없습니다.</StyledTd>
+                                                <StyledTd colSpan={8}>추가내역이 없습니다.</StyledTd>
                                             </tr>
                                         )}
                                         <tr>
@@ -508,11 +516,15 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                 <StyledButton type='button' onClick={saveEstimateList}>
                                     등록
                                 </StyledButton>
-                                <StyledButton type='button' onClick={() => setModal(!modal)}>
+                                <StyledButton
+                                    type='button'
+                                    onClick={() => {
+                                        setModal(!modal), detailEstimateList();
+                                    }}
+                                >
                                     나가기
                                 </StyledButton>
                             </div>
-                            <input type='hidden' name='estimateId' value={""} readOnly />
                         </form>
                     </>
                 )}
