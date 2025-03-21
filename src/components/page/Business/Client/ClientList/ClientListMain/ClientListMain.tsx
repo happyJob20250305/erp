@@ -30,7 +30,7 @@ export interface IClientResponse {
 }
 
 export interface IGetClient {
-    client_id: number;
+    client_id: string;
     client_name: string;
 }
 
