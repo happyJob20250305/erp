@@ -80,7 +80,7 @@ export const EstimateListMain = () => {
                             <StyledTh>견적직원</StyledTh>
                             <StyledTh>견적날짜</StyledTh>
                             <StyledTh>거래처</StyledTh>
-                            <StyledTh>제품명</StyledTh>
+                            <StyledTh>제품</StyledTh>
                             <StyledTh>납기날짜</StyledTh>
                             <StyledTh>총납품개수</StyledTh>
                             <StyledTh>총공급가액</StyledTh>

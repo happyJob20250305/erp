@@ -363,7 +363,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                     {detailEstimate.map((estimate, index) => {
                                         return (
                                             <tr key={index}>
-                                                <StyledTd>{estimate?.productId}</StyledTd>
+                                                <StyledTd>{estimate?.productName}</StyledTd>
                                                 <StyledTd>{estimate?.quantity}</StyledTd>
                                                 <StyledTd>{estimate?.supplyPrice}</StyledTd>
                                                 <StyledTd>{parseInt(estimate?.supplyPrice) * 0.1}</StyledTd>
