@@ -32,10 +32,6 @@ export const SalesReultListSearch = () => {
     const { setSearchKeyword } = useContext(SalesResultListContext);
 
     useEffect(() => {
-        console.log("selectManuFacturer:" + selectManuFacturer);
-        console.log("selectMaincategory:" + selectMaincategory);
-        console.log("selectSubcategory:" + selectSubcategory);
-        console.log("selectProduct:" + selectProduct);
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();
@@ -75,12 +71,17 @@ export const SalesReultListSearch = () => {
     };
 
     const handlerSearchSalesResult = () => {
+        const isProductName = (productList: IProduct): boolean => {
+            return productList.id === parseInt(selectProduct);
+        };
+
+        const selectProductName = productList.find(isProductName);
         setSearchKeyword({
             // as-is 개발자도구-페이로드 결과 값들
             group_code: selectManuFacturer,
             product_code: selectSubcategory,
             target_date: selectDate,
-            product_name: selectProduct,
+            product_name: selectProductName.name,
             // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
             enterence: "",
         });
@@ -89,51 +90,48 @@ export const SalesReultListSearch = () => {
     const manuFacturerOptions = [
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
-            ? manuFacturerList.map((manuFacturerValue: IManufacturer) => ({
-                  value: manuFacturerValue.industryCode,
-                  label: manuFacturerValue.industryName,
-              }))
+            ? manuFacturerList.map((manuFacturerValue: IManufacturer) => {
+                  return {
+                      value: manuFacturerValue.industryCode,
+                      label: manuFacturerValue.industryName,
+                  };
+              })
             : []),
     ];
 
     const mainCategoryOptions = [
         { value: "", label: "선택" },
         ...(mainCategoryList?.length > 0
-            ? mainCategoryList.map((mainCategoryValue: IMaincategory) => ({
-                  value: mainCategoryValue.group_code,
-                  label: mainCategoryValue.group_name,
-              }))
+            ? mainCategoryList.map((mainCategoryValue: IMaincategory) => {
+                  return {
+                      value: mainCategoryValue.group_code,
+                      label: mainCategoryValue.group_name,
+                  };
+              })
             : []),
     ];
 
     const subCategoryOptions = [
         { value: "", label: "선택" },
         ...(subCategoryList?.length > 0
-            ? subCategoryList.map((subCategoryValue: ISubcategory) => ({
-                  // key 요소가 활용 되고 있는지 확인 필요
-                  //   key: subCategoryValue.detail_code,
-                  value: subCategoryValue.detail_code,
-                  label: subCategoryValue.detail_name,
-              }))
+            ? subCategoryList.map((subCategoryValue: ISubcategory) => {
+                  return {
+                      value: subCategoryValue.detail_code,
+                      label: subCategoryValue.detail_name,
+                  };
+              })
             : []),
     ];
-
-    const productIdx = new Array(productList.length).toString;
 
     const productOptions = [
         { value: "", label: "선택" },
         ...(productList?.length > 0
-            ? productList.map((productValue: IProduct) => ({
-                  // 오류 발생
-                  // Warning: Encountered two children with the same key, `MF00102`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. Error Component Stack
-                  // select box에 새로운 리스트를 반영할 떄 기존 리스트가 사라지고 새로운 리스트가 담겨야 하는데 유일한 키값이 중복되어
-                  // 고유값 활용을 위한 mapper 영역 수정이 필요한지 확인 필요
-
-                  // key 요소가 활용 되고 있는지 확인 필요
-                  key: productIdx,
-                  value: productValue.name,
-                  label: productValue.name,
-              }))
+            ? productList.map((productValue: IProduct) => {
+                  return {
+                      value: productValue.id,
+                      label: productValue.name,
+                  };
+              })
             : []),
     ];
 
@@ -144,12 +142,7 @@ export const SalesReultListSearch = () => {
                 <StyledSelectBox
                     options={manuFacturerOptions}
                     value={selectManuFacturer}
-                    onChange={(value: string) => {
-                        setSelectManuFacturer(value);
-                        setSelectMaincategory("");
-                        setSelectSubcategory("");
-                        setSelectProduct("");
-                    }}
+                    onChange={(value: string) => setSelectManuFacturer(value)}
                 />
             </label>
             <label>
@@ -157,11 +150,7 @@ export const SalesReultListSearch = () => {
                 <StyledSelectBox
                     options={mainCategoryOptions}
                     value={selectMaincategory}
-                    onChange={(value: string) => {
-                        setSelectMaincategory(value);
-                        setSelectSubcategory("");
-                        setSelectProduct("");
-                    }}
+                    onChange={(value: string) => setSelectMaincategory(value)}
                 />
             </label>
             <label>
@@ -169,10 +158,7 @@ export const SalesReultListSearch = () => {
                 <StyledSelectBox
                     options={subCategoryOptions}
                     value={selectSubcategory}
-                    onChange={(value: string) => {
-                        setSelectSubcategory(value);
-                        setSelectProduct("");
-                    }}
+                    onChange={(value: string) => setSelectSubcategory(value)}
                 />
             </label>
             <label>
