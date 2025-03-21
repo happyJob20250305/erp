@@ -226,11 +226,15 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                         <tbody>
                             {/* 1 */}
                             <tr>
-                                <th>이름</th>
+                                <th>
+                                    이름<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='text' name='employeeName' />
                                 </td>
-                                <th>주민번호</th>
+                                <th>
+                                    주민번호<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -242,11 +246,15 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
                             {/* 2 */}
                             <tr>
-                                <th>생년월일</th>
+                                <th>
+                                    생년월일<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='date' name='birthday' value={birthday} readOnly />
                                 </td>
-                                <th>성별</th>
+                                <th>
+                                    성별<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledSelectBox
                                         options={sexOptionse}
@@ -258,7 +266,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
                             {/* 3 */}
                             <tr>
-                                <th>최종학력</th>
+                                <th>
+                                    최종학력<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledSelectBox
                                         options={educationOptions}
@@ -267,14 +277,18 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     />
                                     <StyledInput type='hidden' name='finalEducation' value={selectedEducation} />
                                 </td>
-                                <th>이메일</th>
+                                <th>
+                                    이메일<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='email' name='email' />
                                 </td>
                             </tr>
                             {/* 4 */}
                             <tr>
-                                <th>연락처</th>
+                                <th>
+                                    연락처<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput
                                         type='tel'
@@ -283,7 +297,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                         onChange={handlePhoneNumberChange}
                                     />
                                 </td>
-                                <th>우편번호</th>
+                                <th>
+                                    우편번호<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='text' name='zipCode' value={zipCode} readOnly />
                                     <StyledButton
@@ -291,16 +307,20 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                         onClick={() => setIsOpen(true)}
                                         style={{ marginLeft: "10px" }}
                                     >
-                                        주소 검색
+                                        주소 검색<span style={{ color: "red" }}>*</span>
                                     </StyledButton>
                                 </td>
                             </tr>
                             <tr>
-                                <th>주소</th>
+                                <th>
+                                    주소<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='text' name='address' value={address} readOnly />
                                 </td>
-                                <th>상세주소</th>
+                                <th>
+                                    상세주소<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput
                                         type='text'
@@ -330,7 +350,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
 
                             {/* 6 */}
                             <tr>
-                                <th>은행</th>
+                                <th>
+                                    은행<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledSelectBox
                                         options={bankOptions}
@@ -340,18 +362,24 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     <StyledInput type='hidden' name='bank' value={selectedBank} />
                                 </td>
 
-                                <th>계좌번호</th>
+                                <th>
+                                    계좌번호<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='text' name='bankAccount' />
                                 </td>
                             </tr>
 
                             <tr>
-                                <th>입사일자</th>
+                                <th>
+                                    입사일자<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='date' name='regDate' />
                                 </td>{" "}
-                                <th>부서</th>
+                                <th>
+                                    부서<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledSelectBox
                                         options={departmentOptions}
@@ -363,7 +391,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
 
                             <tr>
-                                <th>직급</th>
+                                <th>
+                                    직급<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledSelectBox
                                         options={jobGradeOptions}
@@ -372,14 +402,18 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                     />
                                     <StyledInput type='hidden' name='jobGradeDetailName' value={selectedJobGrade} />
                                 </td>
-                                <th>직무</th>
+                                <th>
+                                    직무<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='text' name='jobRoleDetailName' />
                                 </td>
                             </tr>
                             {/* 10 */}
                             <tr>
-                                <th>지급일자</th>
+                                <th>
+                                    지급일자<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td>
                                     <StyledInput type='date' name='paymentDate' />
                                 </td>
@@ -390,7 +424,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                             </tr>
                             {/* 사진 */}
                             <tr>
-                                <th>사진</th>
+                                <th>
+                                    사진<span style={{ color: "red" }}>*</span>
+                                </th>
                                 <td colSpan={3}>
                                     <input type='file' name='file' onChange={handlerFile} />
                                     {imageUrl && (

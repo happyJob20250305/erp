@@ -47,7 +47,7 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
     // }, [paymentStatus]);
 
     useEffect(() => {
-        loadSalaryList();
+        loadSalaryList(cPage);
     }, [cPage, searchKeyword]);
 
     const loadSalaryList = async (currentPage?: number) => {
@@ -64,6 +64,22 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
             setSalaryCnt(result.salaryCnt);
         }
     };
+
+    // const loadSingleSalary = async (salaryId: number, baseSalary: number) => {
+    //       const searchParam = new URLSearchParams(search);
+    //       searchParam.append("salaryId", salaryId.toString());
+    //       searchParam.append("baseSalary", baseSalary.toString());
+
+    //     const result = await searchApi<ISalaryListDetailResponse>(SalaryManager.salaryList, {
+    //         salaryId,
+    //     });
+
+    //     if (result && result.salaryList.length > 0) {
+    //         setSalaryList((prevList) =>
+    //             prevList.map((salary) => (salary.salaryId === salaryId ? result.salaryList[0] : salary))
+    //         );
+    //     }
+    // };
 
     const handlePayment = async (salaryId: number, baseSalary: number) => {
         if (window.confirm("지급하시겠습니까?")) {
@@ -94,8 +110,6 @@ export const SalaryManagerMain = ({ Pdata }: SalaryManagerDetailProps) => {
 
     return (
         <>
-            <div>총 개수 : {salaryCnt}</div>
-
             <div className='table-container'>
                 <StyledTable
                     columns={columns}

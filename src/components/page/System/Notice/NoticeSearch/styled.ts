@@ -16,6 +16,7 @@ export const NoticeSearchStyled = styled.div`
 
     .button-container {
         display: flex;
+        align-items: center;
         gap: 5px;
     }
 `;

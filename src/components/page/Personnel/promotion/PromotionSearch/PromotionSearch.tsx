@@ -75,8 +75,8 @@ export const PromotionSearch = () => {
     return (
         <>
             <PromotionSearchStyled>
-                <div className='searchBarBox'>
-                    <div className='searchBar'>
+                <div className='search-group'>
+                    <div className='search-bar'>
                         {/* 부서 : department */}
                         <span>부서</span>
                         <StyledSelectBox
@@ -96,7 +96,7 @@ export const PromotionSearch = () => {
                         <span>이름</span>
                         <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                     </div>
-                    <div className='searchBar'>
+                    <div className='search-bar'>
                         {/* 입사일 조회 */}
                         <span>기간별 조회 </span>
                         <StyledInput
@@ -113,7 +113,8 @@ export const PromotionSearch = () => {
                             onKeyDown={(e) => e.preventDefault()}
                             min={startDate}
                         />
-
+                    </div>
+                    <div className='button-container'>
                         <StyledButton onClick={handlerSearch}>검색</StyledButton>
                         <img
                             src='/refresh.png'

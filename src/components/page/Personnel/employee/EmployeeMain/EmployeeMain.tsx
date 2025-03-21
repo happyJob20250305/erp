@@ -54,8 +54,8 @@ export const EmployeeMain = () => {
     ] as Column<IEmployee>[];
 
     useEffect(() => {
-        employeeBasicList();
-    }, [searchKeyword]);
+        employeeBasicList(cPage);
+    }, [searchKeyword, cPage]);
 
     const postSuccess = () => {
         setModal(false);
@@ -77,12 +77,6 @@ export const EmployeeMain = () => {
             setEmployeeCnt(result.employeeCnt);
             setCPage(currentPage);
         }
-    };
-
-    //등록 모달
-    const handleModal = () => {
-        setModal(true);
-        setModalType("registerModal");
     };
 
     //상세모달
@@ -115,11 +109,6 @@ export const EmployeeMain = () => {
     return (
         <>
             <EmployeeMainStyled>
-                <div className='button-container'>
-                    <StyledButton style={{ float: "right", marginBottom: "15px" }} onClick={handleModal}>
-                        사원 등록
-                    </StyledButton>
-                </div>
                 <div className='table-container'>
                     <StyledTable
                         columns={columns}

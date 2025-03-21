@@ -43,9 +43,11 @@ export const PromotionDetail = ({ data }: PromotionMainProps) => {
         <>
             {promotionDetailList && promotionDetailList.length > 0 && (
                 <PromotionDetailStyled>
-                    <StyledButton size='small' onClick={closeDetail}>
-                        닫기
-                    </StyledButton>
+                    <div className='button-container'>
+                        <StyledButton size='small' onClick={closeDetail}>
+                            닫기
+                        </StyledButton>
+                    </div>
                     <div className='info'>
                         <label>사번</label>
                         <StyledInput value={promotionDetailList[0]?.employeeNumber || ""} readOnly />
