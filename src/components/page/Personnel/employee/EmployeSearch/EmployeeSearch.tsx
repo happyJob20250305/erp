@@ -12,9 +12,15 @@ import {
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
 import { setSelectOption } from "../../../../../common/setSelectOption";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { EmployeeRegisterModal } from "../EmployeeRegisterModal/EmployeeRegisterModal";
+import { Portal } from "../../../../common/potal/Portal";
 
 export const EmployeeSearch = () => {
     const { setSearchKeyword } = useContext(EmployeeSearchContext);
+    const [modal, setModal] = useRecoilState(modalState);
+    const [modalType, setModalType] = useState<string>("");
     const [employeeNameInput, setEmployeeNameInput] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -75,10 +81,20 @@ export const EmployeeSearch = () => {
         setEndDate("");
     };
 
+    //등록 모달
+    const handleModal = () => {
+        setModal(true);
+        setModalType("registerModal");
+    };
+
+    const postSuccess = () => {
+        setModal(false);
+    };
+
     return (
         <EmployeeSearchStyled>
-            <div className='searchBarBox'>
-                <div className='searchBar'>
+            <div className='search-group'>
+                <div className='search-bar'>
                     <span>부서</span>
                     <StyledSelectBox
                         options={departmentOptions}
@@ -97,30 +113,37 @@ export const EmployeeSearch = () => {
                     <StyledInput value={employeeNameInput} onChange={(e) => setEmployeeNameInput(e.target.value)} />
                 </div>
 
-                <div className='searchBar' style={{ border: "5px solid white" }}>
+                <div className='search-bar'>
                     <StyledButton onClick={() => setSelectedEmplStatus("W")}>재직자</StyledButton>
                     <StyledButton onClick={() => setSelectedEmplStatus("F")}>퇴직자</StyledButton>
-                    <div className='searchBar'>
-                        <span>입사일 조회</span>
-                        <StyledInput
-                            type='date'
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            onKeyDown={(e) => e.preventDefault()}
-                            max={endDate}
-                        />
-                        <StyledInput
-                            type='date'
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            onKeyDown={(e) => e.preventDefault()}
-                            min={startDate}
-                        />
+                    <span>입사일 조회</span>
+                    <StyledInput
+                        type='date'
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        onKeyDown={(e) => e.preventDefault()}
+                        max={endDate}
+                    />
+                    <StyledInput
+                        type='date'
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        onKeyDown={(e) => e.preventDefault()}
+                        min={startDate}
+                    />
+                    <div className='button-container'>
                         <StyledButton onClick={handleSearchSaveContext}>검색</StyledButton>
-                        <img src='/refresh.png' onClick={resetSearch} style={{ width: "30px", height: "30px" }} />
+                        <StyledButton onClick={handleModal}>사원 등록</StyledButton>
+                        <img src='/refresh.png' onClick={resetSearch} style={{ width: "25px", height: "25px" }} />
                     </div>
                 </div>
             </div>
+
+            {modalType === "registerModal" && modal && (
+                <Portal>
+                    <EmployeeRegisterModal postSuccess={postSuccess} />
+                </Portal>
+            )}
         </EmployeeSearchStyled>
     );
 };
