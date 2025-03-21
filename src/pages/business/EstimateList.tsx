@@ -8,7 +8,7 @@ export const EstimateList = () => {
         <>
             <EstimateListProvider>
                 <ContentBox variant='primary' fontSize='large'>
-                    견적서 조회/등록
+                    견적서 등록 및 조회
                 </ContentBox>
                 <EstimateListSearch />
                 <EstimateListMain />

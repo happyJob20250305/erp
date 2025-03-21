@@ -36,11 +36,12 @@ export const OrderListMain = () => {
     const [orderList, setOrderList] = useState<IOrder[]>([]);
     const [orderCount, setOrderCount] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+
     const { searchKeyword } = useContext(OrderListContext);
+
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [orderId, setOrderId] = useState<number>();
     const [clientId, setClientId] = useState<number>();
-    const [detailOrder, setDetailOrder] = useState<IOrder>();
 
     useEffect(() => {
         searchOrderList();
@@ -79,10 +80,10 @@ export const OrderListMain = () => {
                     <thead>
                         <tr>
                             <StyledTh>수주직원</StyledTh>
-                            <StyledTh>수주일</StyledTh>
+                            <StyledTh>수주날짜</StyledTh>
                             <StyledTh>거래처</StyledTh>
-                            <StyledTh>제품명</StyledTh>
-                            <StyledTh>납기일</StyledTh>
+                            <StyledTh>제품</StyledTh>
+                            <StyledTh>납기날짜</StyledTh>
                             <StyledTh>총납품개수</StyledTh>
                             <StyledTh>총공급가액</StyledTh>
                             <StyledTh>총세액</StyledTh>
@@ -108,7 +109,7 @@ export const OrderListMain = () => {
                                             <StyledButton
                                                 onClick={() => handlerOrderListModal(order?.id, order?.clientId)}
                                             >
-                                                수주상세보기
+                                                수주서상세보기
                                             </StyledButton>
                                         </StyledTd>
                                     </tr>

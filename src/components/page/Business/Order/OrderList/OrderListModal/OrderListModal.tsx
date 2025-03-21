@@ -21,12 +21,14 @@ import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/St
 import { IOrder } from "../OrderListMain/OrderListMain";
 
 interface IOrderInfo {
-    orderId: number;
     productId: number;
     productName: string;
     quantity: string;
     supplyPrice: string;
     unitPrice: string;
+    majorCategoryId: string;
+    manufacturerId: string;
+    subCategoryId: string;
 }
 
 export interface IClientOrder {
@@ -60,9 +62,9 @@ interface IOrderListModalProps {
     postSuccess: () => void;
 }
 
-interface IPostResponse {
-    result: "success" | "fail";
-}
+// interface IPostResponse {
+//     result: "success" | "fail";
+// }
 
 interface IArrOrderInfo extends IOrderInfo {}
 
@@ -88,7 +90,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
     const [selectSubcategory, setSelectSubcategory] = useState<string>("");
     const [selectProduct, setSelectProduct] = useState<number>();
 
-    const productIdRef = useRef<string>("");
     const quantityRef = useRef<HTMLInputElement>(null);
     const supplyPriceRef = useRef<HTMLInputElement>(null);
     const unitPriceRef = useRef<HTMLInputElement>(null);
@@ -99,8 +100,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
     const [InfoOrder, setInfoOrder] = useState<IOrder>();
     const [detailOrder, setDetailOrder] = useState<IOrderInfo[]>([]);
 
-    const [totalAmount, setTotalAmount] = useState<string>("0");
-
     useEffect(() => {
         getClientList();
         getManufacturerList();
@@ -109,14 +108,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
         getProductList();
 
         orderId && detailOrderList();
-
-        // const totalAmountNum = detailOrder.reduce((acc: number, order: IOrderInfo) => {
-        //     return acc + parseInt(order?.supplyPrice) * parseInt(order?.quantity) * 1.1;
-        // }, 0);
-
-        // const totalAmountStr = totalAmountNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-        // setTotalAmount(totalAmountStr);
 
         return () => {
             setOrderId(0);
@@ -181,7 +172,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
         { value: "", label: "선택" },
         ...(productList?.length > 0
             ? productList.map((productValue: IProduct) => {
-                  console.log(`product_id: ${productValue.id} / product_name: ${productValue.name}`);
                   return {
                       value: productValue.id,
                       label: productValue.name,
@@ -192,7 +182,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
 
     const getClientList = () => {
         axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
-            // axios.post("/order-information-list/clientNamesBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
@@ -230,16 +219,22 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
     };
 
     const insertOrderList = () => {
-        console.log("selectProduct:" + selectProduct);
+        const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
+            return manuFacturerList.industryCode === selectManuFacturer;
+        };
+
+        const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
         setOrderList([
             ...orderList,
             {
-                orderId: 0,
                 productId: selectProduct,
                 productName: "",
                 quantity: quantityRef.current.value,
                 supplyPrice: supplyPriceRef.current.value,
                 unitPrice: unitPriceRef.current.value,
+                manufacturerId: selectManuFacturerId.manufacturer_id.toString(),
+                majorCategoryId: selectMaincategory,
+                subCategoryId: selectSubcategory,
             },
         ]);
     };
@@ -255,13 +250,11 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
             .post("/business/order-information-list/saveOrderBody.do", { ...params })
             .then((res: AxiosResponse) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("저장되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -365,8 +358,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                             <StyledTable>
                                 <thead>
                                     <tr>
-                                        <StyledTh>견적서 번호</StyledTh>
-                                        <StyledTh>제품이름</StyledTh>
+                                        <StyledTh>제품</StyledTh>
                                         <StyledTh>납품개수</StyledTh>
                                         <StyledTh>제품단가</StyledTh>
                                         <StyledTh>세액</StyledTh>
@@ -377,7 +369,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                     {detailOrder.map((order, index) => {
                                         return (
                                             <tr key={index}>
-                                                <StyledTd>{order?.orderId}</StyledTd>
                                                 <StyledTd>{order?.productName}</StyledTd>
                                                 <StyledTd>{order?.quantity}</StyledTd>
                                                 <StyledTd>{order?.supplyPrice}</StyledTd>
@@ -407,7 +398,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                 거래처
                                 <StyledSelectBox
                                     options={clientOptions}
-                                    value={Number(selectclient)}
+                                    value={selectclient}
                                     onChange={setSelectClient}
                                     name='clientId'
                                 />
@@ -460,7 +451,6 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                     onChange={(value: number) => setSelectProduct(value)}
                                     name='product_id'
                                 />
-                                {/* <StyledInput type='text' name='product_id' value={0}></StyledInput> */}
                             </label>
                             <label>
                                 제품단가
@@ -479,7 +469,10 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                 <StyledTable>
                                     <thead>
                                         <tr>
-                                            <StyledTh>제품명</StyledTh>
+                                            <StyledTh>제조업체</StyledTh>
+                                            <StyledTh>대분류</StyledTh>
+                                            <StyledTh>소분류</StyledTh>
+                                            <StyledTh>제품</StyledTh>
                                             <StyledTh>제품단가</StyledTh>
                                             <StyledTh>수량</StyledTh>
                                             <StyledTh>공급가액</StyledTh>
@@ -491,6 +484,9 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                             orderList.map((order, index) => {
                                                 return (
                                                     <tr key={index}>
+                                                        <StyledTd>{order?.manufacturerId}</StyledTd>
+                                                        <StyledTd>{order?.majorCategoryId}</StyledTd>
+                                                        <StyledTd>{order?.subCategoryId}</StyledTd>
                                                         <StyledTd>{order.productName}</StyledTd>
                                                         <StyledTd>{order.unitPrice}</StyledTd>
                                                         <StyledTd>{order.quantity}</StyledTd>
@@ -505,7 +501,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                             })
                                         ) : (
                                             <tr>
-                                                <StyledTd colSpan={5}>추가내역이 없습니다.</StyledTd>
+                                                <StyledTd colSpan={8}>추가내역이 없습니다.</StyledTd>
                                             </tr>
                                         )}
                                         <tr>
@@ -524,11 +520,15 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
                                 <StyledButton type='button' onClick={saveOrderList}>
                                     등록
                                 </StyledButton>
-                                <StyledButton type='button' onClick={() => setModal(!modal)}>
+                                <StyledButton
+                                    type='button'
+                                    onClick={() => {
+                                        setModal(!modal), deleteAllOrder();
+                                    }}
+                                >
                                     나가기
                                 </StyledButton>
                             </div>
-                            <input type='hidden' name='orderId' value={""} readOnly />
                         </form>
                     </>
                 )}

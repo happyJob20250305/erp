@@ -44,6 +44,7 @@ export const OrderListSearch = () => {
         getClientName();
         getProductName();
     }, []);
+
     const getClientName = () => {
         axios
             .post("/business/order-information-list/clientNamesBody.do")
@@ -57,7 +58,6 @@ export const OrderListSearch = () => {
         axios
             .post("/business/order-information-list/productNamesBody.do")
             .then((res: AxiosResponse<IProductResponse>) => {
-                console.log("res.data.productNamesList:" + res.data.productNameList);
                 setProductList(res.data.productNameList);
             });
     };

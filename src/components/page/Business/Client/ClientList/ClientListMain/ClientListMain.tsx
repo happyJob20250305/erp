@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
 import { Portal } from "../../../../../common/potal/Portal";
 import { ClientListModal } from "../ClientListModal/ClientListModal";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 export interface IClient {
     zip: string;
@@ -23,14 +24,19 @@ export interface IClient {
     email: string;
     bank_account: string;
     cust_update_date: string;
+    selectemailaddr: string;
+    firstEmain: string;
+    ISBN: string;
+    selectISBN: string;
 }
 
 export interface IClientResponse {
     clientList: IClient[];
+    clientListCnt: number;
 }
 
 export interface IGetClient {
-    client_id: number;
+    client_id: string;
     client_name: string;
 }
 
@@ -39,6 +45,9 @@ export interface IGetClientResponse {
 }
 export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
+    const [clientListCnt, setClientListCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
+
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     const [detailClient, setDetailClient] = useState<IClient>();
@@ -51,8 +60,8 @@ export const ClientListMain = () => {
 
     const columns = [
         { key: "id", title: "번호" },
-        { key: "cust_update_date", title: "날짜" },
-        { key: "client_name", title: "거래처 이름" },
+        { key: "cust_update_date", title: "등록날짜" },
+        { key: "client_name", title: "거래처" },
         { key: "person", title: "담당자" },
         { key: "ph", title: "전화번호" },
         { key: "person_ph", title: "핸드폰" },
@@ -61,14 +70,18 @@ export const ClientListMain = () => {
         { key: "memo", title: "메모" },
     ] as Column<IClient>[];
 
-    const searchClientList = () => {
-        axios
-            .post("/business/client-list/searchClientListBody.do", {
-                ...searchKeyword,
-            })
-            .then((res: AxiosResponse<IClientResponse>) => {
-                setClientList(res.data.clientList);
-            });
+    const searchClientList = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
+        axios.post("/business/client-list/searchClientListBody.do", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        }).then((res: AxiosResponse<IClientResponse>) => {
+            setClientList(res.data.clientList);
+            setClientListCnt(res.data.clientListCnt);
+            setCPage(currentPage);
+        });
     };
 
     const handlerClientModal = (row: IClient) => {
@@ -91,6 +104,12 @@ export const ClientListMain = () => {
                 onCellClick={(row) => {
                     handlerClientModal(row);
                 }}
+            />
+            <PageNavigate
+                totalItemsCount={clientListCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchClientList}
             />
             {modal && (
                 <Portal>

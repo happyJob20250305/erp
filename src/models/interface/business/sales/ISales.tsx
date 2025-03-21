@@ -21,7 +21,7 @@ export interface ISales {
 
 export interface ISalesResponse {
     searchPlanList: ISales[];
-    salesCnt: number;
+    salesPlanCnt: number;
 }
 
 export interface IManufacturer {
