@@ -96,6 +96,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
 
         setZipCode(zonecode);
         setAddress(fullAddress);
+        setDetailAddr("");
     };
 
     const handlerPostCode = () => {
@@ -177,7 +178,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </label>
                     <label>우편번호*</label>
                     <span>
-                        <StyledInput type='text' name='zip' defaultValue={zipCode} readOnly></StyledInput>
+                        <StyledInput type='text' name='zip' value={zipCode} readOnly></StyledInput>
                     </span>
                     <span className={"button-container"}>
                         <StyledButton type='button' onClick={handlerPostCode}>
@@ -186,11 +187,11 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </span>
                     <label>
                         주소*
-                        <StyledInput type='text' name='addr' defaultValue={address} readOnly></StyledInput>
+                        <StyledInput type='text' name='addr' value={address} readOnly></StyledInput>
                     </label>
                     <label>
                         상세주소*
-                        <StyledInput type='text' name='detail_addr' defaultValue={detailAddr}></StyledInput>
+                        <StyledInput type='text' name='detail_addr' value={detailAddr}></StyledInput>
                     </label>
                     <label>
                         이메일*
