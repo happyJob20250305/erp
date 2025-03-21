@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { ISales, ISalesResponse } from "../../../../../../models/interface/business/sales/ISales";
 import { SalesResultMainListStyled } from "./styled";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 interface IAddSales extends ISales {
     perform_ratio: number;
@@ -12,6 +13,8 @@ interface IAddSales extends ISales {
 
 export const SalesResultMainList = () => {
     const [salesResultList, setSalesResultList] = useState<ISales[]>([]);
+    const [salesResultCnt, setSalesResultCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
 
     const { searchKeyword } = useContext(SalesResultListContext);
 
@@ -42,17 +45,33 @@ export const SalesResultMainList = () => {
         { key: "perform_ratio", title: "실적" },
     ] as Column<ISales>[];
 
-    const searchSalesResultList = () => {
-        axios
-            .post("/business/sales-plan/searchPlanListBody.do", { ...searchKeyword })
-            .then((res: AxiosResponse<ISalesResponse>) => {
-                setSalesResultList(res.data.searchPlanList);
-            });
+    const searchSalesResultList = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
+        axios.post("/business/sales-plan/searchPlanListBody.do", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        }).then((res: AxiosResponse<ISalesResponse>) => {
+            setSalesResultList(res.data.searchPlanList);
+            setSalesResultCnt(res.data.salesPlanCnt);
+            setCPage(currentPage);
+        });
     };
 
     return (
         <SalesResultMainListStyled>
-            <StyledTable data={salesResultList} columns={columns} hoverable={true} fullWidth={true}></StyledTable>
+            <StyledTable data={salesResultList}
+                columns={columns}
+                hoverable={true}
+                fullWidth={true}
+            />
+            <PageNavigate
+                totalItemsCount={salesResultCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchSalesResultList}
+            />
         </SalesResultMainListStyled>
     );
 };
