@@ -5,7 +5,7 @@ export interface ISales {
     detail_name: string;
     emp_id: string;
     emp_name: string;
-    goal_quanti: string;
+    goal_quanti: number;
     group_name: string;
     group_code: string;
     industry_code: string;
