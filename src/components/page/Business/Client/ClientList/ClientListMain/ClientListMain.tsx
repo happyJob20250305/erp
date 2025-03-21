@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
 import { Portal } from "../../../../../common/potal/Portal";
 import { ClientListModal } from "../ClientListModal/ClientListModal";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 export interface IClient {
     zip: string;
@@ -31,6 +32,7 @@ export interface IClient {
 
 export interface IClientResponse {
     clientList: IClient[];
+    clientListCnt: number;
 }
 
 export interface IGetClient {
@@ -43,6 +45,9 @@ export interface IGetClientResponse {
 }
 export const ClientListMain = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
+    const [clientListCnt, setClientListCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
+
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     const [detailClient, setDetailClient] = useState<IClient>();
@@ -65,14 +70,18 @@ export const ClientListMain = () => {
         { key: "memo", title: "메모" },
     ] as Column<IClient>[];
 
-    const searchClientList = () => {
-        axios
-            .post("/business/client-list/searchClientListBody.do", {
-                ...searchKeyword,
-            })
-            .then((res: AxiosResponse<IClientResponse>) => {
-                setClientList(res.data.clientList);
-            });
+    const searchClientList = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
+        axios.post("/business/client-list/searchClientListBody.do", {
+            ...searchKeyword,
+            pageSize: 5,
+            currentPage,
+        }).then((res: AxiosResponse<IClientResponse>) => {
+            setClientList(res.data.clientList);
+            setClientListCnt(res.data.clientListCnt);
+            setCPage(currentPage);
+        });
     };
 
     const handlerClientModal = (row: IClient) => {
@@ -95,6 +104,12 @@ export const ClientListMain = () => {
                 onCellClick={(row) => {
                     handlerClientModal(row);
                 }}
+            />
+            <PageNavigate
+                totalItemsCount={clientListCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchClientList}
             />
             {modal && (
                 <Portal>
