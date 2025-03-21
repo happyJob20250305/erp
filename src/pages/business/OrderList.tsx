@@ -8,7 +8,7 @@ export const OrderList = () => {
         <>
             <OrderListProvider>
                 <ContentBox variant='primary' fontSize='large'>
-                    수주 조회/작성
+                    수주 정보 조회
                 </ContentBox>
                 <OrderListSearch />
                 <OrderListMain />
