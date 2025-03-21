@@ -45,7 +45,8 @@ export const EmployeeDetailModal = () => {
     const [selectedJobGRoleDetailName, setSelectedJobRoleDetailName] = useState<string>("");
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [jobRoleGroupList, setRoleGroupList] = useState<IJobRole[]>([]);
-
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const { setEmployeeDetailModalKeyword } = useContext(EmployeeDetailModalContext);
     const departmentOptions = setSelectOption(DepartmentGroupItem, "departmentDetailName", "departmentDetailName");
     const jobGradeOptions = setSelectOption(JobGradeGroupItem, "jobGradeDetailName", "jobGradeDetailName");
     const jobRoleGroupOptions = setSelectOption(jobRoleGroupList, "jobRoleDetailName", "jobRoleDetailName", {
@@ -81,12 +82,19 @@ export const EmployeeDetailModal = () => {
         const result = await postApi<IEmployeeDetailResponse>(Employee.employeeDetail, {
             ...employeeDetailModalKeyword,
         });
-        if (result) {
+
+        if (result && result.detail) {
             setResponse(result);
             setSalaryClassList(result.salaryClassList);
             setDepartmentGroupItem(result.departmentGroupList);
             setGradeGroupItem(result.jobGradeGroupList);
-            getJobDetailCode(result.detail.jobGradeDetailName);
+
+            // ⚠ jobGradeDetailName이 있는 경우에만 호출
+            if (result.detail.jobGradeDetailName) {
+                getJobDetailCode(result.detail.jobGradeDetailName);
+            }
+        } else {
+            console.warn("사원 상세 정보가 존재하지 않음");
         }
     };
 
@@ -122,6 +130,7 @@ export const EmployeeDetailModal = () => {
         try {
             const retuls = await postApi<IEmployeeDetailResponse>(Employee.employeeUpdate, formData);
             alert("수정되었습니다.");
+            closeModal();
         } catch {
             alert("수정 실패");
         }
@@ -129,6 +138,18 @@ export const EmployeeDetailModal = () => {
 
     const closeModal = () => {
         setModal(false);
+        if (employeeDetailModalKeyword) {
+            setEmployeeDetailModalKeyword({});
+        }
+    };
+
+    //  파일 업로드 핸들링
+    const handlerFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const previewUrl = URL.createObjectURL(file);
+        setImageUrl(previewUrl); // 미리보기용 이미지 주소 세팅
     };
 
     return (
@@ -144,9 +165,20 @@ export const EmployeeDetailModal = () => {
                                     rowSpan={12}
                                     style={{ width: "180px", textAlign: "center", verticalAlign: "middle" }}
                                 >
-                                    {response?.detail?.profileLogicalPath ? (
+                                    {imageUrl ? (
                                         <img
-                                            src={response?.detail?.profileLogicalPath}
+                                            src={imageUrl}
+                                            alt='미리보기'
+                                            style={{
+                                                width: "150px",
+                                                height: "150px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
+                                        />
+                                    ) : response?.detail?.profileLogicalPath ? (
+                                        <img
+                                            src={response.detail.profileLogicalPath}
                                             alt='프로필'
                                             style={{
                                                 width: "150px",
@@ -167,7 +199,10 @@ export const EmployeeDetailModal = () => {
                                             이미지 없음
                                         </div>
                                     )}
+
+                                    <input type='file' name='file' onChange={handlerFile} />
                                 </td>
+
                                 <th>사번</th>
                                 <td>
                                     <StyledInput
@@ -425,26 +460,6 @@ export const EmployeeDetailModal = () => {
                                     />
                                 </td>
                             </tr>
-                            {/* <tr>
-                                <th>연봉</th>
-                                <td colSpan={3}>
-                                    <StyledInput
-                                        name='workingYear'
-                                        variant='disable'
-                                        value={
-                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
-                                                ? new Intl.NumberFormat("ko-KR", {
-                                                      style: "currency",
-                                                      currency: "KRW",
-                                                  }).format(
-                                                      response.salaryClassList[`year${response.detail.workingYear}`]
-                                                  )
-                                                : ""
-                                        }
-                                        readOnly
-                                    />
-                                </td>
-                            </tr> */}
                         </tbody>
                     </ModalStyledTable>
                 </form>

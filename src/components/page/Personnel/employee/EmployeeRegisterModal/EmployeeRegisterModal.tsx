@@ -76,8 +76,9 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
 
     // const [selectedDepartment, setSelectedDepartment] = useState("");
     useEffect(() => {
-        console.log(selectedDepartment);
-        getJobDetailCode(selectedDepartment);
+        if (selectedDepartment) {
+            getJobDetailCode(selectedDepartment);
+        }
     }, [selectedDepartment]);
 
     useEffect(() => {
@@ -374,17 +375,17 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </th>
                                 <td>
                                     <StyledInput type='date' name='regDate' />
-                                </td>{" "}
+                                </td>
                                 <th>
                                     부서<span style={{ color: "red" }}>*</span>
                                 </th>
                                 <td>
                                     <StyledSelectBox
+                                        name='departmentDetailName'
                                         options={departmentOptions}
                                         value={selectedDepartment}
                                         onChange={setSelectedDepartment}
                                     />
-                                    <StyledInput type='hidden' name='departmentDetailName' value={selectedDepartment} />
                                 </td>
                             </tr>
 
@@ -394,11 +395,11 @@ export const EmployeeRegisterModal: FC<IEmployeeRegisterModalProps> = ({ postSuc
                                 </th>
                                 <td>
                                     <StyledSelectBox
+                                        name='jobGradeDetailName'
                                         options={jobGradeOptions}
                                         value={selectedJobGrade}
                                         onChange={setSelectedJobGrade}
                                     />
-                                    <StyledInput type='hidden' name='jobGradeDetailName' value={selectedJobGrade} />
                                 </td>
                                 <th>
                                     직무

@@ -1,3 +1,13 @@
+import { useState } from "react";
+import {
+    IDepartmentGroupItem,
+    IGroupListResponse,
+    IJobGradeGroupItem,
+} from "../models/interface/personnel/salary/IOptionList";
+import { setSelectOption } from "./setSelectOption";
+import { postApiNoPram } from "../api/PersonnelApi/postApi";
+import { SalaryOptionList } from "../api/api";
+
 export const educationOptions = [
     { label: "선택", value: "" },
     { label: "고등학교 졸업", value: "고등학교 졸업" },
@@ -30,3 +40,22 @@ export const statusOptions = [
     { value: "O", label: "휴직" },
     // { value: "F", label: "퇴직" },
 ];
+export const fetchDepartmentOptions = async () => {
+    const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
+    return result
+        ? setSelectOption(result.DepartmentGroupList, "departmentDetailName", "departmentDetailName", {
+              label: "전체",
+              value: "",
+          })
+        : [];
+};
+
+export const fetchJobGradeOptions = async () => {
+    const result = await postApiNoPram<IGroupListResponse>(SalaryOptionList.optionList);
+    return result
+        ? setSelectOption(result.JobGradeGroupList, "jobGradeDetailName", "jobGradeDetailName", {
+              label: "전체",
+              value: "",
+          })
+        : [];
+};
