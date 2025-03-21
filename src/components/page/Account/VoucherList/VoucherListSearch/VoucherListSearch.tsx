@@ -32,7 +32,7 @@ export const VoucherListSearch = () => {
     const voucherClientListSearch = async () => {
         const result = await accountSearchApi<IClientListBody>(VoucherList.searchClientList, {});
         if (result) {
-            setClientList(setSelectOption(result.clientList, "clientName", "id", { label: "전체", value: "" }));
+            setClientList(setSelectOption(result.clientList, "clientName", "clientName", { label: "전체", value: "" }));
         }
     };
 

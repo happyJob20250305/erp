@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { StyledButton } from "../../../../common/StyledButton/StyledButton";
 import { StyledSelectBox } from "../../../../common/StyledSelectBox/StyledSelectBox";
 import { ManageSearchStyled } from "./styled";
@@ -13,12 +13,14 @@ import {
     IAccountGroupListBody,
     IDetailGroupListBody,
 } from "../../../../../models/interface/account/groupList/IAccountGroup";
+import { StyledInput } from "../../../../common/StyledInput/StyledInput";
 
 export const ManageSearch = () => {
     const [selectedGroup, setSelectedGroup] = useState<string>("");
     const [selectedDetail, setSelectedDetail] = useState<string>("");
     const [selectedUse, setSelectedUse] = useState<string>("");
     const [selectCodeType, setSelectedCodeType] = useState<string>("");
+    const searchDetailName = useRef<HTMLInputElement>();
     const { setSearchKeyword } = useContext(AccountManageContext);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [accountGroupList, setAccountGroupList] = useState<ISetListOption[]>([]);
@@ -68,10 +70,11 @@ export const ManageSearch = () => {
     const handlerSearch = () => {
         setSearchKeyword({
             searchGroup: selectedGroup,
-            searchDetail: selectedDetail,
+            searchDetail: searchDetailName.current.value,
             searchCode_type: selectCodeType,
             searchUse_yn: selectedUse,
         });
+        console.log(searchDetailName);
     };
 
     return (
@@ -84,13 +87,14 @@ export const ManageSearch = () => {
                     value={selectedGroup}
                     onChange={setSelectedGroup}
                 />
-                계정세부명:
-                <StyledSelectBox
+                <span>계정세부명:</span>
+                <StyledInput ref={searchDetailName} />
+                {/* <StyledSelectBox
                     width={150}
                     options={accountDetailList}
                     value={selectedDetail}
                     onChange={setSelectedDetail}
-                />
+                /> */}
                 구분:
                 <StyledSelectBox width={100} options={codeType} value={selectCodeType} onChange={setSelectedCodeType} />
                 사용여부:

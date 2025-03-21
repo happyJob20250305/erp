@@ -1,6 +1,6 @@
 import { IDaily } from "../../../../../models/interface/sales/IDaily";
-import { StyledTable, StyledTd } from "../../../../common/styled/StyledTable";
-import { DailyStatisticsStyled, StyledTh } from "./styled";
+import { StyledTable } from "../../../../common/styled/StyledTable";
+import { DailyStatisticsStyled, StyledTd, StyledTh } from "./styled";
 
 interface DailyStatisticsProps {
     dailyStatistics: IDaily;

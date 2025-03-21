@@ -31,11 +31,11 @@ export const StyledTh = styled.th`
     background-color: #f4f4f4;
     padding: 12px;
     border: 1px solid #ddd;
-    width: 60%;
+    width: 40%;
 `;
 
-export const StyledTd = styled.td<{ size?: number }>`
+export const StyledTd = styled.td`
     padding: 12px;
     border: 1px solid #ddd;
-    width: ${(props) => props.size}%;
+    width: 40%;
 `;

@@ -12,7 +12,6 @@ export const MonthlyChart = ({ monthlyListChart }: MonthlyChartProps) => {
         expenses: monthly.totalExpenseAmount.toString(),
     }));
 
-    // 월별로 정렬 (연-월 형식)
     const sortedMonthlyData = [...monthlyChartData].sort((a, b) => {
         return new Date(a.date).getTime() - new Date(b.date).getTime();
     });

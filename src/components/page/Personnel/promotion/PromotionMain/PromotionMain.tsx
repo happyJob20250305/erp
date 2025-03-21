@@ -31,8 +31,8 @@ export const PromotionMain = ({ onSelectEmployee }: PromotionMainProps) => {
     ] as unknown as Column<IPromotionList>[];
 
     useEffect(() => {
-        PromotionList();
-    }, [searchKeyword]);
+        PromotionList(cPage);
+    }, [searchKeyword, cPage]);
 
     const PromotionList = async (currentPage?: number) => {
         currentPage = currentPage || 1;

@@ -17,7 +17,7 @@ export const AnnualModalStyled = styled.div`
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
-        width: 500px;
+        width: 450px;
     }
 
     .bi-x-lg {
