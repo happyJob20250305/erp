@@ -22,8 +22,8 @@ import {
     IGroupListResponse,
     IJobGradeGroupItem,
 } from "../../../../../models/interface/personnel/salary/IOptionList";
-import { bankOptions, educationOptions } from "../../../../../common/employeeModalOptions";
-
+import { bankOptions, educationOptions, statusOptions } from "../../../../../common/employeeModalOptions";
+import DaumPostcode from "react-daum-postcode"; // 추가
 export const EmployeeDetailModal = () => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -52,11 +52,6 @@ export const EmployeeDetailModal = () => {
         label: "전체",
         value: "",
     });
-    const statusOptions = [
-        { value: "W", label: "재직" },
-        { value: "O", label: "휴직" },
-        { value: "F", label: "퇴직" },
-    ];
 
     useEffect(() => {
         getJobDetailCode(selectedDepartment);
@@ -95,10 +90,27 @@ export const EmployeeDetailModal = () => {
         }
     };
 
+    const handleComplete = (data: any) => {
+        setIsOpen(false);
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+            if (data.bname !== "") extraAddress += data.bname;
+            if (data.buildingName !== "")
+                extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+            if (extraAddress !== "") fullAddress += ` (${extraAddress})`;
+        }
+
+        setZipCode(data.zonecode);
+        setAddress(fullAddress);
+    };
+
     // jobGradeDetailName;
     const getJobDetailCode = async (jobGradeDetailName) => {
         const params = new URLSearchParams();
         params.append("departmentDetailName", jobGradeDetailName);
+        // params.append("zipCode", zipCode);
         const jobDetailCode = await postApi<IJobRoleResponse>(Employee.getJobRolesByDepartment, params);
         setRoleGroupList(jobDetailCode.jobRoleGroupList);
     };
@@ -230,6 +242,43 @@ export const EmployeeDetailModal = () => {
                                     <StyledInput name='hp' value={hp} onChange={(e) => setHp(e.target.value)} />
                                 </td>
                             </tr>
+
+                            <tr>
+                                <th>연봉*</th>
+                                <td>
+                                    <StyledInput
+                                        name='workingYear'
+                                        variant='disable'
+                                        value={
+                                            response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
+                                                ? new Intl.NumberFormat("ko-KR", {
+                                                      style: "currency",
+                                                      currency: "KRW",
+                                                  }).format(
+                                                      response.salaryClassList[`year${response.detail.workingYear}`]
+                                                  )
+                                                : ""
+                                        }
+                                        readOnly
+                                    ></StyledInput>
+                                </td>
+                                <th>우편번호*</th>
+                                <td>
+                                    <StyledInput
+                                        name='zipCode'
+                                        defaultValue={response?.detail?.zipCode}
+                                        onChange={(e) => setZipCode(e.target.value)}
+                                    />
+                                    <StyledButton
+                                        type='button'
+                                        onClick={() => setIsOpen(true)}
+                                        style={{ marginLeft: "10px" }}
+                                    >
+                                        주소 검색<span style={{ color: "red" }}>*</span>
+                                    </StyledButton>
+                                </td>
+                            </tr>
+
                             <tr>
                                 <th>주소*</th>
                                 <td>
@@ -248,6 +297,23 @@ export const EmployeeDetailModal = () => {
                                     />
                                 </td>
                             </tr>
+                            {/* 주소 검색 모달 (조건부 렌더링) */}
+                            {isOpen && (
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        top: "20%",
+                                        left: "30%",
+                                        width: "500px",
+                                        height: "600px",
+                                        zIndex: 100,
+                                        border: "1px solid #ccc",
+                                        backgroundColor: "#fff",
+                                    }}
+                                >
+                                    <DaumPostcode onComplete={handleComplete} autoClose />
+                                </div>
+                            )}
                             <tr>
                                 <th>은행*</th>
                                 <td>
@@ -348,11 +414,6 @@ export const EmployeeDetailModal = () => {
                                         defaultValue={response?.detail?.jobRoleDetailName || ""}
                                         name='jobRoleDetailName'
                                     />
-                                    {/* <StyledInput
-                                        type='hidden'
-                                        name='jobRoleDetailName'
-                                        value={selectedJobGRoleDetailName}
-                                    /> */}
                                 </td>
                                 <th>직급코드</th>
                                 <td>
@@ -364,7 +425,7 @@ export const EmployeeDetailModal = () => {
                                     />
                                 </td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                                 <th>연봉</th>
                                 <td colSpan={3}>
                                     <StyledInput
@@ -383,7 +444,7 @@ export const EmployeeDetailModal = () => {
                                         readOnly
                                     />
                                 </td>
-                            </tr>
+                            </tr> */}
                         </tbody>
                     </ModalStyledTable>
                 </form>

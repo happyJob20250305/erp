@@ -24,3 +24,9 @@ export const sexOptionse = [
     { label: "여성", value: "여성" },
     { label: "남성", value: "남성" },
 ];
+
+export const statusOptions = [
+    { value: "W", label: "재직" },
+    { value: "O", label: "휴직" },
+    // { value: "F", label: "퇴직" },
+];
