@@ -48,7 +48,7 @@ export const ClientListSearch = () => {
     return (
         <ClientListSearchStyled>
             <label>
-                업체명
+                거래처
                 <StyledSelectBox
                     options={clientOptions}
                     value={selectclient}
