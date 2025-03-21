@@ -8,9 +8,12 @@ import { modalState } from "../../../../../../stores/modalState";
 import { SalesPlanListMainStyled } from "./styled";
 import { SalesPlanListModal } from "../SalesPlanModal/SalesPlanListModal";
 import { ISales, ISalesResponse } from "../../../../../../models/interface/business/sales/ISales";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 export const SalesPlanListMain = () => {
     const [salesPlanList, setSalesPlanList] = useState<ISales[]>([]);
+    const [salesPlanCnt, setSalesPlanCnt] = useState<number>(0);
+    const [cPage, setCPage] = useState<number>(0);
     const [planNum, setPlanNum] = useState<ISales>();
 
     const { searchKeyword } = useContext(SalesPlanListContext);
@@ -31,13 +34,19 @@ export const SalesPlanListMain = () => {
         { key: "plan_memo", title: "비고" },
     ] as Column<ISales>[];
 
-    const searchSalesPlanList = () => {
+    const searchSalesPlanList = (currentPage?: number) => {
+        currentPage = currentPage || 1;
+
         axios
             .post("/business/sales-plan/searchPlanListBody.do", {
                 ...searchKeyword,
+                pageSize: 5,
+                currentPage,
             })
             .then((res: AxiosResponse<ISalesResponse>) => {
                 setSalesPlanList(res.data.searchPlanList);
+                setSalesPlanCnt(res.data.salesPlanCnt);
+                setCPage(currentPage);
             });
     };
 
@@ -62,7 +71,12 @@ export const SalesPlanListMain = () => {
                     handlerSalesPlanModal(row);
                 }}
             />
-
+            <PageNavigate
+                totalItemsCount={salesPlanCnt}
+                activePage={cPage}
+                itemsCountPerPage={5}
+                onChange={searchSalesPlanList}
+            />
             {modal && (
                 <Portal>
                     <SalesPlanListModal planNum={planNum} setPlanNum={setPlanNum} postSucces={postSucces} />
