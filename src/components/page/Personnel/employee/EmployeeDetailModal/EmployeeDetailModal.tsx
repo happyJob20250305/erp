@@ -163,6 +163,7 @@ export const EmployeeDetailModal = () => {
                                         value={response?.detail?.employeeId || ""}
                                         type='hidden'
                                         readOnly
+                                        variant='disable'
                                     />
                                     <StyledInput name='number' value={response?.detail?.number || ""} readOnly />
                                 </td>
@@ -172,6 +173,7 @@ export const EmployeeDetailModal = () => {
                                         name='employeeName'
                                         value={response?.detail?.employeeName || ""}
                                         readOnly
+                                        variant='disable'
                                     />
                                 </td>
                             </tr>
@@ -182,17 +184,28 @@ export const EmployeeDetailModal = () => {
                                         name='registrationNumber'
                                         value={response?.detail?.registrationNumber || ""}
                                         readOnly
+                                        variant='disable'
                                     />
                                 </td>
                                 <th>성별</th>
                                 <td>
-                                    <StyledInput name='sex' value={response?.detail?.sex || ""} readOnly />
+                                    <StyledInput
+                                        name='sex'
+                                        variant='disable'
+                                        value={response?.detail?.sex || ""}
+                                        readOnly
+                                    />
                                 </td>
                             </tr>
                             <tr>
                                 <th>생년월일</th>
                                 <td>
-                                    <StyledInput name='birthday' value={response?.detail?.birthday || ""} readOnly />
+                                    <StyledInput
+                                        name='birthday'
+                                        variant='disable'
+                                        value={response?.detail?.birthday || ""}
+                                        readOnly
+                                    />
                                 </td>
                                 <th>최종학력*</th>
                                 <td>
@@ -271,12 +284,18 @@ export const EmployeeDetailModal = () => {
                             <tr>
                                 <th>입사일</th>
                                 <td>
-                                    <StyledInput name='regDate' value={response?.detail?.regDate || ""} readOnly />
+                                    <StyledInput
+                                        name='regDate'
+                                        variant='disable'
+                                        value={response?.detail?.regDate || ""}
+                                        readOnly
+                                    />
                                 </td>
                                 <th>퇴사일</th>
                                 <td>
                                     <StyledInput
                                         name='resignationDate'
+                                        variant='disable'
                                         value={response?.detail?.resignationDate || ""}
                                         readOnly
                                     />
@@ -287,6 +306,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='workingYear'
+                                        variant='disable'
                                         value={`${response?.detail?.workingYear ?? 0}년`}
                                         readOnly
                                     />
@@ -295,6 +315,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='severancePay'
+                                        variant='disable'
                                         value={response?.detail?.severancePay || "미정"}
                                         readOnly
                                     />
@@ -305,6 +326,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='departmentCode '
+                                        variant='disable'
                                         value={response?.detail?.departmentCode || ""}
                                         readOnly
                                     />
@@ -336,6 +358,7 @@ export const EmployeeDetailModal = () => {
                                 <td>
                                     <StyledInput
                                         name='jobGradeCode'
+                                        variant='disable'
                                         value={response?.detail?.jobGradeCode || ""}
                                         readOnly
                                     />
@@ -346,6 +369,7 @@ export const EmployeeDetailModal = () => {
                                 <td colSpan={3}>
                                     <StyledInput
                                         name='workingYear'
+                                        variant='disable'
                                         value={
                                             response?.salaryClassList?.[`year${response?.detail?.workingYear}`]
                                                 ? new Intl.NumberFormat("ko-KR", {
