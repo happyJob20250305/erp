@@ -25,11 +25,11 @@ export const SalesPlanListMain = () => {
 
     const columns = [
         { key: "target_date", title: "목표날짜" },
-        { key: "client_name", title: "거래처 이름" },
-        { key: "name", title: "재조업체" },
+        { key: "client_name", title: "거래처" },
+        { key: "name", title: "제조업체" },
         { key: "group_name", title: "대분류" },
         { key: "detail_name", title: "소분류" },
-        { key: "product_name", title: "제품명" },
+        { key: "product_name", title: "제품" },
         { key: "goal_quanti", title: "목표수량" },
         { key: "plan_memo", title: "비고" },
     ] as Column<ISales>[];
@@ -37,15 +37,17 @@ export const SalesPlanListMain = () => {
     const searchSalesPlanList = (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/business/sales-plan/searchPlanListBody.do", {
-            ...searchKeyword,
-            pageSize: 5,
-            currentPage,
-        }).then((res: AxiosResponse<ISalesResponse>) => {
-            setSalesPlanList(res.data.searchPlanList);
-            setSalesPlanCnt(res.data.salesPlanCnt);
-            setCPage(currentPage);
-        });
+        axios
+            .post("/business/sales-plan/searchPlanListBody.do", {
+                ...searchKeyword,
+                pageSize: 5,
+                currentPage,
+            })
+            .then((res: AxiosResponse<ISalesResponse>) => {
+                setSalesPlanList(res.data.searchPlanList);
+                setSalesPlanCnt(res.data.salesPlanCnt);
+                setCPage(currentPage);
+            });
     };
 
     const handlerSalesPlanModal = (row: ISales) => {

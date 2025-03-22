@@ -17,14 +17,9 @@ import {
 } from "../../../../../../models/interface/business/sales/ISales";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../../stores/modalState";
-import { SalesPlanListModalStyle } from "./styled";
+import { SalesPlanListModalStyled } from "./styled";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
-import {
-    IClient,
-    IClientResponse,
-    IGetClient,
-    IGetClientResponse,
-} from "../../../Client/ClientList/ClientListMain/ClientListMain";
+import { IClient, IClientResponse } from "../../../Client/ClientList/ClientListMain/ClientListMain";
 
 interface ISalesModalProps {
     detailSalesPlan: ISales;
@@ -40,48 +35,41 @@ interface IPostResponse {
 export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setDetailSalesPlan, postSuccess }) => {
     const formRef = useRef<HTMLFormElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    // const [salesPlan, setSalesPlan] = useState<ISales>(initSalesPlan);
 
-    const [clientList, setClientList] = useState<IGetClient[]>([]);
+    const [clientList, setClientList] = useState<IClient[]>([]);
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
     const [mainCategoryList, setMainCategoryList] = useState<IMaincategory[]>([]);
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id || "");
+    const [selectclient, setSelectClient] = useState<string>(detailSalesPlan?.client_id.toString() || "");
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectMaincategory, setSelectMaincategory] = useState<string>(detailSalesPlan?.industry_code || "");
     const [selectSubcategory, setSelectSubcategory] = useState<string>(detailSalesPlan?.detail_code || "");
-    const [selectProduct, setSelectProduct] = useState<string>(detailSalesPlan?.product_name || "");
+    const [selectProduct, setSelectProduct] = useState<number>(parseInt(detailSalesPlan?.product_id) || 0);
 
-    const [planNum, setPlanNum] = useState<string>(detailSalesPlan?.plan_num);
-    const [selectDate, setSelectDate] = useState<string>("");
+    const [planNum, setPlanNum] = useState<string>(detailSalesPlan?.plan_num || "");
+    const [selectDate, setSelectDate] = useState<string>(detailSalesPlan?.target_date || "");
 
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
     useEffect(() => {
-        // console.log("detailSalesPlan:" + detailSalesPlan);
-        // for (const [key, value] of Object.entries(detailSalesPlan)) {
-        //     console.log("Key: " + key + ", Value: " + value);
-        // }
         getClientList();
         getManufacturerList();
         getMainCategoryList();
         getSubCategoryList();
         getProductList();
-        for (let key in clientList) {
-            console.log("clientList:" + clientList[key]);
-        }
+
         return () => {
             setDetailSalesPlan();
+            setPlanNum("");
         };
-    }, [selectclient, selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
+    }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
 
     const clientOptions = [
         { value: "", label: "선택" },
         ...(clientList?.length > 0
-            ? clientList.map((clientValue: IGetClient) => {
-                  //   console.log("clientValue.client_id:" + clientValue.client_id);
+            ? clientList.map((clientValue: IClient) => {
                   return {
                       value: clientValue.client_id,
                       label: clientValue.client_name,
@@ -94,10 +82,6 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         { value: "", label: "선택" },
         ...(manuFacturerList?.length > 0
             ? manuFacturerList.map((manuFacturerValue: IManufacturer) => {
-                  //   console.log("manuFacturerList:" + manuFacturerList);
-                  //   for (let key in manuFacturerList) {
-                  //       console.log(manuFacturerList[key]);
-                  //   }
                   return {
                       value: manuFacturerValue.industryCode,
                       label: manuFacturerValue.industryName,
@@ -123,8 +107,6 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         ...(subCategoryList?.length > 0
             ? subCategoryList.map((subCategoryValue: ISubcategory) => {
                   return {
-                      // key 요소가 활용 되고 있는지 확인 필요
-                      //   key: subCategoryValue.detail_code,
                       value: subCategoryValue.detail_code,
                       label: subCategoryValue.detail_name,
                   };
@@ -132,20 +114,11 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
             : []),
     ];
 
-    // const productIdx = new Array(productList.length).toString;
-
     const productOptions = [
         { value: "", label: "선택" },
         ...(productList?.length > 0
             ? productList.map((productValue: IProduct) => {
                   return {
-                      // 오류 발생
-                      // Warning: Encountered two children with the same key, `MF00102`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. Error Component Stack
-                      // select box에 새로운 리스트를 반영할 떄 기존 리스트가 사라지고 새로운 리스트가 담겨야 하는데 유일한 키값이 중복되어
-                      // 고유값 활용을 위한 mapper 영역 수정이 필요한지 확인 필요
-
-                      // key 요소가 활용 되고 있는지 확인 필요
-                      //   key: productIdx,
                       value: productValue.id,
                       label: productValue.name,
                   };
@@ -154,7 +127,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     ];
 
     const getClientList = () => {
-        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
+        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
@@ -192,14 +165,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     };
 
     const insertSalesPlan = () => {
-        // console.log("formRef.current:" + formRef.current);
         const formData = new FormData(formRef.current);
-        // const selectManuFacturerId = () => {
-        //     return () => {
-        //         manuFacturerList["industry_code"];
-        //     };
-        // };
-        // console.log("formData:" + formData);
 
         const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
             return manuFacturerList.industryCode === formData.get("industry_code");
@@ -208,7 +174,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
 
         const isProductName = (productList: IProduct): boolean => {
-            return productList.name === formData.get("product_id");
+            return productList.id.toString() === formData.get("product_id");
         };
 
         const selectProductName = productList.find(isProductName);
@@ -220,28 +186,13 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
             .post("/business/sales-plan/insertPlanBody.do", formData, {
                 headers: { "Content-Type": "application/json" },
             })
-            // .post("/business/sales-plan/insertPlanBody.do", {
-            //     emp_id: "3",
-            //     client_id: "0",
-            //     manufacturer_id: "0",
-            //     industry_code: "MF001",
-            //     target_date: "2025-03-16",
-            //     goal_quanti: "10",
-            //     perform_qut: "0",
-            //     plan_memo: "250316_1",
-            //     detail_code: "MF00102",
-            //     product_name: "레고 캐슬",
-            //     plan_num: "",
-            // }
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("저장되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -256,9 +207,8 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
 
         const isProductName = (productList: IProduct): boolean => {
-            return productList.name === formData.get("product_id");
+            return productList.id.toString() === formData.get("product_id");
         };
-
         const selectProductName = productList.find(isProductName);
 
         formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
@@ -269,13 +219,11 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
             })
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("수정되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
@@ -285,109 +233,106 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
             .post("/business/sales-plan/deletePlanBody.do", { plan_num: planNum })
             .then((res: AxiosResponse<IPostResponse>) => {
                 if (res.data.result === "success") {
-                    console.log("Response:", res);
                     alert("삭제되었습니다.");
                     postSuccess();
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
                 alert("서버 오류가 발생했습니다.");
             });
     };
     return (
-        <SalesPlanListModalStyle>
+        <SalesPlanListModalStyled>
             <div className='container'>
                 <form ref={formRef}>
                     <label>
-                        직원아이디
-                        <StyledInput
-                            type='text'
-                            value={detailSalesPlan?.emp_id || userInfo.empId}
-                            name='emp_id'
-                            readOnly
-                        ></StyledInput>
+                        <span>
+                            직원아이디<span style={{ color: "red" }}>*</span>
+                        </span>
+                        <StyledInput type='text' value={userInfo.loginId || ""} readOnly></StyledInput>
                     </label>
+                    <input type='hidden' name='emp_id' value={detailSalesPlan?.emp_id || userInfo.empId} />
                     <label>
-                        직원이름
-                        {/* <StyledInput type='text' defaultValue={userInfo.userNm} name='emp_name'></StyledInput> */}
+                        <span>
+                            직원이름<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledInput
                             type='text'
-                            defaultValue={detailSalesPlan?.emp_name || userInfo.userNm}
+                            defaultValue={userInfo.userNm || ""}
                             name='emp_name'
                             readOnly
                         ></StyledInput>
                     </label>
                     <label>
-                        거래처
+                        <span>
+                            거래처<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledSelectBox
                             options={clientOptions}
-                            value={Number(selectclient)}
+                            value={selectclient}
                             onChange={setSelectClient}
                             name='client_id'
                         />
-                        {/* <StyledInput
-                            type='text'
-                            value={detailSalesPlan?.client_name}
-                            name='client_name'
-                            readOnly
-                        ></StyledInput> */}
                     </label>
                     <label>
-                        제조업체
+                        <span>
+                            제조업체<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledSelectBox
                             options={manuFacturerOptions}
                             value={selectManuFacturer}
                             onChange={setSelectManuFacturer}
                             name='manufacturer_id'
                         />
-                        {/* <StyledInput
-                            type='text'
-                            defaultValue={detailSalesPlan.manufacturer_id}
-                            name='manufacturer_id'
-                        /> */}
                     </label>
                     <label>
-                        대분류
+                        <span>
+                            대분류<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledSelectBox
                             options={mainCategoryOptions}
                             value={selectMaincategory}
                             onChange={setSelectMaincategory}
                             name='industry_code'
                         />
-                        {/* <StyledInput type='text' defaultValue={detailSalesPlan.industry_code} name='industry_code' /> */}
                     </label>
                     <label>
-                        소분류
+                        <span>
+                            소분류<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledSelectBox
                             options={subCategoryOptions}
                             value={selectSubcategory}
                             onChange={setSelectSubcategory}
                             name='detail_code'
                         />
-                        {/* <StyledInput type='text' defaultValue={detailSalesPlan.detail_code} name='detail_code' /> */}
                     </label>
                     <label>
-                        제품
+                        <span>
+                            제품<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledSelectBox
                             options={productOptions}
                             value={selectProduct}
                             onChange={setSelectProduct}
                             name='product_id'
                         />
-                        {/* <StyledInput type='text' defaultValue={detailSalesPlan.detail_name} name='product_name' /> */}
                     </label>
                     <label>
-                        목표날짜
+                        <span>
+                            목표날짜<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledInput
                             type='date'
-                            defaultValue={detailSalesPlan?.target_date}
+                            defaultValue={selectDate}
                             onChange={(e) => setSelectDate(e.target.value)}
                             name='target_date'
                         />
                     </label>
                     <label>
-                        목표수량
+                        <span>
+                            목표수량<span style={{ color: "red" }}>*</span>
+                        </span>
                         <StyledInput
                             type='text'
                             defaultValue={detailSalesPlan?.goal_quanti}
@@ -395,7 +340,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         ></StyledInput>
                     </label>
                     <label>
-                        비고
+                        <span>비고</span>
                         <StyledInput
                             type='text'
                             defaultValue={detailSalesPlan?.plan_memo}
@@ -427,6 +372,6 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                     <input type='hidden' name='perform_qut' value={detailSalesPlan?.perform_qut || 0} readOnly />
                 </form>
             </div>
-        </SalesPlanListModalStyle>
+        </SalesPlanListModalStyled>
     );
 };

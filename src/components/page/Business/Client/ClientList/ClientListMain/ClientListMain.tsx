@@ -18,7 +18,7 @@ export interface IClient {
     ph: string;
     person_ph: string;
     detail_addr: string;
-    id: string;
+    client_id: string;
     addr: string;
     client_name: string;
     email: string;
@@ -73,15 +73,17 @@ export const ClientListMain = () => {
     const searchClientList = (currentPage?: number) => {
         currentPage = currentPage || 1;
 
-        axios.post("/business/client-list/searchClientListBody.do", {
-            ...searchKeyword,
-            pageSize: 5,
-            currentPage,
-        }).then((res: AxiosResponse<IClientResponse>) => {
-            setClientList(res.data.clientList);
-            setClientListCnt(res.data.clientListCnt);
-            setCPage(currentPage);
-        });
+        axios
+            .post("/business/client-list/searchClientListBody.do", {
+                ...searchKeyword,
+                pageSize: 5,
+                currentPage,
+            })
+            .then((res: AxiosResponse<IClientResponse>) => {
+                setClientList(res.data.clientList);
+                setClientListCnt(res.data.clientListCnt);
+                setCPage(currentPage);
+            });
     };
 
     const handlerClientModal = (row: IClient) => {

@@ -76,6 +76,7 @@ export const SalesReultListSearch = () => {
         };
 
         const selectProductName = productList.find(isProductName);
+
         setSearchKeyword({
             // as-is 개발자도구-페이로드 결과 값들
             group_code: selectManuFacturer,

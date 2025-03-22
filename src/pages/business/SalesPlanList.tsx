@@ -8,7 +8,7 @@ export const SalesPlanList = () => {
         <>
             <SalesPlanListProvider>
                 <ContentBox variant='primary' fontSize='large'>
-                    영업 계획
+                    제품 품목별 일일 영업계획
                 </ContentBox>
                 <SalesPlanListSearch />
                 <SalesPlanListMain />
