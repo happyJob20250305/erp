@@ -39,6 +39,10 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
     const expenseLastUpdate = async () => {
         const formData = new FormData(formRef.current);
         formData.append("exp_id", expenseDetail.id.toString());
+        formData.append("debit_code", expenseDetail.debit_code.toString());
+        formData.append("crebit_code", expenseDetail.crebit_code.toString());
+        formData.append("voucher_amount", String(expenseDetail.expense_payment).replace(/,/g, ''));
+
 
         const result = await accountPostApi<IPostResponse>(ExpenseApproval.expenseLastUpdate, formData);
         if (result.result === "success") {
@@ -49,7 +53,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
 
     const expensefileDownload = async () => {
         const param = new URLSearchParams();
-        param.append("expenseSeq", expenseDetail?.id.toString());
+        param.append("expenseSeq", expenseDetail?.id.toString());        
 
         const result = await accountPostApi<Blob>(ExpenseApproval.expensefileDownload, param, { responseType: "blob" });
         if (result) {
@@ -152,7 +156,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                     <td>
                                         <StyledInput
                                             type='text'
-                                            name='accountDetail'
+                                            name='debit_name'
                                             defaultValue={expenseDetail?.detail_name}
                                             variant="disable"
                                             readOnly
@@ -162,7 +166,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                     <td>
                                         <StyledInput
                                             type='text'
-                                            name='clientId'
+                                            name='client_name'
                                             defaultValue={expenseDetail?.client_name}
                                             variant="disable"
                                             readOnly
@@ -247,7 +251,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             <td>
                                                 <StyledInput
                                                     type='text'
-                                                    name='crebitDetail'
+                                                    name='crebit_name'
                                                     defaultValue={expenseDetail?.crebit_name}
                                                     variant="disable"
                                                     readOnly
