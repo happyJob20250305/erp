@@ -24,7 +24,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
     const bankRef = useRef<HTMLElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
-    const [clientId, setClientId] = useState<string>(detailClient?.id || "");
+    const [clientId, setClientId] = useState<string>(detailClient?.client_id || "");
     const [custUpdateDate, setCustUpdateDate] = useState<string>(detailClient?.cust_update_date || "");
     const [zipCode, setZipCode] = useState<string>(detailClient?.zip || "");
     const [address, setAddress] = useState<string>(detailClient?.addr || "");
