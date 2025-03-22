@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SalesPlanListModalStyle = styled.div`
+export const SalesPlanListModalStyled = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
