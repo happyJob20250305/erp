@@ -29,8 +29,8 @@ interface IProductResponse {
 }
 
 export const OrderListSearch = () => {
-    const [selectorderDate, setSelectOrderDate] = useState<string>("");
-    const [selectdeliveryDate, setSelectDeliveryDate] = useState<string>("");
+    const [selectOrderDate, setSelectOrderDate] = useState<string>("");
+    const [selectDeliveryDate, setSelectDeliveryDate] = useState<string>("");
     const [clientList, setClientList] = useState<IClient[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
     const [selectClientId, setSelectClientId] = useState<string>("");
@@ -49,7 +49,6 @@ export const OrderListSearch = () => {
         axios
             .post("/business/order-information-list/clientNamesBody.do")
             .then((res: AxiosResponse<IClientResponse>) => {
-                console.log("res.data.clientNamesList:" + res.data.clientNameList);
                 setClientList(res.data.clientNameList);
             });
     };
@@ -62,56 +61,71 @@ export const OrderListSearch = () => {
             });
     };
 
-    const clientNameOptions = [
-        { value: "", label: "선택" },
-        ...(clientList?.length > 0
-            ? clientList.map((clientNamesValue: IClient) => ({
-                  value: clientNamesValue.id,
-                  label: clientNamesValue.name,
-              }))
-            : []),
-    ];
-
-    const productNamesOptions = [
-        { value: "", label: "선택" },
-        ...(productList?.length > 0
-            ? productList.map((productNamesValue: IProduct) => ({
-                  value: productNamesValue.id,
-                  label: productNamesValue.name,
-              }))
-            : []),
-    ];
-
     const handlerSearchOrderInfo = () => {
+        let clientIdFound = "";
+
+        if (selectClientId != "") {
+            clientList.forEach((client) => {
+                if (client.name.includes(selectClientId)) {
+                    clientIdFound = client.id.toString();
+                }
+            });
+        }
+
+        let productIdFound = "";
+
+        if (selectProductId != "") {
+            productList.forEach((product) => {
+                if (product.name.includes(selectProductId)) {
+                    productIdFound = product.id.toString();
+                }
+            });
+        }
+
         setSearchKeyword({
-            searchOrderDate: selectorderDate,
-            searchDeliveryDate: selectdeliveryDate,
-            searchClientId: selectClientId,
-            searchProductId: selectProductId,
+            searchOrderDate: selectOrderDate,
+            searchDeliveryDate: selectDeliveryDate,
+            searchClientId: clientIdFound,
+            searchProductId: productIdFound,
         });
     };
 
+    const resetSearch = () => {
+        setSearchKeyword({});
+        setSelectClientId("");
+        setSelectProductId("");
+        setSelectOrderDate("");
+        setSelectDeliveryDate("");
+    };
     return (
         <OrderListSearchstyled>
             <label>
                 거래처
-                <StyledSelectBox
-                    options={clientNameOptions}
+                <StyledInput
+                    type='text'
+                    list='searchClientIdOptions'
                     value={selectClientId}
-                    onChange={(value: string) => {
-                        setSelectClientId(value);
-                    }}
+                    onChange={(e) => setSelectClientId(e.target.value)}
                 />
+                <datalist id='searchClientIdOptions'>
+                    {clientList.map((client) => (
+                        <option key={client.id} value={client.name}></option>
+                    ))}
+                </datalist>
             </label>
             <label>
                 제품
-                <StyledSelectBox
-                    options={productNamesOptions}
+                <StyledInput
+                    type='text'
+                    list='searchProductIdOptions'
                     value={selectProductId}
-                    onChange={(value: string) => {
-                        setSelectProductId(value);
-                    }}
+                    onChange={(e) => setSelectProductId(e.target.value)}
                 />
+                <datalist id='searchProductIdOptions'>
+                    {productList.map((product) => (
+                        <option key={product.id} value={product.name} />
+                    ))}
+                </datalist>
             </label>
             <label>
                 수주날짜
@@ -123,6 +137,7 @@ export const OrderListSearch = () => {
             </label>
             <StyledButton onClick={handlerSearchOrderInfo}>조회</StyledButton>
             <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <img src='/refresh.png' onClick={resetSearch} style={{ width: "25px", height: "25px" }} />
         </OrderListSearchstyled>
     );
 };

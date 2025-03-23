@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const EstimateListModalStyled = styled.div`
+const EstimateListModalStyled = styled.div`
     width: 100%;
     height: 100%;
     position: fixed;
@@ -24,6 +24,10 @@ export const EstimateListModalStyled = styled.div`
         border-radius: 4px;
         border: 1px solid #ccc;
     }
+    textarea {
+        width: 800px;
+        height: 50px;
+    }
 
     .container {
         background: white;
@@ -31,7 +35,7 @@ export const EstimateListModalStyled = styled.div`
         border-radius: 8px;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
         position: relative;
-        width: 400px;
+        width: 1080px;
     }
 
     .button-container {
@@ -73,3 +77,56 @@ export const EstimateListModalStyled = styled.div`
         }
     }
 `;
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+`;
+
+const ButtonArea = styled.div`
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+`;
+
+const ModalStyledTable = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background: #e9ecef;
+        color: black;
+        text-align: center;
+        font-size: 15px;
+        width: 70px;
+    }
+
+    th label {
+        display: inline-flex;
+        align-items: center;
+    }
+
+    th .asterisk {
+        color: red;
+        margin-left: 5px;
+    }
+    td {
+        background: white;
+        width: 150px;
+        text-align: center;
+    }
+`;
+
+export { EstimateListModalStyled, ModalOverlay, ButtonArea, ModalStyledTable };
