@@ -11,7 +11,7 @@ import { modalState } from "../../../../../../stores/modalState";
 
 export const ClientListSearch = () => {
     const [clientList, setClientList] = useState<IClient[]>([]);
-    const [selectclient, setSelectClient] = useState<string>("");
+    const [selectClient, setSelectClient] = useState<string>("");
     const [selectDate, setSelectDate] = useState<string>("");
 
     const { setSearchKeyword } = useContext(ClientListContext);
@@ -29,7 +29,7 @@ export const ClientListSearch = () => {
     };
 
     const handlerClientSearch = () => {
-        if (!selectclient && !selectDate) {
+        if (!selectClient && !selectDate) {
             alert("거래처를 입력 하세요.");
             return;
         }
@@ -37,15 +37,21 @@ export const ClientListSearch = () => {
         let clientFound = false;
 
         clientList.forEach((client) => {
-            if (client.client_name.includes(selectclient)) {
+            if (client.client_name.includes(selectClient)) {
                 clientFound = true;
             }
         });
 
         setSearchKeyword({
-            client_name: selectclient,
+            client_name: selectClient,
             cust_update_date: selectDate,
         });
+    };
+
+    const resetSearch = () => {
+        setSearchKeyword({});
+        setSelectClient("");
+        setSelectDate("");
     };
 
     return (
@@ -55,7 +61,7 @@ export const ClientListSearch = () => {
                 <StyledInput
                     type='text'
                     list='searchClientOptions'
-                    value={selectclient}
+                    value={selectClient}
                     onChange={(e) => setSelectClient(e.target.value)}
                 />
                 <datalist id='searchClientOptions'>
@@ -70,6 +76,7 @@ export const ClientListSearch = () => {
             </label>
             <StyledButton onClick={handlerClientSearch}>조회</StyledButton>
             <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <img src='/refresh.png' onClick={resetSearch} style={{ width: "25px", height: "25px" }} />
         </ClientListSearchStyled>
     );
 };

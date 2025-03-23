@@ -30,7 +30,7 @@ interface IProductResponse {
 
 export const EstimateListSearch = () => {
     const [selectEstimateDate, setSelectEstimateDate] = useState<string>("");
-    const [selectdeliveryDate, setSelectDeliveryDate] = useState<string>("");
+    const [selectDeliveryDate, setSelectDeliveryDate] = useState<string>("");
     const [clientList, setClientList] = useState<IClient[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
     const [selectClientId, setSelectClientId] = useState<string>("");
@@ -78,37 +78,72 @@ export const EstimateListSearch = () => {
     ];
 
     const handlerSearchEstimateList = () => {
+        let clientIdFound = "";
+
+        if (selectClientId != "") {
+            clientList.forEach((client) => {
+                if (client.name.includes(selectClientId)) {
+                    clientIdFound = client.id.toString();
+                }
+            });
+        }
+
+        let productIdFound = "";
+
+        if (selectProductId != "") {
+            productList.forEach((product) => {
+                if (product.name.includes(selectProductId)) {
+                    productIdFound = product.id.toString();
+                }
+            });
+        }
         setSearchKeyword({
             searchEstimateDate: selectEstimateDate,
-            searchDeliveryDate: selectdeliveryDate,
-            searchClientId: selectClientId,
-            searchProductId: selectProductId,
+            searchDeliveryDate: selectDeliveryDate,
+            searchClientId: clientIdFound,
+            searchProductId: productIdFound,
         });
+    };
+
+    const resetSearch = () => {
+        setSearchKeyword({});
+        setSelectClientId("");
+        setSelectProductId("");
+        setSelectEstimateDate("");
+        setSelectDeliveryDate("");
     };
     return (
         <EstimateListSearchStyled>
             <label>
                 거래처
-                <StyledSelectBox
-                    options={clientOptions}
+                <StyledInput
+                    type='text'
+                    list='searchClientIdOptions'
                     value={selectClientId}
-                    onChange={(value: string) => {
-                        setSelectClientId(value);
-                    }}
+                    onChange={(e) => setSelectClientId(e.target.value)}
                 />
+                <datalist id='searchClientIdOptions'>
+                    {clientList.map((client) => (
+                        <option key={client.id} value={client.name}></option>
+                    ))}
+                </datalist>
             </label>
             <label>
                 제품
-                <StyledSelectBox
-                    options={productOptions}
+                <StyledInput
+                    type='text'
+                    list='searchProductIdOptions'
                     value={selectProductId}
-                    onChange={(value: string) => {
-                        setSelectProductId(value);
-                    }}
+                    onChange={(e) => setSelectProductId(e.target.value)}
                 />
+                <datalist id='searchProductIdOptions'>
+                    {productList.map((product) => (
+                        <option key={product.id} value={product.name} />
+                    ))}
+                </datalist>
             </label>
             <label>
-                견적날짜
+                수주날짜
                 <StyledInput type='date' onChange={(e) => setSelectEstimateDate(e.target.value)} />
             </label>
             <label>
@@ -117,6 +152,7 @@ export const EstimateListSearch = () => {
             </label>
             <StyledButton onClick={handlerSearchEstimateList}>조회</StyledButton>
             <StyledButton onClick={() => setModal(!modal)}>등록</StyledButton>
+            <img src='/refresh.png' onClick={resetSearch} style={{ width: "25px", height: "25px" }} />
         </EstimateListSearchStyled>
     );
 };
