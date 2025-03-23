@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 
 import axios, { AxiosResponse } from "axios";
 import { ISales, ISalesResponse } from "../../../../../../models/interface/business/sales/ISales";
-import { SalesResultMainListStyled } from "./styled";
+import { SalesResultListMainStyled } from "./styled";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
-import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/StyledTable";
+import { StyledTable } from "../../../../../common/styled/StyledTable";
 
 export const SalesResultMainList = () => {
     const [salesResultList, setSalesResultList] = useState<ISales[]>([]);
@@ -35,20 +35,20 @@ export const SalesResultMainList = () => {
     };
 
     return (
-        <SalesResultMainListStyled>
+        <SalesResultListMainStyled>
             <>
                 <StyledTable>
                     <thead>
                         <tr>
-                            <StyledTh>목표날짜</StyledTh>
-                            <StyledTh>거래처</StyledTh>
-                            <StyledTh>제조업체</StyledTh>
-                            <StyledTh>대분류</StyledTh>
-                            <StyledTh>소분류</StyledTh>
-                            <StyledTh>제품</StyledTh>
-                            <StyledTh>목표수량</StyledTh>
-                            <StyledTh>실적수량</StyledTh>
-                            <StyledTh>실적</StyledTh>
+                            <th>목표날짜</th>
+                            <th>거래처</th>
+                            <th>제조업체</th>
+                            <th>대분류</th>
+                            <th>소분류</th>
+                            <th>제품</th>
+                            <th>목표수량</th>
+                            <th>실적수량</th>
+                            <th>실적</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,23 +56,21 @@ export const SalesResultMainList = () => {
                             salesResultList.map((salesResult) => {
                                 return (
                                     <tr key={salesResult?.plan_num}>
-                                        <StyledTd>{salesResult?.target_date}</StyledTd>
-                                        <StyledTd>{salesResult?.client_name}</StyledTd>
-                                        <StyledTd>{salesResult?.name}</StyledTd>
-                                        <StyledTd>{salesResult?.group_name}</StyledTd>
-                                        <StyledTd>{salesResult?.detail_name}</StyledTd>
-                                        <StyledTd>{salesResult?.product_name}</StyledTd>
-                                        <StyledTd>{salesResult?.goal_quanti}</StyledTd>
-                                        <StyledTd>{salesResult?.perform_qut}</StyledTd>
-                                        <StyledTd>
-                                            {(salesResult?.perform_qut / salesResult?.goal_quanti) * 100}
-                                        </StyledTd>
+                                        <td>{salesResult?.target_date}</td>
+                                        <td>{salesResult?.client_name}</td>
+                                        <td>{salesResult?.name}</td>
+                                        <td>{salesResult?.group_name}</td>
+                                        <td>{salesResult?.detail_name}</td>
+                                        <td>{salesResult?.product_name}</td>
+                                        <td>{salesResult?.goal_quanti}</td>
+                                        <td>{salesResult?.perform_qut}</td>
+                                        <td>{(salesResult?.perform_qut / salesResult?.goal_quanti) * 100}</td>
                                     </tr>
                                 );
                             })
                         ) : (
                             <tr>
-                                <StyledTd colSpan={9}>조회 내역이 없습니다.</StyledTd>
+                                <td colSpan={9}>조회 내역이 없습니다.</td>
                             </tr>
                         )}
                     </tbody>
@@ -84,6 +82,6 @@ export const SalesResultMainList = () => {
                 itemsCountPerPage={5}
                 onChange={searchSalesResultList}
             />
-        </SalesResultMainListStyled>
+        </SalesResultListMainStyled>
     );
 };
