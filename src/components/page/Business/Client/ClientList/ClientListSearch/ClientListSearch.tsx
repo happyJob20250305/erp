@@ -28,17 +28,20 @@ export const ClientListSearch = () => {
         });
     };
 
-    const clientOptions = [
-        { value: "", label: "선택" },
-        ...(clientList?.length > 0
-            ? clientList.map((clientValue: IClient) => ({
-                  value: clientValue.client_name,
-                  label: clientValue.client_name,
-              }))
-            : []),
-    ];
-
     const handlerClientSearch = () => {
+        if (!selectclient && !selectDate) {
+            alert("거래처를 입력 하세요.");
+            return;
+        }
+
+        let clientFound = false;
+
+        clientList.forEach((client) => {
+            if (client.client_name.includes(selectclient)) {
+                clientFound = true;
+            }
+        });
+
         setSearchKeyword({
             client_name: selectclient,
             cust_update_date: selectDate,
@@ -49,11 +52,17 @@ export const ClientListSearch = () => {
         <ClientListSearchStyled>
             <label>
                 거래처
-                <StyledSelectBox
-                    options={clientOptions}
+                <StyledInput
+                    type='text'
+                    list='searchClientOptions'
                     value={selectclient}
-                    onChange={(value: string) => setSelectClient(value)}
+                    onChange={(e) => setSelectClient(e.target.value)}
                 />
+                <datalist id='searchClientOptions'>
+                    {clientList.map((client) => (
+                        <option key={client.client_id} value={client.client_name} />
+                    ))}
+                </datalist>
             </label>
             <label>
                 날짜

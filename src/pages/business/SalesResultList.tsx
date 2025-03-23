@@ -8,7 +8,7 @@ export const SalesResultList = () => {
         <>
             <SalesResultListProvider>
                 <ContentBox variant='primary' fontSize='large'>
-                    영업 실적
+                    영업실적 조회
                 </ContentBox>
                 <SalesReultListSearch />
                 <SalesResultMainList />
