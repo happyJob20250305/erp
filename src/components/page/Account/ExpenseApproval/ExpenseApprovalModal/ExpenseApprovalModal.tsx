@@ -39,6 +39,10 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
     const expenseLastUpdate = async () => {
         const formData = new FormData(formRef.current);
         formData.append("exp_id", expenseDetail.id.toString());
+        formData.append("debit_code", expenseDetail.debit_code.toString());
+        formData.append("crebit_code", expenseDetail.crebit_code.toString());
+        formData.append("voucher_amount", String(expenseDetail.expense_payment).replace(/,/g, ''));
+
 
         const result = await accountPostApi<IPostResponse>(ExpenseApproval.expenseLastUpdate, formData);
         if (result.result === "success") {
@@ -49,7 +53,7 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
 
     const expensefileDownload = async () => {
         const param = new URLSearchParams();
-        param.append("expenseSeq", expenseDetail?.id.toString());
+        param.append("expenseSeq", expenseDetail?.id.toString());        
 
         const result = await accountPostApi<Blob>(ExpenseApproval.expensefileDownload, param, { responseType: "blob" });
         if (result) {
@@ -79,8 +83,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='exp_id'
                                             defaultValue={expenseDetail?.id}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>신청일자</th>
                                     <td>
@@ -88,8 +93,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='date'
                                             name='request_date'
                                             defaultValue={expenseDetail?.req_date}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>사용일자</th>
                                     <td>
@@ -97,8 +103,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='date'
                                             name='use_date'
                                             defaultValue={expenseDetail?.use_date}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
@@ -108,8 +115,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='emp_no'
                                             defaultValue={expenseDetail?.emp_no}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>사원명</th>
                                     <td>
@@ -117,8 +125,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='emp_name'
                                             defaultValue={expenseDetail?.name}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
 
                                     <th scope='row'>사용부서</th>
@@ -127,8 +136,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='use_dept'
                                             defaultValue={expenseDetail?.use_department}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                 </tr>
                                 <tr id='writer'>
@@ -138,26 +148,29 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='accountGroup'
                                             defaultValue={expenseDetail?.group_name}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>계정과목</th>
                                     <td>
                                         <StyledInput
                                             type='text'
-                                            name='accountDetail'
+                                            name='debit_name'
                                             defaultValue={expenseDetail?.detail_name}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>거래처명</th>
                                     <td>
                                         <StyledInput
                                             type='text'
-                                            name='clientId'
+                                            name='client_name'
                                             defaultValue={expenseDetail?.client_name}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
@@ -167,8 +180,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='exp_pay'
                                             defaultValue={expenseDetail?.expense_payment}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                     <th scope='row'>승인여부</th>
                                     <td>
@@ -196,8 +210,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                                 type='text'
                                                 name='isApproval'
                                                 defaultValue={approvalCode(expenseDetail?.is_approval)}
-                                                disabled
-                                            ></StyledInput>
+                                                variant="disable"
+                                                readOnly
+                                            />
                                         )}
                                     </td>
                                     <th scope='row'>승인일자</th>
@@ -206,8 +221,9 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             type='text'
                                             name='approval_date'
                                             defaultValue={expenseDetail?.approval_date}
-                                            disabled
-                                        ></StyledInput>
+                                            variant="disable"
+                                            readOnly
+                                        />
                                     </td>
                                 </tr>
                                 <tr>
@@ -235,10 +251,11 @@ export const ExpenseApprovalModal: FC<IExpenseApprovalModalProps> = ({
                                             <td>
                                                 <StyledInput
                                                     type='text'
-                                                    name='crebitDetail'
+                                                    name='crebit_name'
                                                     defaultValue={expenseDetail?.crebit_name}
-                                                    disabled
-                                                ></StyledInput>
+                                                    variant="disable"
+                                                    readOnly
+                                                />
                                             </td>
                                         </>
                                     ) : null}
