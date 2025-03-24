@@ -7,7 +7,7 @@ export interface ISales {
     emp_name: string;
     goal_quanti: number;
     group_name: string;
-    group_code: string;
+    group_code: string; // group_name 혹은 industry_code을 통해 group_code 추출
     industry_code: string;
     manufacturer_id: string;
     name: string;
@@ -15,7 +15,7 @@ export interface ISales {
     plan_memo: string;
     plan_num: string;
     product_name: string;
-    product_id: string;
+    product_id: string; // product_name을 통해 product_id 추출
     target_date: string;
 }
 
