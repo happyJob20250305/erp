@@ -20,6 +20,9 @@ export const StyledInputStyled = styled.input<InputProps>`
         }
     }}
 
+    /* 가로 옵션 */
+  ${({ width }) => `width: ${width}px;`}
+
     /* 가로 100% 옵션 */
   ${({ fullWidth }) => fullWidth && `width: 100%;`}
 
@@ -41,6 +44,12 @@ export const StyledInputStyled = styled.input<InputProps>`
           &:focus {
             background-color: #d5dbdb;
           }
+        `;
+            case "disable":
+                return `
+          background-color:#FAFAFA;
+          border: 1px solid #CCCCCC;
+          color: #545454
         `;
             default:
                 return `

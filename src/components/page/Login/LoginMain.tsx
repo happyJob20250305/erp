@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { LoginStyled } from './styled';
-import axios from 'axios';
-import { useSetRecoilState } from 'recoil';
-import { useNavigate } from 'react-router-dom';
-import { loginInfoState } from '../../../stores/userInfo';
-import { ILoginInfo } from '../../../models/interface/store/userInfo';
-import logo_img from '../../../assets/logo_img.png';
+import { useState } from "react";
+import { LoginStyled } from "./styled";
+import axios from "axios";
+import { useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { loginInfoState } from "../../../stores/userInfo";
+import { ILoginInfo } from "../../../models/interface/store/userInfo";
+import logo_img from "../../../assets/logo_img.png";
 
 export interface IAccount {
     lgn_Id: string;
@@ -15,36 +15,38 @@ export interface IAccount {
 export const LoginMain = () => {
     const setLoginInfo = useSetRecoilState<ILoginInfo>(loginInfoState);
     const [account, setAccount] = useState<IAccount>({
-        lgn_Id: '',
-        pwd: '',
+        lgn_Id: "",
+        pwd: "",
     });
     const navigate = useNavigate();
 
     const loginHandler = () => {
         const param = new URLSearchParams();
-        param.append('lgn_Id', account.lgn_Id);
-        param.append('pwd', account.pwd);
+        param.append("lgn_Id", account.lgn_Id);
+        param.append("pwd", account.pwd);
 
-        axios.post('/loginProc.do', param).then((res) => {
+        axios.post("/loginProc.do", param).then((res) => {
             const data = res.data;
 
-            if (data.result === 'SUCCESS') {
+            if (data.result === "SUCCESS") {
                 setLoginInfo(data);
-                sessionStorage.setItem('userInfo', JSON.stringify(data));
-                navigate('/react');
+                sessionStorage.setItem("userInfo", JSON.stringify(data));
+                navigate("/react");
+            } else if ((data.result === "FALSE" && data.emplStatus === "F") || data.emplStatus === "O") {
+                alert(data.resultMsg);
             } else {
-                alert('ID 혹은 비밀번호가 틀립니다');
+                alert("ID 혹은 비밀번호가 틀립니다");
                 return;
             }
         });
     };
     return (
         <LoginStyled>
-            <div className="login-container">
+            <div className='login-container'>
                 <div>
-                    <div className="login-text">
-                        <div className="login-image">
-                            <img alt="" src={logo_img} />
+                    <div className='login-text'>
+                        <div className='login-image'>
+                            <img alt='' src={logo_img} />
                         </div>
                         <h3> 안되는 것이 실패가 아니라 포기하는 것이 실패다 </h3>
                         <div>
@@ -59,8 +61,8 @@ export const LoginMain = () => {
                         </div>
                         <div> -이대희, ‘1 % 의 가능성을 희망으로 바꾼 사람들’ 에서 </div>
                     </div>
-                    <div className="login-box">
-                        <div className="buttons inputs">
+                    <div className='login-box'>
+                        <div className='buttons inputs'>
                             <div>
                                 <label> 아이디 </label>
                                 <input
@@ -76,7 +78,7 @@ export const LoginMain = () => {
                                 <label> 비밀번호 </label>
                                 <input
                                     required
-                                    type="password"
+                                    type='password'
                                     onChange={(e) => {
                                         setAccount((prev: IAccount) => {
                                             return { ...prev, pwd: e.target.value };
@@ -85,10 +87,10 @@ export const LoginMain = () => {
                                 />
                             </div>
                             <div>
-                                <button className="login-button" onClick={loginHandler}>
+                                <button className='login-button' onClick={loginHandler}>
                                     Login
                                 </button>
-                                <button className="signup-button"> Sign Up </button>
+                                <button className='signup-button'> Sign Up </button>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,28 @@
+import styled from "styled-components";
+
+export const VoucherListSearchStyled = styled.div`
+    gap: 5px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 5px;
+
+    .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex: 1; /* 왼쪽 정렬 */
+        min-width: 1000px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .search-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+`;
