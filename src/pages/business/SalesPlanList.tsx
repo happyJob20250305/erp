@@ -1,6 +1,6 @@
 import { SalesPlanListProvider } from "../../api/Provider/SalesPlanProvider";
 import { ContentBox } from "../../components/common/ContentBox/ContentBox";
-import { SalesPlanListMain } from "../../components/page/Business/Sales/SalesPlan/SalesPlanListMain/SalesPlanMain";
+import { SalesPlanListMain } from "../../components/page/Business/Sales/SalesPlan/SalesPlanMain/SalesPlanListMain";
 import { SalesPlanListSearch } from "../../components/page/Business/Sales/SalesPlan/SalesPlanSearch/SalesPlanListSearch";
 
 export const SalesPlanList = () => {
