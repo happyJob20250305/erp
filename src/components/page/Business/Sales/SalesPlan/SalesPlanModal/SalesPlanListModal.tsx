@@ -23,10 +23,31 @@ import { IClient, IClientResponse } from "../../../Client/ClientList/ClientListM
 
 interface ISalesModalProps {
     detailSalesPlan: ISales;
-    setDetailSalesPlan: (detailSalesPlan?: ISales) => void;
-    // setDetailSalesPlan: React.Dispatch<React.SetStateAction<object>>;
+    // setDetailSalesPlan: (detailSalesPlan?: ISales) => void;
+    setDetailSalesPlan: React.Dispatch<React.SetStateAction<ISales>>;
     postSuccess: () => void;
 }
+
+const initSales = {
+    client_id: "",
+    client_name: "",
+    detail_code: "",
+    detail_name: "",
+    emp_id: "",
+    emp_name: "",
+    goal_quanti: 0,
+    group_name: "",
+    group_code: "",
+    industry_code: "",
+    manufacturer_id: "",
+    name: "",
+    perform_qut: 0,
+    plan_memo: "",
+    plan_num: "",
+    product_name: "",
+    product_id: "",
+    target_date: "",
+};
 
 interface IPostResponse {
     result: "success" | "fail";
@@ -56,15 +77,31 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     useEffect(() => {
         getClientList();
         getManufacturerList();
+    }, []);
+
+    useEffect(() => {
         getMainCategoryList();
+    }, [selectManuFacturer]);
+
+    useEffect(() => {
         getSubCategoryList();
+    }, [selectMaincategory]);
+
+    useEffect(() => {
         getProductList();
 
         return () => {
-            setDetailSalesPlan();
+            setDetailSalesPlan(initSales);
             setPlanNum("");
         };
-    }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
+    }, [selectSubcategory]);
+
+    useEffect(() => {
+        return () => {
+            setDetailSalesPlan(initSales);
+            setPlanNum("");
+        };
+    }, []);
 
     const clientOptions = [
         { value: "", label: "선택" },
@@ -167,18 +204,21 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     const insertSalesPlan = () => {
         const formData = new FormData(formRef.current);
 
+        //
         const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
             return manuFacturerList.industryCode === formData.get("industry_code");
         };
 
         const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
 
+        //
         const isProductName = (productList: IProduct): boolean => {
             return productList.id.toString() === formData.get("product_id");
         };
 
         const selectProductName = productList.find(isProductName);
 
+        //
         formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
         formData.append("product_name", selectProductName.name);
 
@@ -199,20 +239,21 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
     const updateSalesPlan = () => {
         const formData = new FormData(formRef.current);
-
+        //
         const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
             return manuFacturerList.industryCode === formData.get("industry_code");
         };
 
         const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
-
+        //
         const isProductName = (productList: IProduct): boolean => {
             return productList.id.toString() === formData.get("product_id");
         };
         const selectProductName = productList.find(isProductName);
-
+        //
         formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
         formData.set("product_name", selectProductName.name);
+
         axios
             .post("/business/sales-plan/updatePlanBody.do", formData, {
                 headers: { "Content-Type": "application/json" },
