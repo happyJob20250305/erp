@@ -91,7 +91,8 @@ export const CommonCodeModal: FC<IGroupCodeProps> = ({ groupCode, setGroupCode, 
                 <form ref={formRef}>
                     <label>
                         공통코드*
-                        <StyledInput type='text' name="groupCode" defaultValue={groupCodeDetail?.groupCode} readOnly={!!groupCode} />
+                        <StyledInput type='text' name="groupCode" variant={groupCode ? "disable" : undefined}
+                            defaultValue={groupCodeDetail?.groupCode} readOnly={!!groupCode} />
                     </label>
                     <label>
                         공통코드명*
