@@ -96,7 +96,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='orderDate'
                                         defaultValue={detail?.orderDate}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>납품일자</td>
@@ -105,7 +105,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='deliveryDate'
                                         defaultValue={detail?.deliveryDate}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                             </tr>
@@ -116,7 +116,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='departmentName'
                                         defaultValue={detail?.departmentName}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>전표번호</td>
@@ -125,7 +125,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='voucherNo'
                                         defaultValue={detail?.voucherNo}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                             </tr>
@@ -174,7 +174,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='totalDeliveryCount'
                                         defaultValue={detail?.totalDeliveryCount.toString()}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>총 공급가</td>
@@ -183,7 +183,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='totalSupplyPrice'
                                         defaultValue={detail?.totalSupplyPrice.toString()}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                             </tr>
@@ -194,7 +194,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='totalTax'
                                         defaultValue={detail?.totalTax.toString()}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>총 금액(공급가+세액)</td>
@@ -215,7 +215,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         name='receivableStatus'
                                         value={detail?.receivableStatus === "Y" ? "수금완료" : "미수금"}
                                         style={{ color: detail?.receivableStatus === "Y" ? "blue" : "red" }}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>미납액</td>
@@ -260,16 +260,16 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                         type='text'
                                         name='clientName'
                                         defaultValue={detail?.clientName}
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                                 <td>담당자</td>
                                 <td>
-                                    <StyledInput type='text' name='person' defaultValue={detail?.person} readOnly />
+                                    <StyledInput type='text' name='person' defaultValue={detail?.person} disabled />
                                 </td>
                                 <td>연락처</td>
                                 <td>
-                                    <StyledInput type='text' name='personPh' defaultValue={detail?.personPh} readOnly />
+                                    <StyledInput type='text' name='personPh' defaultValue={detail?.personPh} disabled />
                                 </td>
                             </tr>
                         </tbody>
@@ -289,7 +289,7 @@ export const ReceivablesModal: FC<IReceivablesListModalProps> = ({ orderId, setO
                                                 ? "자동처리"
                                                 : detail?.managerName
                                         }
-                                        readOnly
+                                        disabled
                                     />
                                 </td>
                             </tr>
