@@ -35,7 +35,7 @@ const initSales = {
     detail_name: "",
     emp_id: "",
     emp_name: "",
-    goal_quanti: 0,
+    goal_quanti: null,
     group_name: "",
     group_code: "",
     industry_code: "",
@@ -75,6 +75,13 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
     useEffect(() => {
+        return () => {
+            setDetailSalesPlan(initSales);
+            setPlanNum("");
+        };
+    }, []);
+
+    useEffect(() => {
         getClientList();
         getManufacturerList();
     }, []);
@@ -89,19 +96,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
     useEffect(() => {
         getProductList();
-
-        return () => {
-            setDetailSalesPlan(initSales);
-            setPlanNum("");
-        };
     }, [selectSubcategory]);
-
-    useEffect(() => {
-        return () => {
-            setDetailSalesPlan(initSales);
-            setPlanNum("");
-        };
-    }, []);
 
     const clientOptions = [
         { value: "", label: "선택" },
@@ -220,7 +215,11 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
         //
         formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
+
+        //
+        formData.append("emp_id", (detailSalesPlan?.emp_id || userInfo.empId).toString());
         formData.append("product_name", selectProductName.name);
+        formData.append("perform_qut", (0).toString());
 
         axios
             .post("/business/sales-plan/insertPlanBody.do", formData, {
@@ -239,21 +238,29 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
 
     const updateSalesPlan = () => {
         const formData = new FormData(formRef.current);
+
         //
         const isManuFacturerId = (manuFacturerList: IManufacturer): boolean => {
             return manuFacturerList.industryCode === formData.get("industry_code");
         };
 
         const selectManuFacturerId = manuFacturerList.find(isManuFacturerId);
+
         //
         const isProductName = (productList: IProduct): boolean => {
             return productList.id.toString() === formData.get("product_id");
         };
         const selectProductName = productList.find(isProductName);
+
         //
+
         formData.set("manufacturer_id", selectManuFacturerId.manufacturer_id.toString());
         formData.set("product_name", selectProductName.name);
 
+        //
+        formData.append("emp_id", (detailSalesPlan?.emp_id || userInfo.empId).toString());
+        formData.append("plan_num", planNum);
+        formData.append("perform_qut", (detailSalesPlan?.perform_qut || 0).toString());
         axios
             .post("/business/sales-plan/updatePlanBody.do", formData, {
                 headers: { "Content-Type": "application/json" },
@@ -292,7 +299,6 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                         </span>
                         <StyledInput type='text' value={userInfo.loginId || ""} readOnly></StyledInput>
                     </label>
-                    <input type='hidden' name='emp_id' value={detailSalesPlan?.emp_id || userInfo.empId} />
                     <label>
                         <span>
                             직원이름<span style={{ color: "red" }}>*</span>
@@ -409,8 +415,6 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
                             나가기
                         </StyledButton>
                     </div>
-                    <input type='hidden' name='plan_num' value={planNum} readOnly />
-                    <input type='hidden' name='perform_qut' value={detailSalesPlan?.perform_qut || 0} readOnly />
                 </form>
             </div>
         </SalesPlanListModalStyled>
