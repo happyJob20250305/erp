@@ -15,7 +15,7 @@ export interface ISales {
     plan_memo: string;
     plan_num: string;
     product_name: string;
-    product_id: string; // product_name을 통해 product_id 추출
+    product_id: string;
     target_date: string;
 }
 
