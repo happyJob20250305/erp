@@ -6,13 +6,18 @@ import { SalesResultListMainStyled } from "./styled";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
 import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 import { StyledTable } from "../../../../../common/styled/StyledTable";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
+import { Portal } from "../../../../../common/potal/Portal";
 
 export const SalesResultMainList = () => {
     const [salesResultList, setSalesResultList] = useState<ISales[]>([]);
     const [salesResultCnt, setSalesResultCnt] = useState<number>(0);
     const [cPage, setCPage] = useState<number>(0);
+    const [detailSalesResult, setDetailSalesResult] = useState<ISales>();
 
     const { searchKeyword } = useContext(SalesResultListContext);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     useEffect(() => {
         searchSalesResultList();
@@ -32,6 +37,16 @@ export const SalesResultMainList = () => {
                 setSalesResultCnt(res.data.salesPlanCnt);
                 setCPage(currentPage);
             });
+    };
+
+    const handlerSalesResultModal = (row: ISales) => {
+        setModal(!modal);
+        setDetailSalesResult(row);
+    };
+
+    const postSuccess = () => {
+        setModal(!modal);
+        searchSalesResultList();
     };
 
     return (
@@ -82,6 +97,15 @@ export const SalesResultMainList = () => {
                 itemsCountPerPage={5}
                 onChange={searchSalesResultList}
             />
+            {/* {modal && (
+                <Portal>
+                    <SalesResultListModal
+                        detailSalesResult={detailSalesResult}
+                        setDetailSalesResult={setDetailSalesResult}
+                        postSuccess={postSuccess}
+                    />
+                </Portal>
+            )} */}
         </SalesResultListMainStyled>
     );
 };
