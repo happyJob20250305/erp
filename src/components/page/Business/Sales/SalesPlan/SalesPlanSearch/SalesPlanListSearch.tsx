@@ -37,10 +37,51 @@ export const SalesPlanListSearch = () => {
 
     useEffect(() => {
         getManufacturerList();
+    }, []);
+
+    useEffect(() => {
         getMainCategoryList();
+    }, [selectManuFacturer]);
+
+    useEffect(() => {
         getSubCategoryList();
+    }, [selectMaincategory]);
+
+    useEffect(() => {
         getProductList();
-    }, [selectManuFacturer, selectMaincategory, selectSubcategory]);
+    }, [selectSubcategory]);
+
+    const getManufacturerList = () => {
+        axios
+            .post("/business/sales-plan/getmanufacturerBody.do", { key: "val1" })
+            .then((res: AxiosResponse<IManufacturerResponse>) => {
+                setManuFacturerList(res.data.manuFacturerList);
+            });
+    };
+
+    const getMainCategoryList = () => {
+        axios
+            .post("/business/sales-plan/getMainCategoryBody.do", { group_code: selectManuFacturer })
+            .then((res: AxiosResponse<IMaincategoryResponse>) => {
+                setMainCategoryList(res.data.mainCategory);
+            });
+    };
+
+    const getSubCategoryList = () => {
+        axios
+            .post("/business/sales-plan/getSubCategoryListBody.do", { group_code: selectMaincategory })
+            .then((res: AxiosResponse<ISubcategoryResponse>) => {
+                setSubCategoryList(res.data.subCategory);
+            });
+    };
+
+    const getProductList = () => {
+        axios
+            .post("/business/sales-plan/getProductListBody.do", { industry_code: selectSubcategory })
+            .then((res: AxiosResponse<IProductResponse>) => {
+                setProductList(res.data.productList);
+            });
+    };
 
     const manuFacturerOptions = [
         { value: "", label: "선택" },
@@ -90,53 +131,12 @@ export const SalesPlanListSearch = () => {
             : []),
     ];
 
-    const getManufacturerList = () => {
-        axios
-            .post("/business/sales-plan/getmanufacturerBody.do", { key: "val1" })
-            .then((res: AxiosResponse<IManufacturerResponse>) => {
-                setManuFacturerList(res.data.manuFacturerList);
-            });
-    };
-
-    const getMainCategoryList = () => {
-        axios
-            .post("/business/sales-plan/getMainCategoryBody.do", { group_code: selectManuFacturer })
-            .then((res: AxiosResponse<IMaincategoryResponse>) => {
-                setMainCategoryList(res.data.mainCategory);
-            });
-    };
-
-    const getSubCategoryList = () => {
-        axios
-            .post("/business/sales-plan/getSubCategoryListBody.do", { group_code: selectMaincategory })
-            .then((res: AxiosResponse<ISubcategoryResponse>) => {
-                setSubCategoryList(res.data.subCategory);
-            });
-    };
-
-    const getProductList = () => {
-        axios
-            .post("/business/sales-plan/getProductListBody.do", { industry_code: selectSubcategory })
-            .then((res: AxiosResponse<IProductResponse>) => {
-                setProductList(res.data.productList);
-            });
-    };
-
     const handlerSearch = () => {
-        const isProductName = (productList: IProduct): boolean => {
-            return productList.id === parseInt(selectProduct);
-        };
-
-        const selectProductName = productList.find(isProductName);
-
         setSearchKeyword({
-            // as-is 개발자도구-페이로드 결과 값들
             group_code: selectManuFacturer,
             product_code: selectSubcategory,
             target_date: selectDate,
-            product_name: selectProductName.name,
-            // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
-            enterence: "",
+            product_id: parseInt(selectProduct),
         });
     };
 
