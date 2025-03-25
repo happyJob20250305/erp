@@ -15,6 +15,8 @@ import {
 } from "../../../../../../models/interface/business/sales/ISales";
 import { SalesResultListContext } from "../../../../../../api/Provider/SalesResultProvider";
 import { SalesResultListSearchStyled } from "./styled";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../../stores/modalState";
 
 export const SalesReultListSearch = () => {
     const [manuFacturerList, setManuFacturerList] = useState<IManufacturer[]>([]);
@@ -33,10 +35,19 @@ export const SalesReultListSearch = () => {
 
     useEffect(() => {
         getManufacturerList();
+    }, []);
+
+    useEffect(() => {
         getMainCategoryList();
+    }, [selectManuFacturer]);
+
+    useEffect(() => {
         getSubCategoryList();
+    }, [selectMaincategory]);
+
+    useEffect(() => {
         getProductList();
-    }, [selectManuFacturer, selectMaincategory, selectSubcategory, selectProduct]);
+    }, [selectSubcategory]);
 
     const getManufacturerList = () => {
         axios
@@ -68,24 +79,6 @@ export const SalesReultListSearch = () => {
             .then((res: AxiosResponse<IProductResponse>) => {
                 setProductList(res.data.productList);
             });
-    };
-
-    const handlerSearchSalesResult = () => {
-        const isProductName = (productList: IProduct): boolean => {
-            return productList.id === parseInt(selectProduct);
-        };
-
-        const selectProductName = productList.find(isProductName);
-
-        setSearchKeyword({
-            // as-is 개발자도구-페이로드 결과 값들
-            group_code: selectManuFacturer,
-            product_code: selectSubcategory,
-            target_date: selectDate,
-            product_name: selectProductName.name,
-            // 조건 분기로 앞선 변수가 채워져 있을 때와 비워져 있을 때를 다르게 실행 처리 필요
-            enterence: "",
-        });
     };
 
     const manuFacturerOptions = [
@@ -135,6 +128,15 @@ export const SalesReultListSearch = () => {
               })
             : []),
     ];
+
+    const handlerSearchSalesResult = () => {
+        setSearchKeyword({
+            group_code: selectManuFacturer,
+            product_code: selectSubcategory,
+            target_date: selectDate,
+            product_id: parseInt(selectProduct),
+        });
+    };
 
     return (
         <SalesResultListSearchStyled>
