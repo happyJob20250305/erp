@@ -21,10 +21,9 @@ interface IPostResponse {
 
 export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetailClient, postSuccess }) => {
     const formRef = useRef<HTMLFormElement>(null);
-    const bankRef = useRef<HTMLElement>(null);
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
-    const [clientId, setClientId] = useState<string>(detailClient?.client_id || "");
+    const [clientId, setClientId] = useState<string>(detailClient?.id || "");
     const [custUpdateDate, setCustUpdateDate] = useState<string>(detailClient?.cust_update_date || "");
     const [zipCode, setZipCode] = useState<string>(detailClient?.zip || "");
     const [address, setAddress] = useState<string>(detailClient?.addr || "");
@@ -32,15 +31,14 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
 
     const [isEmailLocal, setIsEmailLocal] = useState<string>(detailClient?.email.split("@")[0] || "");
     const [selectEmailDomain, setSelectEmailDomain] = useState<string>(detailClient?.email.split("@")[1] || "");
-    const [isEmailAddr, setIsEmailAddr] = useState<string>(detailClient?.email || "");
     const [selectBank, setSelectBank] = useState<string>(detailClient?.bank.split("은행")[0] || "");
 
     useEffect(() => {
-        handlerEmailAddr(isEmailLocal, selectEmailDomain);
         return () => {
             setDetailClient();
+            setClientId("");
         };
-    }, [isEmailLocal, selectEmailDomain]);
+    }, []);
 
     const emailAddrOptions = [
         // { label: "직접입력", value: "" },
@@ -64,6 +62,7 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
         { label: "산업", value: "산업" },
     ];
 
+    // 주소 검색 API를 활용한 주소 정보 기입 구현
     const open = useDaumPostcodePopup("//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
 
     const handlerComplete = (data: {
@@ -110,12 +109,18 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
         } else {
             resultEmailAddr = isEmailLocal + "@" + selectEmailDomain;
         }
-        setIsEmailAddr(resultEmailAddr);
         return resultEmailAddr;
     };
 
     const insertClient = () => {
         const formData = new FormData(formRef.current);
+
+        //
+        const emailFullAddr = handlerEmailAddr(isEmailLocal, selectEmailDomain);
+
+        //
+        formData.append("email", emailFullAddr);
+        // formData.append("iSBN", detailClient?.bank_account.split("-")[0]);
 
         axios
             .post("/business/client-list/insertClientListBody.do", formData, {
@@ -136,6 +141,16 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
 
     const updateClient = () => {
         const formData = new FormData(formRef.current);
+
+        //
+        const emailFullAddr = handlerEmailAddr(isEmailLocal, selectEmailDomain);
+        console.log("emailFullAddr:" + emailFullAddr);
+
+        //
+        formData.append("id", clientId);
+        formData.append("email", emailFullAddr);
+        // formData.append("iSBN", detailClient?.bank_account.split("-")[0]);
+        formData.append("cust_update_date", custUpdateDate);
 
         axios
             .post("/business/client-list/updateClientListBody.do", formData, {
@@ -178,7 +193,13 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </label>
                     <label>우편번호*</label>
                     <span>
-                        <StyledInput type='text' name='zip' value={zipCode} readOnly></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='zip'
+                            value={zipCode}
+                            onChange={() => setZipCode}
+                            readOnly
+                        ></StyledInput>
                     </span>
                     <span className={"button-container"}>
                         <StyledButton type='button' onClick={handlerPostCode}>
@@ -187,18 +208,29 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                     </span>
                     <label>
                         주소*
-                        <StyledInput type='text' name='addr' value={address} readOnly></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='addr'
+                            value={address}
+                            onChange={() => setAddress}
+                            readOnly
+                        ></StyledInput>
                     </label>
                     <label>
                         상세주소*
-                        <StyledInput type='text' name='detail_addr' value={detailAddr}></StyledInput>
+                        <StyledInput
+                            type='text'
+                            name='detail_addr'
+                            value={detailAddr}
+                            onChange={(e) => setDetailAddr(e.target.value)}
+                        ></StyledInput>
                     </label>
                     <label>
                         이메일*
                         <StyledInput
                             type='text'
                             name='firstEmail'
-                            defaultValue={isEmailLocal}
+                            value={isEmailLocal}
                             onChange={(e) => setIsEmailLocal(e.target.value)}
                         ></StyledInput>
                         <StyledSelectBox
@@ -207,7 +239,6 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                             onChange={setSelectEmailDomain}
                             name='selectemailaddr'
                         />
-                        <input type='hidden' name='email' defaultValue={isEmailAddr} />
                     </label>
                     <label>
                         사업자등록번호*
@@ -226,14 +257,13 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                             name='bank_account'
                             defaultValue={detailClient?.bank_account}
                         ></StyledInput>
-                        <input type='hidden' name='ISBN' defaultValue={detailClient?.bank_account.split("-")[0]} />
                     </label>
                     <label>
                         메모*
                         <StyledInput type='text' name='memo' defaultValue={detailClient?.memo}></StyledInput>
                     </label>
                     <div className={"button-container"}>
-                        {custUpdateDate ? (
+                        {clientId ? (
                             <>
                                 <StyledButton type='button' onClick={updateClient}>
                                     수정
@@ -250,8 +280,6 @@ export const ClientListModal: FC<IClientModalProps> = ({ detailClient, setDetail
                             나가기
                         </StyledButton>
                     </div>
-                    <input type='hidden' name='id' value={clientId} readOnly />
-                    <input type='hidden' name='cust_update_date' value={custUpdateDate} readOnly />
                 </form>
             </div>
         </ClientListModalStyled>
