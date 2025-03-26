@@ -103,7 +103,7 @@ export const SalesPlanListModal: FC<ISalesModalProps> = ({ detailSalesPlan, setD
         ...(clientList?.length > 0
             ? clientList.map((clientValue: IClient) => {
                   return {
-                      value: clientValue.client_id,
+                      value: clientValue.id,
                       label: clientValue.client_name,
                   };
               })
