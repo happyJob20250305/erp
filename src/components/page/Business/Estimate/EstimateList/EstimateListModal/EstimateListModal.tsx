@@ -8,17 +8,21 @@ import {
     IManufacturerResponse,
     IProduct,
     IProductResponse,
+    ISales,
+    ISalesResponse,
     ISubcategory,
     ISubcategoryResponse,
 } from "../../../../../../models/interface/business/sales/ISales";
 import { modalState } from "../../../../../../stores/modalState";
 import axios, { AxiosResponse } from "axios";
-import { EstimateListModalStyled } from "./styled";
+import { EstimateListModalStyled, ModalStyledTable } from "./styled";
 import { StyledTable, StyledTd, StyledTh } from "../../../../../common/styled/StyledTable";
 import { StyledButton } from "../../../../../common/StyledButton/StyledButton";
 import { StyledSelectBox } from "../../../../../common/StyledSelectBox/StyledSelectBox";
 import { StyledInput } from "../../../../../common/StyledInput/StyledInput";
 import { IEstimate } from "../EstimateListMain/EstimateListMain";
+import { SalesPlanList } from "../../../../../../pages/business/SalesPlanList";
+import { PageNavigate } from "../../../../../common/pageNavigation/PageNavigate";
 
 interface IEstimateInfo {
     productId: number;
@@ -75,8 +79,8 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
     const [subCategoryList, setSubCategoryList] = useState<ISubcategory[]>([]);
     const [productList, setProductList] = useState<IProduct[]>([]);
 
-    const [selectOrderSalesArea, setSelectOrderSalesArea] = useState<string>("");
-    const [selectclient, setSelectClient] = useState<string>("");
+    const [selectEstimateArea, setSelectEstimateArea] = useState<string>("영업");
+    const [selectClient, setSelectClient] = useState<string>("");
     const [selectManuFacturer, setSelectManuFacturer] = useState<string>("");
     const [selectMaincategory, setSelectMaincategory] = useState<string>("");
     const [selectSubcategory, setSelectSubcategory] = useState<string>("");
@@ -91,6 +95,12 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
     const [infoClient, setInfoClient] = useState<IClientEstimate>();
     const [InfoEstimate, setInfoEstimate] = useState<IEstimate>();
     const [detailEstimate, setDetailEstimate] = useState<IEstimateInfo[]>([]);
+
+    const [selectSalesPlanTargetDate, setSelectSalesPlanTargetDate] = useState<string>("");
+    const [selectEstimateDeliveryDate, setSelectEstimateDeliveryDate] = useState<string>("");
+    const [salesPlanList, setSalesPlanList] = useState<ISales[]>([]);
+    const [salesPlanDetailList, setSalesPlanDetailList] = useState([]);
+    const [salesPlanCnt, setSalesPlanCnt] = useState<number>(0);
 
     useEffect(() => {
         getClientList();
@@ -173,7 +183,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
     ];
 
     const getClientList = () => {
-        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
+        axios.post("/business/client-list/getClientListBody.do", {}).then((res: AxiosResponse<IGetClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
@@ -274,6 +284,30 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                 setDetailEstimate(res.data.estimateDetail);
             });
     };
+
+    const searchSalesPlanList = (currentPage: number = 1) => {
+        currentPage = currentPage || 1;
+        // axios
+        //     .post("/business/sales-plan/searchPlanListBody.do", {
+        //         group_code: selectManuFacturer,
+        //         product_code: selectSubcategory,
+        //         target_date: selectSalesPlanTargetDate,
+        //         product_id: parseInt(selectProduct),
+        //         pageSize: 5,
+        //         currentPage,
+        //     })
+        //     .then((res: AxiosResponse<ISalesResponse>) => {
+        //         const filteredEstimateList = res.data.estimateList.filter((estimate) => {
+        //             return estimate.salesArea.includes(selectOrderSalesArea);
+        //         });
+
+        //         console.log(filteredEstimateList);
+        //         setEstimateList(filteredEstimateList);
+        //         setEstimateCount(filteredEstimateList.length);
+        //         setCpage(currentPage);
+        //     });
+    };
+
     return (
         <EstimateListModalStyled>
             <div className='container'>
@@ -388,138 +422,331 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                         </div>
                     </>
                 ) : (
+                    // <>
+                    //     <form ref={formRef}>
+                    //         <label>
+                    //             거래처
+                    //             <StyledSelectBox
+                    //                 options={clientOptions}
+                    //                 value={selectclient}
+                    //                 onChange={setSelectClient}
+                    //                 name='clientId'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             영업구분
+                    //             <StyledSelectBox
+                    //                 options={estimateAreaOptions}
+                    //                 value={selectOrderSalesArea}
+                    //                 onChange={setSelectOrderSalesArea}
+                    //                 name='estimateSalesArea'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             납기날짜
+                    //             <StyledInput type='date' name='estimateDeliveryDate' />
+                    //         </label>
+                    //         <label>
+                    //             제조업체
+                    //             <StyledSelectBox
+                    //                 options={manuFacturerOptions}
+                    //                 value={selectManuFacturer}
+                    //                 onChange={setSelectManuFacturer}
+                    //                 name='manufacturer_id'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             대분류
+                    //             <StyledSelectBox
+                    //                 options={mainCategoryOptions}
+                    //                 value={selectMaincategory}
+                    //                 onChange={setSelectMaincategory}
+                    //                 name='industry_code'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             소분류
+                    //             <StyledSelectBox
+                    //                 options={subCategoryOptions}
+                    //                 value={selectSubcategory}
+                    //                 onChange={setSelectSubcategory}
+                    //                 name='detail_code'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             제품
+                    //             <StyledSelectBox
+                    //                 options={productOptions}
+                    //                 value={selectProduct}
+                    //                 onChange={(value: number) => setSelectProduct(value)}
+                    //                 name='product_id'
+                    //             />
+                    //         </label>
+                    //         <label>
+                    //             제품단가
+                    //             <StyledInput type='text' name='unitPrice' ref={unitPriceRef}></StyledInput>
+                    //         </label>
+                    //         <label>
+                    //             수량
+                    //             <StyledInput type='text' name='quantity' ref={quantityRef}></StyledInput>
+                    //         </label>
+                    //         <label>
+                    //             공급가액
+                    //             <StyledInput type='text' name='supplyPrice' ref={supplyPriceRef}></StyledInput>
+                    //         </label>
+                    //         <label>추가내역</label>
+                    //         <>
+                    //             <StyledTable>
+                    //                 <thead>
+                    //                     <tr>
+                    //                         <StyledTh>제조업체</StyledTh>
+                    //                         <StyledTh>대분류</StyledTh>
+                    //                         <StyledTh>소분류</StyledTh>
+                    //                         <StyledTh>제품</StyledTh>
+                    //                         <StyledTh>제품단가</StyledTh>
+                    //                         <StyledTh>수량</StyledTh>
+                    //                         <StyledTh>공급가액</StyledTh>
+                    //                         <StyledTh>비고</StyledTh>
+                    //                     </tr>
+                    //                 </thead>
+                    //                 <tbody>
+                    //                     {estimateList?.length > 0 ? (
+                    //                         estimateList.map((estimate, index) => {
+                    //                             return (
+                    //                                 <tr key={index}>
+                    //                                     <StyledTd>{estimate?.manufacturerId}</StyledTd>
+                    //                                     <StyledTd>{estimate?.majorCategoryId}</StyledTd>
+                    //                                     <StyledTd>{estimate?.subCategoryId}</StyledTd>
+                    //                                     <StyledTd>{estimate.productId}</StyledTd>
+                    //                                     <StyledTd>{estimate.unitPrice}</StyledTd>
+                    //                                     <StyledTd>{estimate.quantity}</StyledTd>
+                    //                                     <StyledTd>{estimate.supplyPrice}</StyledTd>
+                    //                                     <StyledTd>
+                    //                                         <StyledButton onClick={() => deleteOrder(estimate, index)}>
+                    //                                             추가삭제
+                    //                                         </StyledButton>
+                    //                                     </StyledTd>
+                    //                                 </tr>
+                    //                             );
+                    //                         })
+                    //                     ) : (
+                    //                         <tr>
+                    //                             <StyledTd colSpan={8}>추가내역이 없습니다.</StyledTd>
+                    //                         </tr>
+                    //                     )}
+                    //                     <tr>
+                    //                         <StyledButton type='button' onClick={deleteAllOrder}>
+                    //                             전체추가삭제
+                    //                         </StyledButton>
+                    //                     </tr>
+                    //                 </tbody>
+                    //             </StyledTable>
+                    //         </>
+
+                    //         <div className={"button-container"}>
+                    //             <StyledButton type='button' onClick={insertEstimateList}>
+                    //                 추가
+                    //             </StyledButton>
+                    //             <StyledButton type='button' onClick={saveEstimateList}>
+                    //                 등록
+                    //             </StyledButton>
+                    //             <StyledButton
+                    //                 type='button'
+                    //                 onClick={() => {
+                    //                     setModal(!modal), detailEstimateList();
+                    //                 }}
+                    //             >
+                    //                 나가기
+                    //             </StyledButton>
+                    //         </div>
+                    //     </form>
+                    // </>
                     <>
                         <form ref={formRef}>
                             <label>
-                                거래처
-                                <StyledSelectBox
-                                    options={clientOptions}
-                                    value={selectclient}
-                                    onChange={setSelectClient}
-                                    name='clientId'
-                                />
+                                <span>영업 계획 제품 조회</span>
+                                <table>
+                                    <tr>
+                                        <th>
+                                            <span>
+                                                거래처
+                                                <StyledSelectBox
+                                                    options={clientOptions}
+                                                    value={selectClient}
+                                                    onChange={setSelectClient}
+                                                    name='clientId'
+                                                />
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span>
+                                                영업계획목표날짜
+                                                <StyledInput
+                                                    type='date'
+                                                    name='salesPlanTargetDate'
+                                                    value={selectSalesPlanTargetDate}
+                                                    onChange={(e) => setSelectSalesPlanTargetDate(e.target.value)}
+                                                />
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span>
+                                                영업구분
+                                                <StyledSelectBox
+                                                    options={estimateAreaOptions}
+                                                    value={selectEstimateArea}
+                                                    onChange={setSelectEstimateArea}
+                                                    name='estimateArea'
+                                                />
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span>
+                                                견적목표납기날짜
+                                                <StyledInput
+                                                    type='date'
+                                                    name='deliveryDate'
+                                                    value={selectEstimateDeliveryDate}
+                                                    onChange={(e) => setSelectEstimateDeliveryDate(e.target.value)}
+                                                />
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span>
+                                                <StyledButton type='button' onClick={() => searchSalesPlanList(1)}>
+                                                    조회
+                                                </StyledButton>
+                                            </span>
+                                        </th>
+                                        <th>
+                                            <span>
+                                                <img
+                                                    src='/refresh.png'
+                                                    // onClick={resetSearch}
+                                                    style={{ width: "25px", height: "25px" }}
+                                                />
+                                            </span>
+                                        </th>
+                                    </tr>
+                                </table>
                             </label>
                             <label>
-                                영업구분
-                                <StyledSelectBox
-                                    options={estimateAreaOptions}
-                                    value={selectOrderSalesArea}
-                                    onChange={setSelectOrderSalesArea}
-                                    name='estimateSalesArea'
-                                />
+                                <span>영업계획 제품 목록</span>{" "}
                             </label>
-                            <label>
-                                납기날짜
-                                <StyledInput type='date' name='estimateDeliveryDate' />
-                            </label>
-                            <label>
-                                제조업체
-                                <StyledSelectBox
-                                    options={manuFacturerOptions}
-                                    value={selectManuFacturer}
-                                    onChange={setSelectManuFacturer}
-                                    name='manufacturer_id'
-                                />
-                            </label>
-                            <label>
-                                대분류
-                                <StyledSelectBox
-                                    options={mainCategoryOptions}
-                                    value={selectMaincategory}
-                                    onChange={setSelectMaincategory}
-                                    name='industry_code'
-                                />
-                            </label>
-                            <label>
-                                소분류
-                                <StyledSelectBox
-                                    options={subCategoryOptions}
-                                    value={selectSubcategory}
-                                    onChange={setSelectSubcategory}
-                                    name='detail_code'
-                                />
-                            </label>
-                            <label>
-                                제품
-                                <StyledSelectBox
-                                    options={productOptions}
-                                    value={selectProduct}
-                                    onChange={(value: number) => setSelectProduct(value)}
-                                    name='product_id'
-                                />
-                            </label>
-                            <label>
-                                제품단가
-                                <StyledInput type='text' name='unitPrice' ref={unitPriceRef}></StyledInput>
-                            </label>
-                            <label>
-                                수량
-                                <StyledInput type='text' name='quantity' ref={quantityRef}></StyledInput>
-                            </label>
-                            <label>
-                                공급가액
-                                <StyledInput type='text' name='supplyPrice' ref={supplyPriceRef}></StyledInput>
-                            </label>
-                            <label>추가내역</label>
                             <>
-                                <StyledTable>
+                                <ModalStyledTable>
                                     <thead>
                                         <tr>
+                                            <StyledTh>영업계획번호</StyledTh>
+                                            <StyledTh>영업계획목표날짜</StyledTh>
+                                            <StyledTh>거래처</StyledTh>
                                             <StyledTh>제조업체</StyledTh>
                                             <StyledTh>대분류</StyledTh>
                                             <StyledTh>소분류</StyledTh>
                                             <StyledTh>제품</StyledTh>
-                                            <StyledTh>제품단가</StyledTh>
-                                            <StyledTh>수량</StyledTh>
-                                            <StyledTh>공급가액</StyledTh>
-                                            <StyledTh>비고</StyledTh>
+                                            <StyledTh>영업계획목표수량</StyledTh>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {estimateList?.length > 0 ? (
-                                            estimateList.map((estimate, index) => {
+                                        {salesPlanList?.length > 0 ? (
+                                            salesPlanList.map((salesPlan) => {
                                                 return (
-                                                    <tr key={index}>
-                                                        <StyledTd>{estimate?.manufacturerId}</StyledTd>
-                                                        <StyledTd>{estimate?.majorCategoryId}</StyledTd>
-                                                        <StyledTd>{estimate?.subCategoryId}</StyledTd>
-                                                        <StyledTd>{estimate.productId}</StyledTd>
-                                                        <StyledTd>{estimate.unitPrice}</StyledTd>
-                                                        <StyledTd>{estimate.quantity}</StyledTd>
-                                                        <StyledTd>{estimate.supplyPrice}</StyledTd>
-                                                        <StyledTd>
-                                                            <StyledButton onClick={() => deleteOrder(estimate, index)}>
-                                                                추가삭제
-                                                            </StyledButton>
-                                                        </StyledTd>
+                                                    <tr key={salesPlan?.plan_num}>
+                                                        <StyledTd>{salesPlan?.target_date}</StyledTd>
+                                                        <StyledTd>{salesPlan?.client_name}</StyledTd>
+                                                        <StyledTd>{salesPlan?.}</StyledTd>
+                                                        <StyledTd>{salesPlan?.industry_code}</StyledTd>
+                                                        <StyledTd>{salesPlan?.industry_code}</StyledTd>
+                                                        <StyledTd>{salesPlan?.detail_code}</StyledTd>
+                                                        <StyledTd>{salesPlan?.product_id}</StyledTd>
+                                                        <StyledTd>{salesPlan?.goal_quanti}</StyledTd>
                                                     </tr>
                                                 );
                                             })
                                         ) : (
                                             <tr>
-                                                <StyledTd colSpan={8}>추가내역이 없습니다.</StyledTd>
+                                                <StyledTd colSpan={9}>견적 제품 목록이 없습니다.</StyledTd>
                                             </tr>
                                         )}
-                                        <tr>
-                                            <StyledButton type='button' onClick={deleteAllOrder}>
-                                                전체추가삭제
-                                            </StyledButton>
-                                        </tr>
                                     </tbody>
-                                </StyledTable>
+                                </ModalStyledTable>
+                                <p>
+                                    <PageNavigate
+                                        totalItemsCount={salesPlanCnt}
+                                        activePage={cPage}
+                                        itemsCountPerPage={5}
+                                        onChange={searchSalesPlanList}
+                                    />
+                                </p>
                             </>
 
+                            <label>
+                                <span>영업계획 제품 추가 목록</span>
+                            </label>
+                            <ModalStyledTable>
+                                <thead>
+                                    <tr>
+                                        <StyledTh>영업계획번호</StyledTh>
+                                        <StyledTh>제품</StyledTh>
+                                        <StyledTh>제품단가</StyledTh>
+                                        <StyledTh>견적수량</StyledTh>
+                                        <StyledTh>공급가액</StyledTh>
+                                        <StyledTh>비고</StyledTh>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {salesDe?.length > 0 ? (
+                                        estimateDetailList.map((estimateDetail, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <StyledTd>{estimateDetail?.estimateId}</StyledTd>
+                                                    <StyledTd>{estimateDetail?.productName}</StyledTd>
+                                                    <StyledTd>{estimateDetail?.unitPrice}</StyledTd>
+                                                    <StyledTd>{estimateDetail?.quantity}</StyledTd>
+                                                    <StyledTd>{estimateDetail?.supplyPrice}</StyledTd>
+                                                    <StyledTd>
+                                                        <StyledButton
+                                                            onClick={() => deleteEstimate(estimateDetail, index)}
+                                                        >
+                                                            견적제품삭제
+                                                        </StyledButton>
+                                                    </StyledTd>
+                                                </tr>
+                                            );
+                                        })
+                                    ) : (
+                                        <tr>
+                                            <StyledTd colSpan={9}>수주 제품 목록이 없습니다.</StyledTd>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </ModalStyledTable>
+
                             <div className={"button-container"}>
-                                <StyledButton type='button' onClick={insertEstimateList}>
-                                    추가
+                                <StyledButton
+                                    type='button'
+                                    onClick={deleteAllOrder}
+                                    style={{
+                                        float: "left",
+                                    }}
+                                >
+                                    전체수주제품삭제
                                 </StyledButton>
+                                <StyledInput
+                                    type='text'
+                                    value={selectEstimateId}
+                                    onChange={(e) => {
+                                        setSelectEstimateId(e.target.value);
+                                        insertOrderList(parseInt(e.target.value));
+                                    }}
+                                />
                                 <StyledButton type='button' onClick={saveEstimateList}>
                                     등록
                                 </StyledButton>
                                 <StyledButton
                                     type='button'
                                     onClick={() => {
-                                        setModal(!modal), detailEstimateList();
+                                        setModal(!modal), deleteAllOrder();
                                     }}
                                 >
                                     나가기
