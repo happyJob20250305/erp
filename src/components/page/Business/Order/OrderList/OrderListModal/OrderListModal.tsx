@@ -181,7 +181,7 @@ export const OrderListModal: FC<IOrderListModalProps> = ({
     ];
 
     const getClientList = () => {
-        axios.post("/business/client-list/getClientListBody.do").then((res: AxiosResponse<IGetClientResponse>) => {
+        axios.post("/business/client-list/getClientListBody.do", {}).then((res: AxiosResponse<IGetClientResponse>) => {
             setClientList(res.data.clientList);
         });
     };
