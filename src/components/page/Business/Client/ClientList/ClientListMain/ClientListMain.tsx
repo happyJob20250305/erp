@@ -18,16 +18,15 @@ export interface IClient {
     ph: string;
     person_ph: string;
     detail_addr: string;
-    client_id: string;
+    id: string;
     addr: string;
     client_name: string;
     email: string;
     bank_account: string;
     cust_update_date: string;
     selectemailaddr: string;
-    firstEmain: string;
-    ISBN: string;
-    selectISBN: string;
+    firstEmail: string;
+    iSBN: string;
 }
 
 export interface IClientResponse {
@@ -60,7 +59,7 @@ export const ClientListMain = () => {
 
     const columns = [
         { key: "id", title: "번호" },
-        { key: "cust_update_date", title: "등록날짜" },
+        { key: "cust_update_date", title: "등록/수정날짜" },
         { key: "client_name", title: "거래처" },
         { key: "person", title: "담당자" },
         { key: "ph", title: "전화번호" },
