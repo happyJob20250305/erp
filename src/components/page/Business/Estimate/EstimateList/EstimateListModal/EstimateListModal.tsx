@@ -134,53 +134,53 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
             : []),
     ];
 
-    const manuFacturerOptions = [
-        { value: "", label: "선택" },
-        ...(manuFacturerList?.length > 0
-            ? manuFacturerList.map((manuFacturerValue: IManufacturer) => {
-                  return {
-                      value: manuFacturerValue.industryCode,
-                      label: manuFacturerValue.industryName,
-                  };
-              })
-            : []),
-    ];
+    // const manuFacturerOptions = [
+    //     { value: "", label: "선택" },
+    //     ...(manuFacturerList?.length > 0
+    //         ? manuFacturerList.map((manuFacturerValue: IManufacturer) => {
+    //               return {
+    //                   value: manuFacturerValue.industryCode,
+    //                   label: manuFacturerValue.industryName,
+    //               };
+    //           })
+    //         : []),
+    // ];
 
-    const mainCategoryOptions = [
-        { value: "", label: "선택" },
-        ...(mainCategoryList?.length > 0
-            ? mainCategoryList.map((mainCategoryValue: IMaincategory) => {
-                  return {
-                      value: mainCategoryValue.group_code,
-                      label: mainCategoryValue.group_name,
-                  };
-              })
-            : []),
-    ];
+    // const mainCategoryOptions = [
+    //     { value: "", label: "선택" },
+    //     ...(mainCategoryList?.length > 0
+    //         ? mainCategoryList.map((mainCategoryValue: IMaincategory) => {
+    //               return {
+    //                   value: mainCategoryValue.group_code,
+    //                   label: mainCategoryValue.group_name,
+    //               };
+    //           })
+    //         : []),
+    // ];
 
-    const subCategoryOptions = [
-        { value: "", label: "선택" },
-        ...(subCategoryList?.length > 0
-            ? subCategoryList.map((subCategoryValue: ISubcategory) => {
-                  return {
-                      value: subCategoryValue.detail_code,
-                      label: subCategoryValue.detail_name,
-                  };
-              })
-            : []),
-    ];
+    // const subCategoryOptions = [
+    //     { value: "", label: "선택" },
+    //     ...(subCategoryList?.length > 0
+    //         ? subCategoryList.map((subCategoryValue: ISubcategory) => {
+    //               return {
+    //                   value: subCategoryValue.detail_code,
+    //                   label: subCategoryValue.detail_name,
+    //               };
+    //           })
+    //         : []),
+    // ];
 
-    const productOptions = [
-        { value: "", label: "선택" },
-        ...(productList?.length > 0
-            ? productList.map((productValue: IProduct) => {
-                  return {
-                      value: productValue.id,
-                      label: productValue.name,
-                  };
-              })
-            : []),
-    ];
+    // const productOptions = [
+    //     { value: "", label: "선택" },
+    //     ...(productList?.length > 0
+    //         ? productList.map((productValue: IProduct) => {
+    //               return {
+    //                   value: productValue.id,
+    //                   label: productValue.name,
+    //               };
+    //           })
+    //         : []),
+    // ];
 
     const getClientList = () => {
         axios.post("/business/client-list/getClientListBody.do", {}).then((res: AxiosResponse<IGetClientResponse>) => {
@@ -217,6 +217,42 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
             .post("/business/sales-plan/getProductListBody.do", { industry_code: selectSubcategory })
             .then((res: AxiosResponse<IProductResponse>) => {
                 setProductList(res.data.productList);
+            });
+    };
+
+    const searchSalesPlanList = (currentPage: number = 1) => {
+        currentPage = currentPage || 1;
+        // axios
+        //     .post("/business/sales-plan/searchPlanListBody.do", {
+        //         group_code: selectManuFacturer,
+        //         product_code: selectSubcategory,
+        //         target_date: selectSalesPlanTargetDate,
+        //         product_id: parseInt(selectProduct),
+        //         pageSize: 5,
+        //         currentPage,
+        //     })
+        //     .then((res: AxiosResponse<ISalesResponse>) => {
+        //         const filteredEstimateList = res.data.estimateList.filter((estimate) => {
+        //             return estimate.salesArea.includes(selectOrderSalesArea);
+        //         });
+
+        //         console.log(filteredEstimateList);
+        //         setEstimateList(filteredEstimateList);
+        //         setEstimateCount(filteredEstimateList.length);
+        //         setCpage(currentPage);
+        //     });
+    };
+
+    const detailEstimateList = () => {
+        axios
+            .post("/business/estimate-list/estimateDetailBody.do", {
+                estimateId: estimateId,
+                clientId: clientId,
+            })
+            .then((res: AxiosResponse) => {
+                setInfoClient(res.data.client);
+                setInfoEstimate(res.data.estimate);
+                setDetailEstimate(res.data.estimateDetail);
             });
     };
 
@@ -263,49 +299,13 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
             });
     };
 
-    const deleteOrder = (estimate: IEstimateInfo, index: number) => {
-        estimateList.splice(estimateList.indexOf(estimate, index));
-        setEstimateList([...estimateList]);
+    const deleteSalesPlan = (salesPlan: ISales, index: number) => {
+        salesPlanList.splice(salesPlanList.indexOf(salesPlan, index));
+        setSalesPlanList([...salesPlanList]);
     };
 
-    const deleteAllOrder = () => {
+    const deleteAllSalesPlan = () => {
         setEstimateList([]);
-    };
-
-    const detailEstimateList = () => {
-        axios
-            .post("/business/estimate-list/estimateDetailBody.do", {
-                estimateId: estimateId,
-                clientId: clientId,
-            })
-            .then((res: AxiosResponse) => {
-                setInfoClient(res.data.client);
-                setInfoEstimate(res.data.estimate);
-                setDetailEstimate(res.data.estimateDetail);
-            });
-    };
-
-    const searchSalesPlanList = (currentPage: number = 1) => {
-        currentPage = currentPage || 1;
-        // axios
-        //     .post("/business/sales-plan/searchPlanListBody.do", {
-        //         group_code: selectManuFacturer,
-        //         product_code: selectSubcategory,
-        //         target_date: selectSalesPlanTargetDate,
-        //         product_id: parseInt(selectProduct),
-        //         pageSize: 5,
-        //         currentPage,
-        //     })
-        //     .then((res: AxiosResponse<ISalesResponse>) => {
-        //         const filteredEstimateList = res.data.estimateList.filter((estimate) => {
-        //             return estimate.salesArea.includes(selectOrderSalesArea);
-        //         });
-
-        //         console.log(filteredEstimateList);
-        //         setEstimateList(filteredEstimateList);
-        //         setEstimateCount(filteredEstimateList.length);
-        //         setCpage(currentPage);
-        //     });
     };
 
     return (
@@ -652,9 +652,9 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                             salesPlanList.map((salesPlan) => {
                                                 return (
                                                     <tr key={salesPlan?.plan_num}>
+                                                        <StyledTd>{salesPlan?.plan_num}</StyledTd>
                                                         <StyledTd>{salesPlan?.target_date}</StyledTd>
                                                         <StyledTd>{salesPlan?.client_name}</StyledTd>
-                                                        <StyledTd>{salesPlan?.}</StyledTd>
                                                         <StyledTd>{salesPlan?.industry_code}</StyledTd>
                                                         <StyledTd>{salesPlan?.industry_code}</StyledTd>
                                                         <StyledTd>{salesPlan?.detail_code}</StyledTd>
@@ -665,19 +665,19 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                             })
                                         ) : (
                                             <tr>
-                                                <StyledTd colSpan={9}>견적 제품 목록이 없습니다.</StyledTd>
+                                                <StyledTd colSpan={9}>영업계획 제품 목록이 없습니다.</StyledTd>
                                             </tr>
                                         )}
                                     </tbody>
                                 </ModalStyledTable>
-                                <p>
+                                {/* <p>
                                     <PageNavigate
                                         totalItemsCount={salesPlanCnt}
                                         activePage={cPage}
                                         itemsCountPerPage={5}
                                         onChange={searchSalesPlanList}
                                     />
-                                </p>
+                                </p> */}
                             </>
 
                             <label>
@@ -695,18 +695,18 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {salesDe?.length > 0 ? (
-                                        estimateDetailList.map((estimateDetail, index) => {
+                                    {salesPlanDetailList?.length > 0 ? (
+                                        salesPlanDetailList.map((salesPlanDetail, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <StyledTd>{estimateDetail?.estimateId}</StyledTd>
-                                                    <StyledTd>{estimateDetail?.productName}</StyledTd>
-                                                    <StyledTd>{estimateDetail?.unitPrice}</StyledTd>
-                                                    <StyledTd>{estimateDetail?.quantity}</StyledTd>
-                                                    <StyledTd>{estimateDetail?.supplyPrice}</StyledTd>
+                                                    <StyledTd>{salesPlanDetail?.plan_num}</StyledTd>
+                                                    <StyledTd>{salesPlanDetail?.name}</StyledTd>
+                                                    <StyledTd>{salesPlanDetail?.unitPrice}</StyledTd>
+                                                    <StyledTd>{salesPlanDetail?.quantity}</StyledTd>
+                                                    <StyledTd>{salesPlanDetail?.supplyPrice}</StyledTd>
                                                     <StyledTd>
                                                         <StyledButton
-                                                            onClick={() => deleteEstimate(estimateDetail, index)}
+                                                            onClick={() => deleteSalesPlan(salesPlanDetail, index)}
                                                         >
                                                             견적제품삭제
                                                         </StyledButton>
@@ -716,7 +716,7 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                                         })
                                     ) : (
                                         <tr>
-                                            <StyledTd colSpan={9}>수주 제품 목록이 없습니다.</StyledTd>
+                                            <StyledTd colSpan={9}>영업계획 제품 추가 목록이 없습니다.</StyledTd>
                                         </tr>
                                     )}
                                 </tbody>
@@ -725,28 +725,28 @@ export const EstimateListModal: FC<IEstimateListModalProps> = ({
                             <div className={"button-container"}>
                                 <StyledButton
                                     type='button'
-                                    onClick={deleteAllOrder}
+                                    onClick={deleteAllSalesPlan}
                                     style={{
                                         float: "left",
                                     }}
                                 >
-                                    전체수주제품삭제
+                                    전체영업계획제품삭제
                                 </StyledButton>
-                                <StyledInput
+                                {/* <StyledInput
                                     type='text'
                                     value={selectEstimateId}
                                     onChange={(e) => {
                                         setSelectEstimateId(e.target.value);
                                         insertOrderList(parseInt(e.target.value));
                                     }}
-                                />
+                                /> */}
                                 <StyledButton type='button' onClick={saveEstimateList}>
                                     등록
                                 </StyledButton>
                                 <StyledButton
                                     type='button'
                                     onClick={() => {
-                                        setModal(!modal), deleteAllOrder();
+                                        setModal(!modal), deleteAllSalesPlan();
                                     }}
                                 >
                                     나가기
